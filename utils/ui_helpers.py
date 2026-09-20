@@ -21,29 +21,50 @@ import unreal
 
 # 预定义颜色
 COLORS = {
-    "white":  [1.0, 1.0, 1.0, 1.0],
-    "red":    [1.0, 0.2, 0.2, 1.0],
-    "green":  [0.2, 1.0, 0.2, 1.0],
-    "blue":   [0.2, 0.5, 1.0, 1.0],
+    "white": [1.0, 1.0, 1.0, 1.0],
+    "red": [1.0, 0.2, 0.2, 1.0],
+    "green": [0.2, 1.0, 0.2, 1.0],
+    "blue": [0.2, 0.5, 1.0, 1.0],
     "yellow": [1.0, 0.9, 0.2, 1.0],
-    "cyan":   [0.2, 1.0, 1.0, 1.0],
+    "cyan": [0.2, 1.0, 1.0, 1.0],
     "orange": [1.0, 0.6, 0.1, 1.0],
     "purple": [0.7, 0.3, 1.0, 1.0],
 }
 
+
 def show_message(text, color="white", duration=5.0):
     """在屏幕上显示消息"""
+    # 【修改前】
+    # unreal.SystemLibrary.print_string(None, text, True, True, c, duration)
+    #
+    # 【问题分析】
+    # 1. world context 传 None —— 引擎找不到往哪个世界的屏幕上画，编辑器里
+    #    静默失败（什么都不显示还不报错）。要传编辑器的 world。
+    # 2. 颜色传 Python 列表 [r,g,b,a] —— 某些版本能自动转换，但显式构造
+    #    LinearColor 结构体最稳妥，不会因版本差异翻车。
     c = COLORS.get(color, COLORS["white"])
-    unreal.SystemLibrary.print_string(None, text, True, True, c, duration)
+    world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+    unreal.SystemLibrary.print_string(
+        world,
+        text,
+        print_to_screen=True,
+        print_to_log=True,
+        text_color=unreal.LinearColor(*c),
+        duration=duration,
+    )
+
 
 def show_success(text, duration=3.0):
     show_message(f"✅ {text}", "green", duration)
 
+
 def show_warning(text, duration=5.0):
     show_message(f"⚠️ {text}", "yellow", duration)
 
+
 def show_error(text, duration=5.0):
     show_message(f"❌ {text}", "red", duration)
+
 
 def show_info(text, duration=3.0):
     show_message(f"ℹ️ {text}", "blue", duration)
@@ -53,22 +74,30 @@ def show_info(text, duration=3.0):
 # 编辑器通知
 # ─────────────────────────────────────────────────────────
 
+
 def notify(text, notification_type="info"):
     """
-    显示编辑器通知（右下角弹出）
+    显示编辑器通知（用屏幕消息实现）
 
     参数:
         text: 通知文本
         notification_type: "info", "success", "warning", "error"
-    """
-    type_map = {
-        "info": unreal.NotificationType.INFO if hasattr(unreal, 'NotificationType') else None,
-        "success": unreal.NotificationType.SUCCESS if hasattr(unreal, 'NotificationType') else None,
-        "warning": unreal.NotificationType.WARNING if hasattr(unreal, 'NotificationType') else None,
-        "error": unreal.NotificationType.ERROR if hasattr(unreal, 'NotificationType') else None,
-    }
 
-    # 使用屏幕消息作为通知
+    【修改前】本函数先构造了一个 type_map：
+        type_map = {
+            "info": unreal.NotificationType.INFO if hasattr(unreal, "NotificationType") else None,
+            ...
+        }
+    然后就再没用过它。
+
+    【问题分析】
+    1. unreal.NotificationType 这个类在 stub 里根本不存在（蓝图里右下角弹出的
+       "通知"走的是 Slate UI 框架，纯 C++，没暴露给 Python）。
+    2. 原代码的 hasattr 保护让它在运行时"不崩"—— 每个值都会变成 None ——
+       但这是死代码：构造完就扔，给人"NotificationType 存在"的错觉。
+       与其留一段假装可用的代码，不如删掉，直接说明用 print_string 降级。
+    """
+    # 屏幕消息就是 UE5 Python 里最接近"通知"的东西：带颜色、自动消失
     color = {
         "info": "blue",
         "success": "green",
@@ -83,6 +112,7 @@ def notify(text, notification_type="info"):
 # ─────────────────────────────────────────────────────────
 # 对话框
 # ─────────────────────────────────────────────────────────
+
 
 def show_message_dialog(title, message, msg_type="ok"):
     """
@@ -104,10 +134,12 @@ def show_message_dialog(title, message, msg_type="ok"):
     result = unreal.EditorDialog.show_message(title, message, app_msg_type)
     return result
 
+
 def confirm_action(title, message):
     """确认操作对话框，返回 True/False"""
     result = show_message_dialog(title, message, "yes_no")
     return result == unreal.AppReturnType.YES
+
 
 def input_dialog(title, message, default_value=""):
     """
@@ -125,6 +157,7 @@ def input_dialog(title, message, default_value=""):
 # ─────────────────────────────────────────────────────────
 # 进度条
 # ─────────────────────────────────────────────────────────
+
 
 class ProgressBar:
     """
@@ -170,18 +203,25 @@ class ProgressBar:
 # 选区工具
 # ─────────────────────────────────────────────────────────
 
+
 def require_selected_actors(min_count=1, message=None):
     """
     确保有足够数量的选中 Actor
 
     返回: 选中的 Actor 列表，或 None（不足数量时）
     """
-    actors = unreal.EditorLevelLibrary.get_selected_level_actors()
+    # 【修改前】unreal.EditorLevelLibrary.get_selected_level_actors()
+    # 【问题分析】EditorLevelLibrary 属于废弃的 Editor Scripting Utilities 插件，
+    # 会报 DeprecationWarning；选 Actor 的操作已搬到 EditorActorSubsystem。
+    actors = unreal.get_editor_subsystem(
+        unreal.EditorActorSubsystem
+    ).get_selected_level_actors()
     if len(actors) < min_count:
         msg = message or f"请至少选中 {min_count} 个 Actor"
         show_warning(msg)
         return None
     return actors
+
 
 def require_selected_assets(min_count=1, message=None):
     """
@@ -200,6 +240,7 @@ def require_selected_assets(min_count=1, message=None):
 # ─────────────────────────────────────────────────────────
 # 表格输出
 # ─────────────────────────────────────────────────────────
+
 
 def print_table(headers, rows, title=""):
     """
@@ -231,6 +272,7 @@ def print_table(headers, rows, title=""):
     for row in rows:
         line = " | ".join(str(c).ljust(w) for c, w in zip(row, widths))
         unreal.log(f"  {line}")
+
 
 def log_section(title):
     """输出标题区域"""

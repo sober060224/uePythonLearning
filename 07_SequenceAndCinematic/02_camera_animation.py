@@ -12,6 +12,35 @@
   - CineCameraActor: UE 的电影级相机
   - Level Sequence + Camera Track = 相机动画
   - 可以使用多个相机在不同镜头间切换
+
+本课可能用到的 API：
+  - unreal.Vector(x: float = 0.0, y: float = 0.0, z: float = 0.0) —— 三维向量结构体
+  - unreal.Rotator(roll: float = 0.0, pitch: float = 0.0, yaw: float = 0.0) —— 旋转结构体
+  - unreal.EditorLevelLibrary.spawn_actor_from_class(actor_class: Class, location: Vector, rotation: Rotator, transient: bool = False) -> Actor —— 在关卡中生成 Actor
+  - unreal.CineCameraActor —— 电影级相机 Actor 类
+  - actor.set_actor_label(new_actor_label: str, mark_dirty: bool = True) -> None —— 设置 Actor 标签
+  - actor.get_actor_label(create_if_none: bool = True) -> str —— 获取 Actor 标签
+  - actor.get_actor_location() -> Vector —— 获取 Actor 位置
+  - actor.get_actor_rotation() -> Rotator —— 获取 Actor 旋转
+  - camera.get_cine_camera_component() -> CineCameraComponent —— 获取相机组件
+  - component.set_editor_property(name: str, value: object, notify_mode: PropertyAccessChangeNotifyMode = ...) -> None —— 设置组件编辑器属性
+  - unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools —— 获取资产工具实例
+  - unreal.LevelSequenceFactoryNew() —— 序列资产工厂实例
+  - unreal.LevelSequence —— 序列资产类
+  - unreal.AssetTools.create_asset(asset_name: str, package_path: str, asset_class: Class, factory: Factory, calling_context: Name = "None", overwrite_existing: bool = False) -> Object —— 创建新资产
+  - seq.add_possessable(object_to_possess: Object) -> MovieSceneBindingProxy —— 绑定 Actor 到序列
+  - binding.add_track(track_type: Class) -> MovieSceneTrack —— 添加指定类型轨道
+  - unreal.MovieScene3DTransformTrack —— 3D 变换轨道类
+  - track.add_section() -> MovieSceneSection —— 为轨道添加分段
+  - unreal.EditorAssetLibrary.save_asset(asset_to_save: str, only_if_is_dirty: bool = True) -> bool —— 保存资产到磁盘
+  - unreal.LevelSequenceEditorBlueprintLibrary.open_level_sequence(level_sequence: LevelSequence) -> bool —— 在 Sequencer 中打开
+  - unreal.get_editor_subsystem(subsystem) -> Optional[_EditorSubsystemTypeVar] —— 获取编辑器子系统单例
+  - unreal.LevelEditorSubsystem —— 关卡编辑器子系统
+  - unreal.LevelEditorSubsystem.set_level_viewport_camera_info(camera_location: Vector, camera_rotation: Rotator, viewport_config_key: Name) -> None —— 视口相机对齐到指定
+  - unreal.EditorActorSubsystem.get_all_level_actors() -> Array[Actor] —— 获取关卡全部 Actor
+  - unreal.log(arg: Any) -> None —— 输出普通日志
+  - unreal.log_warning(arg: Any) -> None —— 输出警告日志
+  - unreal.log_error(arg: Any) -> None —— 输出错误日志
 =============================================================
 """
 
@@ -73,13 +102,19 @@ def configure_camera(camera, fov=90.0, focal_length=35.0,
     # 设置视野
     cam_comp.set_editor_property("field_of_view", fov)
 
-    # 设置焦距
-    cam_comp.set_current_focal_length(focal_length)
+    # 【修改前】cam_comp.set_current_focal_length(focal_length) ——
+    # CineCameraComponent 上没有这个方法，焦距是可读写属性，直接赋值即可；
+    # 光圈同理（原来 aperture 参数收了没用，这里一并补上）
+    cam_comp.current_focal_length = focal_length
+    cam_comp.current_aperture = aperture
 
     # 对焦设置
-    cam_comp.set_editor_property(
-        "current_focus_distance",
-        focus_distance
+    # 【修改前】set_editor_property("current_focus_distance", ...) ——
+    # 该属性是 [Read-Only]（桩注释明确写着 "Control this value via FocusSettings"）；
+    # 要控制对焦距离，必须在 focus_settings 里把 focus_method 设为 MANUAL
+    cam_comp.focus_settings = unreal.CameraFocusSettings(
+        focus_method=unreal.CameraFocusMethod.MANUAL,
+        manual_focus_distance=focus_distance,
     )
 
     unreal.log(
@@ -141,7 +176,9 @@ def create_camera_path_waypoints(camera, waypoints, duration_frames=150):
     unreal.EditorAssetLibrary.save_asset(path)
 
     # 在 Sequencer 中打开
-    unreal.LevelSequenceEditorBlueprintLibrary.open_level_sequence(path)
+    # 【修改前】open_level_sequence(path) —— 桩签名要求 LevelSequence 对象，
+    # 传路径字符串会 TypeError，传上面 create_asset 返回的 sequence
+    unreal.LevelSequenceEditorBlueprintLibrary.open_level_sequence(sequence)
 
     return sequence
 
@@ -268,18 +305,32 @@ def generate_crane_waypoints(start_location, end_height,
 def preview_camera_view(camera):
     """切换到指定相机的视角预览"""
     if camera:
-        unreal.EditorLevelLibrary.set_view_mode("Lit")
+        # 【修改前】unreal.EditorLevelLibrary.set_view_mode("Lit")
+        #
+        # 【问题分析】
+        # set_view_mode 在整个 stub 里 0 处匹配 —— 视口的显示模式（Lit/Unlit/线框）
+        # 是纯编辑器 UI 设置，压根没暴露给 Python。想切换得在视口左上角的
+        # 显示模式下拉菜单里手动选。这行删掉，保留下面的视口对齐功能。
+        #
+        # 【顺便修正】原代码里 unreal.LevelEditorSubsystem() 是直接构造，
+        # UE5.2 起废弃 —— 要用 unreal.get_editor_subsystem() 拿单例。
+        # 【再修正】LevelEditorSubsystem 上的 set_level_viewport_camera_info 是 3 参
+        # （还要传 viewport_config_key），2 参版本在 UnrealEditorSubsystem 上 ——
+        # 之前注释里说"没问题"是错误结论，这里实际会因缺参 TypeError。
         # 将编辑器视口对齐到相机位置
         loc = camera.get_actor_location()
         rot = camera.get_actor_rotation()
-        unreal.LevelEditorSubsystem().set_level_viewport_camera_info(
-            loc, rot
-        )
+        unreal.get_editor_subsystem(
+            unreal.UnrealEditorSubsystem
+        ).set_level_viewport_camera_info(loc, rot)
         unreal.log(f"已切换到相机视角: {camera.get_actor_label()}")
 
 def list_cameras_in_level():
     """列出关卡中所有的相机"""
-    cameras = unreal.EditorLevelLibrary.get_all_level_actors()
+    # 【修改前】unreal.EditorLevelLibrary.get_all_level_actors()（已废弃）
+    cameras = unreal.get_editor_subsystem(
+        unreal.EditorActorSubsystem
+    ).get_all_level_actors()
     cine_cameras = [a for a in cameras if isinstance(a, unreal.CineCameraActor)]
 
     unreal.log(f"\n关卡中的电影相机 ({len(cine_cameras)}):")

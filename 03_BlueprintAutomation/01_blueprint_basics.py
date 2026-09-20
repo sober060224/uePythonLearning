@@ -16,6 +16,25 @@
 
 前置要求：
   - 启用 Editor Scripting Utilities 插件
+
+本课可能用到的 API：
+  unreal.EditorAssetLibrary.list_assets(directory_path, recursive=True, include_folder=False) -> Array[str]  —— 递归列出路径下全部资产
+  unreal.EditorAssetLibrary.find_asset_data(asset_path) -> AssetData  —— 按路径查资产数据，不加载资产
+  unreal.EditorAssetLibrary.load_asset(asset_path) -> Object  —— 把资产加载进内存
+  unreal.EditorAssetLibrary.make_directory(directory_path) -> bool  —— 创建资产目录
+  unreal.EditorAssetLibrary.save_asset(asset_to_save, only_if_is_dirty=True) -> bool  —— 保存指定资产
+  unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools  —— 获取资产工具单例
+  unreal.BlueprintFactory()  —— 蓝图工厂，配合 set_editor_property 设置父类
+  obj.set_editor_property(name, value)  —— 设置 UObject 的编辑器属性
+  asset_tools.create_asset(asset_name, package_path, asset_class, factory, calling_context="None", overwrite_existing=False) -> Object  —— 用工厂创建新资产
+  unreal.BlueprintEditorLibrary.compile_blueprint(blueprint) -> bool  —— 重新编译蓝图
+  unreal.ScopedSlowTask(work, desc="", enabled=True)  —— 创建带进度的慢任务对象
+  task.make_dialog(can_cancel=False, allow_in_pie=False) -> None  —— 弹出进度对话框
+  task.enter_progress_frame(work=1.0, desc="") -> None  —— 推进一帧进度
+  task.should_cancel() -> bool  —— 用户是否请求取消
+  obj.get_class() -> Class  —— 取对象的 Unreal 类
+  obj.get_name() -> str  —— 取对象名称
+  unreal.log() / unreal.log_warning() / unreal.log_error()  —— 输出日志/警告/错误
 =============================================================
 """
 
@@ -97,7 +116,10 @@ def create_blueprint(name, parent_class, destination_path="/Game/Blueprints"):
 
     # 使用 BlueprintFactory 创建蓝图
     factory = unreal.BlueprintFactory()
-    factory.set_editor_property("ParentClass", parent_class)
+    # 【修改前】factory.set_editor_property("ParentClass", parent_class)
+    # 【问题分析】蓝图工厂的编辑器属性名是 parent_class（小写），
+    #   见 stub 中 class BlueprintFactory 的属性列表。
+    factory.set_editor_property("parent_class", parent_class)
 
     # 创建资产
     new_bp = asset_tools.create_asset(

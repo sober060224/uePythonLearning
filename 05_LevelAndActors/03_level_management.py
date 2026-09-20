@@ -11,6 +11,18 @@
 核心 API：
   - unreal.EditorLevelLibrary - 关卡操作
   - unreal.LevelSequence - 序列相关
+
+本课可能用到的 API：
+  unreal.EditorLevelLibrary.get_editor_world() -> World  —— 获取编辑器世界
+  unreal.EditorLevelLibrary.get_all_level_actors() -> Array[Actor]  —— 获取当前关卡全部 Actor
+  unreal.EditorLevelLibrary.save_current_level() -> None  —— 保存当前关卡
+  unreal.EditorLevelLibrary.save_all_dirty_levels() -> None  —— 保存所有被修改过的关卡
+  unreal.EditorLevelLibrary.load_level(level_path: str) -> None  —— 加载指定关卡
+  unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool  —— 检查资产是否存在
+  unreal.EditorAssetLibrary.make_directory(directory_path: str) -> bool  —— 创建目录
+  unreal.EditorLevelUtils.add_level_to_world(world: World, level_package_name: str, level_streaming_class: Class) -> LevelStreaming  —— 将子关卡添加到世界
+  unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools  —— 获取资产工具实例
+  unreal.WorldFactory() -> WorldFactory  —— 世界工厂（用于创建关卡资产）
 =============================================================
 """
 
@@ -199,9 +211,24 @@ def add_sublevel(level_path):
         return False
 
     # 添加为流关卡
-    unreal.EditorLevelLibrary.add_level_to_world(
-        unreal.EditorLevelLibrary.get_editor_world(),
-        level_path
+    # 【修改前】
+    # unreal.EditorLevelLibrary.add_level_to_world(
+    #     unreal.EditorLevelLibrary.get_editor_world(),
+    #     level_path
+    # )
+    #
+    # 【问题分析】
+    # 1. add_level_to_world 不在 EditorLevelLibrary 上 —— stub 里它的真身在
+    #    EditorLevelUtils（又一个功能被拆走的老 Editor Scripting Utilities 成员）。
+    # 2. 就算类名对了，原代码还少传一个参数。真实签名：
+    #    EditorLevelUtils.add_level_to_world(world, level_package_name, level_streaming_class)
+    #    第三个参数是"用哪种流送方式加载这个子关卡"：
+    #      LevelStreamingAlwaysLoaded —— 进游戏就常驻（编辑器里加子关卡的默认值）
+    #      LevelStreamingKismet     —— 由蓝图/代码控制加载
+    unreal.EditorLevelUtils.add_level_to_world(
+        unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world(),
+        level_path,
+        unreal.LevelStreamingAlwaysLoaded,
     )
     unreal.log(f"已添加子关卡: {level_path}")
     return True
@@ -221,7 +248,10 @@ def set_world_settings(game_mode_class=None):
     if not world:
         return
 
-    world_settings = unreal.get_engine_subsystem(
+    # 【修改前】unreal.get_engine_subsystem(unreal.LevelEditorSubsystem)
+    # 【问题分析】LevelEditorSubsystem 是编辑器子系统（EditorSubsystem），
+    #   必须用 get_editor_subsystem 获取，get_engine_subsystem 只用于引擎子系统。
+    world_settings = unreal.get_editor_subsystem(
         unreal.LevelEditorSubsystem
     )
 

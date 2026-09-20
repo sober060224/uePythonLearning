@@ -15,6 +15,17 @@
 运行方式：
   - 在 UE Python Console 中逐段执行
   - 或执行: exec(open("path/to/01_hello_unreal.py").read())
+
+本课可能用到的 API：
+  unreal.SystemLibrary.get_engine_version() -> str  —— 获取当前引擎版本号
+  unreal.Paths.project_dir() -> str  —— 获取项目根目录路径
+  unreal.Paths.project_content_dir() -> str  —— 获取项目 Content 目录路径
+  unreal.Paths.combine(paths: Array[str]) -> str  —— 将路径数组拼接为一个路径
+  unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  —— 列出指定目录下的资产路径
+  unreal.EditorAssetLibrary.load_asset(asset_path: str) -> Object  —— 加载资产并返回对象
+  unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool  —— 检查资产是否存在
+  unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData  —— 查找资产并返回元数据
+  obj.get_class().get_name() -> str  —— 获取对象的类名
 =============================================================
 """
 
@@ -25,9 +36,11 @@ import unreal
 # ─────────────────────────────────────────────────────────
 # unreal 模块是 UE 提供的核心 Python 接口
 # 只有在 UE 编辑器内部才能 import 成功
-print("=" * 50)
-print("Hello, Unreal Engine!")
-print("=" * 50)
+# 【修改前】这里用 print() 输出 —— 编辑器 Python Console 里 print 不走 UE 日志。
+# 按本仓库约定改用 unreal.log()，结果显示在 Output Log 中。
+unreal.log("=" * 50)
+unreal.log("Hello, Unreal Engine!")
+unreal.log("=" * 50)
 
 # ─────────────────────────────────────────────────────────
 # 2. 获取引擎版本信息
@@ -77,7 +90,7 @@ unreal.log(f"unreal 模块包含 {len(all_classes)} 个类/函数")
 # ─────────────────────────────────────────────────────────
 # list_assets 返回指定路径下所有资产的列表
 # 这是最常用的函数之一！
-all_assets = unreal.EditorAssetLibrary.list_assets("/Game", recursive=True)
+all_assets = list(unreal.EditorAssetLibrary.list_assets("/Game", recursive=True))
 unreal.log(f"项目中共有 {len(all_assets)} 个资产")
 
 # 列出前10个资产看看

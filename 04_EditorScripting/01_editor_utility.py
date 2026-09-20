@@ -12,6 +12,22 @@
   - Editor Utility Blueprint / Widget: UE 提供的编辑器扩展方式
   - Python 脚本可以作为这些工具的逻辑后端
   - 所有编辑器操作都应该是"事务性"的（可撤销）
+
+本课可能用到的 API：
+  unreal.get_editor_subsystem(subsystem: Class) -> EditorSubsystem  —— 获取指定类型的编辑器子系统实例
+  unreal.UnrealEditorSubsystem.get_editor_world() -> World  —— 获取当前编辑会话所在的 World
+  unreal.SystemLibrary.begin_transaction(context: str, description: Text, primary_object: Object) -> int  —— 开启一个可撤销事务并返回其索引
+  unreal.SystemLibrary.end_transaction() -> int  —— 结束并提交当前事务
+  unreal.SystemLibrary.cancel_transaction(index: int) -> None  —— 取消指定索引的事务并回滚
+  unreal.SystemLibrary.print_string(world_context_object: Object, string: str = "Hello", print_to_screen: bool = True, print_to_log: bool = True, text_color: LinearColor, duration: float = 2.0, key: Name = "None") -> None  —— 向屏幕和日志输出字符串
+  unreal.EditorLevelLibrary.get_selected_level_actors() -> Array[Actor]  —— 获取当前关卡选中的 Actor 列表
+  unreal.EditorUtilityLibrary.get_selected_asset_data() -> Array[AssetData]  —— 获取内容浏览器中选中的资产数据
+  actor.get_actor_location() -> Vector  —— 获取 Actor 的世界坐标位置
+  actor.set_actor_location(new_location: Vector, sweep: bool, teleport: bool) -> Optional[HitResult]  —— 设置 Actor 的世界坐标位置
+  actor.set_actor_rotation(new_rotation: Rotator, teleport_physics: bool) -> bool  —— 设置 Actor 的旋转角度
+  unreal.log(arg: Any) -> None  —— 输出一般消息到日志
+  unreal.log_warning(arg: Any) -> None  —— 输出警告到日志
+  unreal.log_error(arg: Any) -> None  —— 输出错误到日志
 =============================================================
 """
 
@@ -44,16 +60,30 @@ def transactional_operation(operation_name, func, *args, **kwargs):
 
         transactional_operation("我的操作", my_operation)
     """
+    # 【修改前】
+    # unreal.Transactions.begin_transaction(operation_name)   # Transactions 类不存在
+    # unreal.Transactions.end_transaction()
+    # unreal.Transactions.cancel_transaction()
+    #
+    # 【问题分析】
+    # 1. unreal.Transactions 这个类在 stub 里查无此类 —— 事务方法其实在 SystemLibrary 上。
+    # 2. 签名也完全不同：
+    #    begin_transaction(context, description, primary_object) -> int
+    #      - 3 个参数：context 写脚本名，description 写操作名，
+    #        primary_object 是被修改的主对象（没有具体对象就传编辑器 world）
+    #      - 返回"事务索引"，cancel 时必须传回去
+    #    cancel_transaction(index)  —— 必须带索引，不是零参数
     # 开始事务
-    unreal.Transactions.begin_transaction(operation_name)
+    world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+    token = unreal.SystemLibrary.begin_transaction("Python脚本", operation_name, world)
 
     try:
         result = func(*args, **kwargs)
-        unreal.Transactions.end_transaction()
+        unreal.SystemLibrary.end_transaction()
         unreal.log(f"事务完成: {operation_name}")
         return result
     except Exception as e:
-        unreal.Transactions.cancel_transaction()
+        unreal.SystemLibrary.cancel_transaction(token)
         unreal.log_error(f"事务失败，已回滚: {e}")
         raise
 
@@ -80,8 +110,15 @@ def notify_user(message, notification_type="info", duration=5.0):
     color = color_map.get(notification_type, [1.0, 1.0, 1.0, 1.0])
 
     # 屏幕消息
+    # 【修改前】print_string(None, ...) —— world_context_object 传 None 在编辑器里静默失败，
+    # 必须传有效的 World（这里用 UnrealEditorSubsystem 取编辑器世界）
+    world = unreal.get_editor_subsystem(
+        unreal.UnrealEditorSubsystem
+    ).get_editor_world()
     unreal.SystemLibrary.print_string(
-        None, message, True, True, color, duration
+        world, message, True, True,
+        unreal.LinearColor(color[0], color[1], color[2], color[3]),
+        duration
     )
 
     # 同时输出到日志
@@ -149,7 +186,7 @@ def snap_selected_to_grid(grid_size=100.0):
                 round(location.y / grid_size) * grid_size,
                 location.z
             )
-            actor.set_actor_location(snapped)
+            actor.set_actor_location(snapped, False, False)
 
         notify_user(f"已将 {len(actors)} 个 Actor 对齐到网格 (大小: {grid_size})", "success")
 
@@ -174,7 +211,7 @@ def align_selected_to_first(axis="z"):
                         actor.get_actor_location().z])
             ref_vals = [ref_location.x, ref_location.y, ref_location.z]
             loc[axis_index] = ref_vals[axis_index]
-            actor.set_actor_location(unreal.Vector(loc[0], loc[1], loc[2]))
+            actor.set_actor_location(unreal.Vector(loc[0], loc[1], loc[2]), False, False)
 
         notify_user(f"已将 {len(actors)-1} 个 Actor 对齐到 {axis.upper()} 轴", "success")
 
@@ -209,7 +246,7 @@ def distribute_actors_evenly(axis="x", spacing=200.0):
                    actor.get_actor_location().y,
                    actor.get_actor_location().z]
             loc[idx] = start_val + i * spacing
-            actor.set_actor_location(unreal.Vector(loc[0], loc[1], loc[2]))
+            actor.set_actor_location(unreal.Vector(loc[0], loc[1], loc[2]), False, False)
 
         notify_user(
             f"已均匀分布 {len(actors)} 个 Actor (间距: {spacing})",
@@ -234,7 +271,7 @@ def randomize_rotation(selected_actors=None, max_yaw=360.0,
                 random.uniform(-max_yaw, max_yaw),
                 random.uniform(-max_roll, max_roll)
             )
-            actor.set_actor_rotation(rot)
+            actor.set_actor_rotation(rot, False)
 
         notify_user(f"已随机旋转 {len(actors)} 个 Actor", "success")
 

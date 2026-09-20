@@ -13,6 +13,23 @@
   - 自动化测试可以确保项目质量
   - 可以在提交前自动运行验证
   - 支持命令行执行，适合 CI/CD 管线
+
+本课可能用到的 API：
+  unreal.log(arg: Any) -> None  —— 输出一般消息到日志
+  unreal.Paths.project_saved_dir() -> str  —— 获取项目 Saved 目录的绝对路径
+  unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  —— 递归列出目录下全部资产/文件夹
+  unreal.EditorAssetLibrary.does_directory_exist(directory_path: str) -> bool  —— 判断路径是否为已存在文件夹
+  unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData  —— 获取资产元数据（类、名称等）
+  asset_data.asset_name -> Name  —— 资产的短名称（不含包路径）
+  asset_data.asset_class_path -> TopLevelAssetPath  —— 资产所属类的完整路径
+  unreal.EditorAssetLibrary.find_package_referencers_for_asset(asset_path: str, load_assets_to_confirm: bool = False) -> Array[str]  —— 查找引用该资产的全部包路径
+  unreal.EditorAssetLibrary.load_asset(asset_path: str) -> Object  —— 按路径加载资产到内存
+  unreal.Texture2D  —— 纹理资产类（用于 isinstance 判断）
+  obj.get_editor_property(name: str) -> object  —— 读取对象的编辑器属性
+  unreal.EditorLevelLibrary.get_all_level_actors() -> Array[Actor]  —— 获取当前关卡全部 Actor
+  actor.get_actor_location() -> Vector  —— 获取 Actor 的世界坐标
+  actor.get_actor_label(create_if_none: bool = True) -> str  —— 获取 Actor 的标签名
+  unreal.PlayerStart  —— 玩家出生点 Actor 类
 =============================================================
 """
 
@@ -258,8 +275,8 @@ class AssetValidationTests:
             if not texture or not isinstance(texture, unreal.Texture2D):
                 continue
 
-            sx = texture.get_editor_property("size_x")
-            sy = texture.get_editor_property("size_y")
+            sx = texture.blueprint_get_size_x()
+            sy = texture.blueprint_get_size_y()
 
             if not ((sx & (sx-1) == 0) and (sy & (sy-1) == 0)):
                 bad_textures.append(f"{asset_data.asset_name} ({sx}x{sy})")

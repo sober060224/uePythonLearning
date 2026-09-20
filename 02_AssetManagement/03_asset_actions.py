@@ -13,6 +13,24 @@
   - UE 会自动维护引用关系
   - 移动/重命名时引用会自动更新
   - 操作前先备份或使用版本控制
+
+本课可能用到的 API：
+  unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool  —— 判断指定资产是否存在
+  unreal.EditorAssetLibrary.rename_asset(source_asset_path: str, destination_asset_path: str) -> bool  —— 重命名资产并自动更新引用
+  unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  —— 列出指定路径下的资产路径数组
+  unreal.EditorAssetLibrary.does_directory_exist(directory_path: str) -> bool  —— 判断指定目录是否存在
+  unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData  —— 获取资产的元数据 AssetData
+  unreal.EditorAssetLibrary.make_directory(directory_path: str) -> bool  —— 创建指定内容目录
+  unreal.EditorAssetLibrary.find_package_referencers_for_asset(asset_path: str, load_assets_to_confirm: bool = False) -> Array[str]  —— 查找引用该资产的所有包路径
+  unreal.EditorAssetLibrary.delete_asset(asset_path_to_delete: str) -> bool  —— 删除指定资产
+  unreal.EditorAssetLibrary.consolidate_assets(asset_to_consolidate_to: Object, assets_to_consolidate: Array[Object]) -> bool  —— 将多个资产迁移替换到目标资产
+  unreal.EditorAssetLibrary.save_asset(asset_to_save: str, only_if_is_dirty: bool = True) -> bool  —— 保存指定资产
+  unreal.EditorAssetLibrary.save_directory(directory_path: str, only_if_is_dirty: bool = True, recursive: bool = True) -> bool  —— 保存目录下的所有资产
+  unreal.EditorLevelLibrary.save_current_level() -> bool  —— 保存当前编辑的关卡
+  unreal.ScopedSlowTask(work: float, desc: Union[Text, str] = "", enabled: bool = True)  —— 创建耗时任务的进度条上下文
+  task.make_dialog(can_cancel: bool = False, allow_in_pie: bool = False) -> None  —— 显示可取消的进度对话框
+  task.should_cancel() -> bool  —— 询问用户是否已取消任务
+  task.enter_progress_frame(work: float = 1.0, desc: Union[Text, str] = "") -> None  —— 推进进度条并更新说明文字
 =============================================================
 """
 
@@ -35,7 +53,13 @@ def rename_asset(current_path, new_name):
         return False
 
     # rename_asset 会自动更新所有引用
-    success = unreal.EditorAssetLibrary.rename_asset(current_path, new_name)
+    # 【修改前】rename_asset(current_path, new_name) 只传了新名称。
+    # 【问题分析】第二个参数必须是完整的目标资产路径（目录 + 新名），
+    #   所以先把当前路径的目录部分拼上 new_name。
+    dest_dir = "/".join(current_path.split("/")[:-1])
+    success = unreal.EditorAssetLibrary.rename_asset(
+        current_path, dest_dir + "/" + new_name
+    )
 
     if success:
         new_path = "/".join(current_path.split("/")[:-1]) + "/" + new_name
@@ -331,10 +355,19 @@ def consolidate_assets(asset_to_keep, asset_to_replace):
         unreal.log_error(f"资产不存在: {asset_to_replace}")
         return False
 
+    # 【修改前】直接把路径字符串传给 consolidate_assets ——
+    # 桩签名要求 (asset_to_consolidate_to: Object, assets_to_consolidate: Array[Object])，
+    # 传字符串会 TypeError，必须先 load_asset 加载成对象
+    keep_obj = unreal.EditorAssetLibrary.load_asset(asset_to_keep)
+    replace_obj = unreal.EditorAssetLibrary.load_asset(asset_to_replace)
+    if not keep_obj or not replace_obj:
+        unreal.log_error("资产加载失败，无法整合")
+        return False
+
     # consolidate 会将所有引用从 replace 改为 keep
     success = unreal.EditorAssetLibrary.consolidate_assets(
-        asset_to_keep,
-        [asset_to_replace]
+        keep_obj,
+        [replace_obj]
     )
 
     if success:
@@ -357,7 +390,8 @@ def save_asset(asset_path):
 def save_all_dirty_assets():
     """保存所有未保存的资产"""
     # 注意：save_directory 会保存该目录下所有脏资产
-    unreal.EditorAssetLibrary.save_directory("/Game", only_dirty=True)
+    # （参数名是 only_if_is_dirty，不是 only_dirty）
+    unreal.EditorAssetLibrary.save_directory("/Game", only_if_is_dirty=True)
     unreal.log("已保存所有脏资产")
 
 def save_current_level():

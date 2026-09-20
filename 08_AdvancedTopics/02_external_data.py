@@ -13,6 +13,59 @@
   - 从策划表格导入游戏数据
   - 导出项目报告
   - 与外部工具（如 Excel、数据库）集成
+
+本课可能用到的 API：
+  unreal.log(arg: Any) -> None  —— 输出一般消息到日志
+  unreal.log_error(arg: Any) -> None  —— 输出错误消息到日志
+  unreal.Paths.project_saved_dir() -> str  —— 获取项目 Saved 目录的绝对路径
+  unreal.EditorAssetLibrary.make_directory(directory_path: str) -> bool  —— 创建目录
+  unreal.EditorAssetLibrary.load_asset(asset_path: str) -> Object  —— 按路径加载资产到内存
+  unreal.EditorAssetLibrary.save_asset(asset_to_save: str, only_if_is_dirty: bool = True) -> bool  —— 保存指定资产包
+  unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  —— 递归列出目录下全部资产/文件夹
+  unreal.EditorAssetLibrary.does_directory_exist(directory_path: str) -> bool  —— 判断路径是否为已存在文件夹
+  unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData  —— 获取资产元数据
+  unreal.EditorAssetLibrary.find_package_referencers_for_asset(asset_path: str, load_assets_to_confirm: bool = False) -> Array[str]  —— 查找引用该资产的全部包路径
+  unreal.AssetImportTask()  —— 创建资产导入任务对象
+  task.filename = ...  —— 要导入的源文件路径
+  task.destination_path = ...  —— 目标包路径
+  task.destination_name = ...  —— 导入后的资产名
+  task.replace_existing = ...  —— 是否覆盖已有资产
+  task.automated = ...  —— 自动化模式（无弹窗）
+  task.save = ...  —— 导入后是否保存
+  task.options = ...  —— 导入选项对象
+  task.imported_object_paths -> Array[str]  —— 导入完成后生成的资产路径
+  unreal.CSVImportSettings()  —— DataTable 的 CSV 导入选项结构
+  obj.set_editor_property(name: str, value: object, notify_mode: PropertyAccessChangeNotifyMode = PropertyAccessChangeNotifyMode.DEFAULT) -> None  —— 设置对象/结构的编辑器属性
+  unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools  —— 获取 AssetTools 实例以执行导入
+  asset_tools.import_asset_tasks(import_tasks: Array[AssetImportTask]) -> None  —— 批量执行导入任务
+  unreal.DataTable  —— DataTable 资产类（用于 isinstance 判断）
+  obj.get_name() -> str  —— 获取对象名称
+  unreal.DataTableFunctionLibrary.get_data_table_row_names(table: DataTable) -> Array[Name]  —— 获取 DataTable 全部行名
+  unreal.DataTableFunctionLibrary.get_data_table_column_names(table: DataTable) -> Array[Name]  —— 获取 DataTable 全部列名
+  unreal.DataTableFunctionLibrary.get_data_table_column_as_string(data_table: DataTable, property_name: Name) -> Array[str]  —— 取某列全部值的字符串数组
+  unreal.EditorLevelLibrary.get_all_level_actors() -> Array[Actor]  —— 获取当前关卡全部 Actor
+  actor.get_actor_location() -> Vector  —— 获取 Actor 的世界坐标
+  actor.get_actor_rotation() -> Rotator  —— 获取 Actor 的旋转角度
+  actor.get_actor_scale3d() -> Vector  —— 获取 Actor 的缩放
+  actor.get_actor_label(create_if_none: bool = True) -> str  —— 获取 Actor 的标签名
+  actor.set_actor_label(new_actor_label: str, mark_dirty: bool = True) -> None  —— 设置 Actor 的标签名
+  actor.set_actor_scale3d(new_scale3d: Vector) -> None  —— 设置 Actor 的缩放
+  actor.get_folder_path() -> Name  —— 获取 Actor 所在文件夹路径
+  actor.get_component_by_class(component_class: Class = None) -> ActorComponent  —— 按类获取组件
+  obj.get_editor_property(name: str) -> object  —— 读取对象的编辑器属性
+  obj.get_path_name() -> str  —— 获取对象的完整路径
+  unreal.Vector(x: float = 0.0, y: float = 0.0, z: float = 0.0)  —— 三维向量（位置/缩放）
+  unreal.Rotator(roll: float = 0.0, pitch: float = 0.0, yaw: float = 0.0)  —— 旋转量（俯仰/偏航/横滚）
+  unreal.StaticMeshComponent  —— 静态网格组件类
+  comp.set_static_mesh(new_mesh: StaticMesh) -> bool  —— 设置组件的静态网格资产
+  unreal.StaticMeshActor  —— 静态网格 Actor 类
+  unreal.PointLight  —— 点光源 Actor 类
+  unreal.SpotLight  —— 聚光灯 Actor 类
+  unreal.CineCameraActor  —— 电影摄像机 Actor 类
+  unreal.get_editor_subsystem(subsystem: Class) -> EditorSubsystem  —— 获取指定类型编辑器子系统
+  unreal.UnrealEditorSubsystem.get_editor_world() -> World  —— 获取编辑器当前 World
+  unreal.SystemLibrary.begin_transaction(context: str, description: Text, primary_object: Object) -> int  —— 开启可撤销事务并返回索引
+  unreal.SystemLibrary.end_transaction() -> int  —— 结束并提交当前事务
 =============================================================
 """
 
@@ -180,13 +233,31 @@ def read_datatable(table_path):
     row_names = unreal.DataTableFunctionLibrary.get_data_table_row_names(table)
     unreal.log(f"DataTable {table.get_name()} 有 {len(row_names)} 行")
 
-    data = {}
-    for row_name in row_names:
-        # 获取行数据
-        row = unreal.DataTableFunctionLibrary.get_data_table_row_from_name(
-            table, row_name
+    # 【修改前】
+    # for row_name in row_names:
+    #     row = unreal.DataTableFunctionLibrary.get_data_table_row_from_name(
+    #         table, row_name
+    #     )
+    #     data[row_name] = row
+    #
+    # 【问题分析】
+    # DataTableFunctionLibrary 上没有 get_data_table_row_from_name —— Python 里
+    # 根本没有"按行名取整行数据"的函数。查 stub 后它暴露的读取接口只有：
+    #   get_data_table_row_names(table)            → 所有行名
+    #   get_data_table_column_names(table)         → 所有列名
+    #   get_data_table_column_as_string(table, 列名) → 某一列的全部值（字符串）
+    # 想拼出 {行名: {列名: 值}} 只能反过来按列取、再按行拼：
+    # 每列的值和行名是一一对应的（顺序一致），zip 到一起就行。
+    # 注意：值全被转成了字符串 —— 想要原始类型得自己在 C++/蓝图里扩展。
+    data = {row_name: {} for row_name in row_names}
+    column_names = unreal.DataTableFunctionLibrary.get_data_table_column_names(table)
+    for column in column_names:
+        values = unreal.DataTableFunctionLibrary.get_data_table_column_as_string(
+            table, column
         )
-        data[row_name] = row
+        # 每列的值顺序和 row_names 一致，zip 对齐
+        for row_name, value in zip(row_names, values):
+            data[row_name][str(column)] = value
 
     return data
 
@@ -278,7 +349,7 @@ def export_actor_data_to_json(output_path=None):
     for actor in actors:
         loc = actor.get_actor_location()
         rot = actor.get_actor_rotation()
-        scale = actor.get_actor_scale3D()
+        scale = actor.get_actor_scale3d()
 
         actor_data = {
             "label": actor.get_actor_label(),
@@ -334,7 +405,14 @@ def spawn_actors_from_json(json_path):
         "CineCameraActor": unreal.CineCameraActor,
     }
 
-    unreal.Transactions.begin_transaction("从JSON生成Actor")
+    # 【修改前】unreal.Transactions.begin_transaction("从JSON生成Actor")
+    #
+    # 【问题分析】
+    # unreal.Transactions 类在 stub 里不存在 —— 事务方法在 SystemLibrary 上，
+    # 签名是 begin_transaction(context, description, primary_object) -> int。
+    # 生成类操作开始时 Actor 还没生成出来，primary_object 用编辑器 world 顶上。
+    world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+    token = unreal.SystemLibrary.begin_transaction("Python脚本", "从JSON生成Actor", world)
 
     for item in data:
         class_name = item.get("class", "StaticMeshActor")
@@ -360,7 +438,7 @@ def spawn_actors_from_json(json_path):
             # 设置缩放
             scale = item.get("scale", {})
             if scale:
-                actor.set_actor_scale3D(unreal.Vector(
+                actor.set_actor_scale3d(unreal.Vector(
                     scale.get("x", 1),
                     scale.get("y", 1),
                     scale.get("z", 1)
@@ -379,7 +457,7 @@ def spawn_actors_from_json(json_path):
 
             spawned.append(actor)
 
-    unreal.Transactions.end_transaction()
+    unreal.SystemLibrary.end_transaction()
     unreal.log(f"从 JSON 生成了 {len(spawned)} 个 Actor")
     return spawned
 

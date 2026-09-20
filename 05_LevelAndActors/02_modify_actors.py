@@ -11,9 +11,28 @@
 核心 API：
   - actor.get_actor_location() / set_actor_location()
   - actor.get_actor_rotation() / set_actor_rotation()
-  - actor.get_actor_scale3D() / set_actor_scale3D()
+  - actor.get_actor_scale3d() / set_actor_scale3d()
   - actor.get_component_by_class()
   - actor.set_editor_property()
+
+本课可能用到的 API：
+  - unreal.EditorLevelLibrary.get_all_level_actors(cls) -> Array[Actor] —— 获取所有关卡 Actor
+  - unreal.UnrealEditorSubsystem.get_editor_world(self) -> World —— 获取编辑器世界
+  - unreal.EditorAssetLibrary.load_asset(cls, asset_path) -> Object —— 加载资产
+  - unreal.EditorActorSubsystem.duplicate_actors(self, actors_to_duplicate, to_world = None, offset = [0.000000, 0.000000, 0.000000]) -> Array[Actor] —— 复制 Actors
+  - actor.get_actor_label(create_if_none = True) -> str —— 获取 Actor 名称
+  - actor.set_actor_label(new_actor_label, mark_dirty = True) -> None —— 设置 Actor 名称
+  - actor.get_actor_location() -> Vector / actor.set_actor_location(new_location, sweep, teleport) -> Optional[HitResult] —— 位置
+  - actor.get_actor_rotation() -> Rotator / actor.set_actor_rotation(new_rotation, teleport_physics) -> bool —— 旋转
+  - actor.get_actor_scale3d() -> Vector / actor.set_actor_scale3d(new_scale3d) -> None —— 缩放
+  - actor.get_folder_path() -> Name / actor.set_folder_path(new_folder_path) -> None —— 文件夹路径
+  - actor.get_component_by_class(component_class = None) -> ActorComponent —— 按类获取单个组件
+  - actor.get_components_by_class(component_class = None) -> Array[ActorComponent] —— 获取组件列表
+  - mesh_comp.set_static_mesh(new_mesh) -> bool —— 设置网格体
+  - mesh_comp.set_material(element_index, material) -> None —— 设置材质
+  - unreal.EditorLevelLibrary.destroy_actor(cls, actor_to_destroy) -> bool —— 销毁 Actor
+  - unreal.SystemLibrary.begin_transaction(context, description, primary_object) -> int —— 开启事务
+  - unreal.SystemLibrary.end_transaction() -> int —— 结束事务
 =============================================================
 """
 
@@ -54,7 +73,7 @@ def find_actor_by_label(label):
 def move_actor(actor, new_location):
     """移动 Actor 到新位置"""
     old_location = actor.get_actor_location()
-    actor.set_actor_location(new_location)
+    actor.set_actor_location(new_location, False, False)
     unreal.log(
         f"移动 {actor.get_actor_label()}: "
         f"({old_location.x:.0f}, {old_location.y:.0f}, {old_location.z:.0f}) "
@@ -65,11 +84,11 @@ def move_actor_relative(actor, offset):
     """相对移动 Actor"""
     current = actor.get_actor_location()
     new_loc = current + offset
-    actor.set_actor_location(new_loc)
+    actor.set_actor_location(new_loc, False, False)
 
 def rotate_actor(actor, new_rotation):
     """设置 Actor 旋转"""
-    actor.set_actor_rotation(new_rotation)
+    actor.set_actor_rotation(new_rotation, False)
 
 def rotate_actor_relative(actor, delta_rotation):
     """相对旋转 Actor"""
@@ -79,19 +98,19 @@ def rotate_actor_relative(actor, delta_rotation):
         current.yaw + delta_rotation.yaw,
         current.roll + delta_rotation.roll
     )
-    actor.set_actor_rotation(new_rot)
+    actor.set_actor_rotation(new_rot, False)
 
 def scale_actor(actor, new_scale):
     """设置 Actor 缩放"""
     if isinstance(new_scale, (int, float)):
         new_scale = unreal.Vector(new_scale, new_scale, new_scale)
-    actor.set_actor_scale3D(new_scale)
+    actor.set_actor_scale3d(new_scale)
 
 def print_actor_transform(actor):
     """打印 Actor 的变换信息"""
     loc = actor.get_actor_location()
     rot = actor.get_actor_rotation()
-    scale = actor.get_actor_scale3D()
+    scale = actor.get_actor_scale3d()
 
     label = actor.get_actor_label()
     unreal.log(f"\nActor: {label}")
@@ -152,24 +171,46 @@ def set_material_on_actor(actor, material_path, element_index=0):
 
 def batch_move_actors(actors, offset):
     """批量移动一组 Actor"""
-    unreal.Transactions.begin_transaction("批量移动")
+    # 【修改前】unreal.Transactions.begin_transaction("批量移动")
+    #           unreal.Transactions.end_transaction()
+    #
+    # 【问题分析】
+    # unreal.Transactions 类在 stub 里不存在 —— 事务方法在 SystemLibrary 上，
+    # 且签名不同：begin_transaction(context, description, primary_object) -> int
+    #   primary_object 是"被修改的主对象"（撤销历史里的锚点），传第一个 Actor；
+    #   列表为空时没有 Actor 可传，就拿编辑器 world 顶上（World 也是 UObject）。
+    if actors:
+        primary = actors[0]
+    else:
+        primary = unreal.get_editor_subsystem(
+            unreal.UnrealEditorSubsystem
+        ).get_editor_world()
+    token = unreal.SystemLibrary.begin_transaction("Python脚本", "批量移动", primary)
     for actor in actors:
         move_actor_relative(actor, offset)
-    unreal.Transactions.end_transaction()
+    unreal.SystemLibrary.end_transaction()
     unreal.log(f"已移动 {len(actors)} 个 Actor")
 
 def batch_scale_actors(actors, scale_factor):
     """批量缩放一组 Actor"""
-    unreal.Transactions.begin_transaction("批量缩放")
+    # 【修改前】unreal.Transactions.begin_transaction("批量缩放")
+    # （Transactions 类不存在，正确用法见上面 batch_move_actors 的注释）
+    if actors:
+        primary = actors[0]
+    else:
+        primary = unreal.get_editor_subsystem(
+            unreal.UnrealEditorSubsystem
+        ).get_editor_world()
+    token = unreal.SystemLibrary.begin_transaction("Python脚本", "批量缩放", primary)
     for actor in actors:
-        current_scale = actor.get_actor_scale3D()
+        current_scale = actor.get_actor_scale3d()
         new_scale = unreal.Vector(
             current_scale.x * scale_factor,
             current_scale.y * scale_factor,
             current_scale.z * scale_factor
         )
-        actor.set_actor_scale3D(new_scale)
-    unreal.Transactions.end_transaction()
+        actor.set_actor_scale3d(new_scale)
+    unreal.SystemLibrary.end_transaction()
     unreal.log(f"已缩放 {len(actors)} 个 Actor (倍率: {scale_factor})")
 
 def batch_set_material(actors, material_path):
@@ -221,13 +262,26 @@ def organize_actors_into_folders():
 
 def duplicate_actor(actor, offset=None):
     """复制一个 Actor"""
+    # 【修改前】
+    # new_actor = unreal.EditorLevelLibrary.duplicate_actor(actor)
+    # if new_actor:
+    #     loc = actor.get_actor_location() + offset
+    #     new_actor.set_actor_location(loc)
+    #
+    # 【问题分析】
+    # EditorLevelLibrary 上根本没有 duplicate_actor 这个方法（stub 里查无此名），
+    # 复制 Actor 的 API 在 EditorActorSubsystem 上，而且形态不同：
+    #   duplicate_actors(actors_to_duplicate, to_world=None, offset=Vector) -> Array[Actor]
+    #   - 传的是"Actor 列表"不是单个 Actor；返回的也是列表
+    #   - offset 参数直接就是"复制体相对原位的偏移"，不用再手动 set_actor_location
     if offset is None:
         offset = unreal.Vector(100, 0, 0)
 
-    new_actor = unreal.EditorLevelLibrary.duplicate_actor(actor)
+    actor_subsystem = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+    results = actor_subsystem.duplicate_actors([actor], None, offset)
+    new_actor = results[0] if results else None
+
     if new_actor:
-        loc = actor.get_actor_location() + offset
-        new_actor.set_actor_location(loc)
         unreal.log(f"已复制: {actor.get_actor_label()}")
     return new_actor
 

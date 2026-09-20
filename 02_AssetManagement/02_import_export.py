@@ -11,6 +11,30 @@
 核心类：
   - unreal.AssetTools - 资产创建、导入、导出
   - unreal.AssetImportTask - 导入任务配置
+
+本课可能用到的 API：
+  unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools  —— 获取 AssetTools 实例以执行导入导出
+  unreal.AssetImportTask()  —— 创建导入任务对象
+  task.filename = ...  —— 源文件路径
+  task.destination_path = ...  —— 目标包路径
+  task.destination_name = ...  —— 资产名（不含扩展名）
+  task.replace_existing = ...  —— 是否覆盖已有资产
+  task.automated = ...  —— 是否启用自动化模式（无弹窗）
+  task.save = ...  —— 导入后是否保存资产
+  task.options = ...  —— 导入选项配置对象
+  task.imported_object_paths -> Array[str]  —— 导入完成后产出的资产路径数组
+  asset_tools.import_asset_tasks(import_tasks: Array[AssetImportTask]) -> None  —— 按导入任务列表批量导入资产
+  asset_tools.export_assets(assets_to_export: Array[str], export_path: str) -> None  —— 导出资产到指定磁盘目录
+  asset_tools.create_asset(asset_name: str, package_path: str, asset_class: Class, factory: Factory, calling_context: Name = "None", overwrite_existing: bool = False) -> Object  —— 用工厂在指定包路径创建资产
+  unreal.FbxImportUI()  —— FBX 导入选项界面类
+  unreal.AutomatedAssetImportData()  —— 自动化导入所需的数据容器类
+  unreal.FbxExportOption()  —— FBX 导出选项类
+  unreal.MaterialInstanceConstantFactoryNew()  —— 材质实例常量资产的创建工厂
+  unreal.MaterialInstanceConstant  —— 材质实例常量资产类
+  unreal.TextureGroup.TEXTUREGROUP_WORLD  —— 世界纹理组枚举成员
+  obj.set_editor_property(name: str, value: object, notify_mode: PropertyAccessChangeNotifyMode = PropertyAccessChangeNotifyMode.DEFAULT) -> None  —— 设置对象的编辑器属性值
+  unreal.EditorAssetLibrary.load_asset(asset_path: str) -> Object  —— 加载资产到内存并返回对象
+  unreal.EditorAssetLibrary.save_asset(asset_to_save: str, only_if_is_dirty: bool = True) -> bool  —— 保存指定资产
 =============================================================
 """
 
@@ -200,10 +224,16 @@ def import_texture(file_path, destination_path, compression="default",
     for path in imported_paths:
         texture = unreal.EditorAssetLibrary.load_asset(path)
         if texture and isinstance(texture, unreal.Texture2D):
-            texture.set_editor_property("s_rgb", srgb)
+            # 【修改前】texture.set_editor_property("s_rgb", srgb)
+            # 【问题分析】纹理的 sRGB 属性名是 srgb（stub 里 Texture.srgb），不是 s_rgb。
+            texture.set_editor_property("srgb", srgb)
+            # 【修改前】unreal.TextureGroup.TEXTUREGROUP_World
+            # 【问题分析】枚举成员名是全大写：stub 里写的是 TEXTUREGROUP_WORLD。
+            #   Python 的枚举成员必须和 C++ 里完全一致，驼峰写法会报 AttributeError。
+            #   自查方法：grep PythonStub/unreal.py 里 class TextureGroup 的成员。
             texture.set_editor_property(
                 "lod_group",
-                unreal.TextureGroup.TEXTUREGROUP_World
+                unreal.TextureGroup.TEXTUREGROUP_WORLD
             )
 
             # 保存修改
@@ -283,7 +313,6 @@ def create_material_instance(base_material_path, new_asset_name, destination_pat
 
     # 创建材质实例
     factory = unreal.MaterialInstanceConstantFactoryNew()
-    factory.set_editor_property("initial_parent", base_material)
 
     # 使用 AssetTools 创建
     new_asset = asset_tools.create_asset(
@@ -294,6 +323,12 @@ def create_material_instance(base_material_path, new_asset_name, destination_pat
     )
 
     if new_asset:
+        # 【修改前】factory.set_editor_property("initial_parent", base_material)
+        # 【问题分析】MaterialInstanceConstantFactoryNew 没有 initial_parent 属性，
+        #   父材质需在创建后通过 MaterialEditingLibrary.set_material_instance_parent 设置。
+        unreal.MaterialEditingLibrary.set_material_instance_parent(
+            new_asset, base_material
+        )
         unreal.log(f"已创建材质实例: {destination_path}/{new_asset_name}")
     return new_asset
 

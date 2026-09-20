@@ -9,6 +9,29 @@
   - 实战：关卡布局工具
 
 本课将创建两个完整的、可直接使用的编辑器工具
+
+本课可能用到的 API：
+  unreal.get_editor_subsystem(subsystem: Class) -> EditorSubsystem  —— 获取指定类型的编辑器子系统实例
+  unreal.EditorActorSubsystem.get_selected_level_actors() -> Array[Actor]  —— 获取当前关卡选中的 Actor 列表
+  unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  —— 列出目录下所有资产路径
+  unreal.EditorAssetLibrary.does_directory_exist(directory_path: str) -> bool  —— 判断指定目录是否存在
+  unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData  —— 依据资产路径查询资产数据
+  unreal.EditorAssetLibrary.find_package_referencers_for_asset(asset_path: str, load_assets_to_confirm: bool = False) -> Array[str]  —— 查找引用该资产的其他包路径
+  unreal.ScopedSlowTask(work: float, desc: Union[Text, str] = "", enabled: bool = True)  —— 创建进度任务以显示进度
+  scoped_slow_task.make_dialog(can_cancel: bool = False, allow_in_pie: bool = False) -> None  —— 创建进度对话框
+  scoped_slow_task.enter_progress_frame(work: float = 1.0, desc: Union[Text, str] = "") -> None  —— 推进一帧进度并更新描述
+  scoped_slow_task.should_cancel() -> bool  —— 查询用户是否取消该任务
+  unreal.SystemLibrary.begin_transaction(context: str, description: Text, primary_object: Object) -> int  —— 开启一个可撤销事务并返回其索引
+  unreal.SystemLibrary.end_transaction() -> int  —— 结束并提交当前事务
+  unreal.SystemLibrary.cancel_transaction(index: int) -> None  —— 取消指定索引的事务并回滚
+  asset_data.asset_name -> Name  —— 资产的名称
+  asset_data.asset_class_path -> TopLevelAssetPath  —— 资产所属类的完整路径
+  actor.get_actor_location() -> Vector  —— 获取 Actor 的世界坐标位置
+  actor.set_actor_location(new_location: Vector, sweep: bool, teleport: bool) -> Optional[HitResult]  —— 设置 Actor 的世界坐标位置
+  actor.get_actor_rotation() -> Rotator  —— 获取 Actor 的旋转角度
+  actor.set_actor_rotation(new_rotation: Rotator, teleport_physics: bool) -> bool  —— 设置 Actor 的旋转角度
+  unreal.log(arg: Any) -> None  —— 输出一般消息到日志
+  unreal.log_warning(arg: Any) -> None  —— 输出警告到日志
 =============================================================
 """
 
@@ -186,7 +209,10 @@ class LevelLayoutTool:
     @staticmethod
     def arrange_in_circle(radius=500.0, z_height=0.0):
         """将选中的 Actor 排列成圆形"""
-        actors = unreal.EditorLevelLibrary.get_selected_level_actors()
+        # 【修改前】unreal.EditorLevelLibrary.get_selected_level_actors()
+        # 【问题分析】EditorLevelLibrary 已废弃（DeprecationWarning），
+        # 选 Actor 的操作搬到了 EditorActorSubsystem。
+        actors = unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_selected_level_actors()
         if len(actors) < 2:
             unreal.log_warning("请至少选中 2 个 Actor")
             return
@@ -194,7 +220,15 @@ class LevelLayoutTool:
         count = len(actors)
         angle_step = 360.0 / count
 
-        unreal.Transactions.begin_transaction("排列为圆形")
+        # 【修改前】unreal.Transactions.begin_transaction("排列为圆形")
+        # 【问题分析】unreal.Transactions 类在 stub 里不存在 —— 事务方法在
+        # SystemLibrary 上，而且签名不同：
+        #   begin_transaction(context, description, primary_object) -> int
+        #     3 个参数：context 写脚本名；description 写操作名（进撤销历史）；
+        #     primary_object 写被修改的主对象（这里拿第一个 Actor）
+        #   end_transaction() / cancel_transaction(索引)
+        # 本文件 4 个工具函数原来全是错误写法，下面不再重复解释。
+        token = unreal.SystemLibrary.begin_transaction("Python脚本", "排列为圆形", actors[0])
 
         for i, actor in enumerate(actors):
             angle = math.radians(i * angle_step)
@@ -202,22 +236,23 @@ class LevelLayoutTool:
             y = radius * math.sin(angle)
 
             new_loc = unreal.Vector(x, y, z_height)
-            actor.set_actor_location(new_loc)
+            actor.set_actor_location(new_loc, False, False)
 
             # 让 Actor 朝向圆心
             look_at = unreal.Vector(0, 0, z_height)
             direction = look_at - new_loc
             yaw = math.degrees(math.atan2(direction.y, direction.x))
-            actor.set_actor_rotation(unreal.Rotator(0, yaw, 0))
+            actor.set_actor_rotation(unreal.Rotator(0, yaw, 0), False)
 
-        unreal.Transactions.end_transaction()
+        unreal.SystemLibrary.end_transaction()
         unreal.log(f"已将 {count} 个 Actor 排列为半径 {radius} 的圆形")
 
     @staticmethod
     def arrange_in_line(start_pos=None, direction="x",
                          spacing=200.0):
         """将选中的 Actor 排列成直线"""
-        actors = unreal.EditorLevelLibrary.get_selected_level_actors()
+        # 【修改前】unreal.EditorLevelLibrary.get_selected_level_actors()（已废弃）
+        actors = unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_selected_level_actors()
         if len(actors) < 2:
             unreal.log_warning("请至少选中 2 个 Actor")
             return
@@ -225,7 +260,9 @@ class LevelLayoutTool:
         if start_pos is None:
             start_pos = actors[0].get_actor_location()
 
-        unreal.Transactions.begin_transaction("排列为直线")
+        # 【修改前】unreal.Transactions.begin_transaction("排列为直线")
+        # （Transactions 类不存在，正确用法见 arrange_in_circle 的注释）
+        token = unreal.SystemLibrary.begin_transaction("Python脚本", "排列为直线", actors[0])
 
         axis_map = {"x": (1, 0, 0), "y": (0, 1, 0), "z": (0, 0, 1)}
         dx, dy, dz = axis_map.get(direction.lower(), (1, 0, 0))
@@ -236,21 +273,24 @@ class LevelLayoutTool:
                 start_pos.y + dy * spacing * i,
                 start_pos.z + dz * spacing * i,
             )
-            actor.set_actor_location(new_loc)
+            actor.set_actor_location(new_loc, False, False)
 
-        unreal.Transactions.end_transaction()
+        unreal.SystemLibrary.end_transaction()
         unreal.log(f"已将 {len(actors)} 个 Actor 排列为直线")
 
     @staticmethod
     def scatter_randomly(bounds_min, bounds_max,
                           random_rotation=True):
         """在指定范围内随机散布 Actor"""
-        actors = unreal.EditorLevelLibrary.get_selected_level_actors()
+        # 【修改前】unreal.EditorLevelLibrary.get_selected_level_actors()（已废弃）
+        actors = unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_selected_level_actors()
         if not actors:
             unreal.log_warning("请先选中 Actor")
             return
 
-        unreal.Transactions.begin_transaction("随机散布")
+        # 【修改前】unreal.Transactions.begin_transaction("随机散布")
+        # （Transactions 类不存在，正确用法见 arrange_in_circle 的注释）
+        token = unreal.SystemLibrary.begin_transaction("Python脚本", "随机散布", actors[0])
 
         for actor in actors:
             loc = unreal.Vector(
@@ -258,7 +298,7 @@ class LevelLayoutTool:
                 random.uniform(bounds_min.y, bounds_max.y),
                 random.uniform(bounds_min.z, bounds_max.z),
             )
-            actor.set_actor_location(loc)
+            actor.set_actor_location(loc, False, False)
 
             if random_rotation:
                 rot = unreal.Rotator(
@@ -266,20 +306,23 @@ class LevelLayoutTool:
                     random.uniform(0, 360),
                     0,
                 )
-                actor.set_actor_rotation(rot)
+                actor.set_actor_rotation(rot, False)
 
-        unreal.Transactions.end_transaction()
+        unreal.SystemLibrary.end_transaction()
         unreal.log(f"已随机散布 {len(actors)} 个 Actor")
 
     @staticmethod
     def mirror_actors(axis="x"):
         """沿指定轴镜像选中的 Actor"""
-        actors = unreal.EditorLevelLibrary.get_selected_level_actors()
+        # 【修改前】unreal.EditorLevelLibrary.get_selected_level_actors()（已废弃）
+        actors = unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_selected_level_actors()
         if not actors:
             unreal.log_warning("请先选中 Actor")
             return
 
-        unreal.Transactions.begin_transaction("镜像 Actor")
+        # 【修改前】unreal.Transactions.begin_transaction("镜像 Actor")
+        # （Transactions 类不存在，正确用法见 arrange_in_circle 的注释）
+        token = unreal.SystemLibrary.begin_transaction("Python脚本", "镜像 Actor", actors[0])
 
         for actor in actors:
             loc = actor.get_actor_location()
@@ -289,7 +332,7 @@ class LevelLayoutTool:
                 loc.y = -loc.y
             elif axis == "z":
                 loc.z = -loc.z
-            actor.set_actor_location(loc)
+            actor.set_actor_location(loc, False, False)
 
             # 镜像旋转
             rot = actor.get_actor_rotation()
@@ -300,7 +343,7 @@ class LevelLayoutTool:
 
             actor.set_actor_rotation(rot)
 
-        unreal.Transactions.end_transaction()
+        unreal.SystemLibrary.end_transaction()
         unreal.log(f"已沿 {axis.upper()} 轴镜像 {len(actors)} 个 Actor")
 
 # ═════════════════════════════════════════════════════════

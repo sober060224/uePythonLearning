@@ -9,6 +9,26 @@
   - 实战：项目清理和优化工具
 
 本课将创建多个生产级别的批量处理工具
+
+本课可能用到的 API：
+  unreal.log(arg: Any) -> None  —— 输出一般消息到日志
+  unreal.log_warning(arg: Any) -> None  —— 输出警告消息到日志
+  unreal.ScopedSlowTask(work: float, desc: Text = "", enabled: bool = True)  —— 创建慢任务进度条对象
+  task.make_dialog(can_cancel: bool = False, allow_in_pie: bool = False) -> None  —— 为慢任务创建对话框
+  task.should_cancel() -> bool  —— 用户是否请求取消任务
+  task.enter_progress_frame(work: float = 1.0, desc: Text = "") -> None  —— 推进一个进度帧
+  unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  —— 递归列出目录下全部资产/文件夹
+  unreal.EditorAssetLibrary.does_directory_exist(directory_path: str) -> bool  —— 判断路径是否为已存在文件夹
+  unreal.EditorAssetLibrary.find_package_referencers_for_asset(asset_path: str, load_assets_to_confirm: bool = False) -> Array[str]  —— 查找引用该资产的全部包路径
+  unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData  —— 获取资产元数据（类、名称等）
+  asset_data.asset_name -> Name  —— 资产的短名称（不含包路径）
+  asset_data.asset_class_path -> TopLevelAssetPath  —— 资产所属类的完整路径
+  unreal.EditorAssetLibrary.delete_asset(asset_path_to_delete: str) -> bool  —— 删除指定资产
+  unreal.EditorAssetLibrary.rename_asset(source_asset_path: str, destination_asset_path: str) -> bool  —— 重命名/移动资产到新路径
+  unreal.EditorAssetLibrary.delete_directory(directory_path: str) -> bool  —— 删除空目录
+  unreal.EditorAssetLibrary.make_directory(directory_path: str) -> bool  —— 创建目录
+  unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool  —— 判断资产路径是否已存在
+  unreal.Paths.project_saved_dir() -> str  —— 获取项目 Saved 目录的绝对路径
 =============================================================
 """
 

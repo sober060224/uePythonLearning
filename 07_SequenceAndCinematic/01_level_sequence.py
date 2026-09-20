@@ -12,6 +12,37 @@
 核心类：
   - unreal.LevelSequence - Level Sequence 资产
   - Sequencer 相关 API
+
+本课可能用到的 API：
+  - unreal.EditorAssetLibrary.make_directory(directory_path: str) -> bool —— 创建资产保存目录
+  - unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools —— 获取资产工具实例
+  - unreal.LevelSequenceFactoryNew() —— 序列资产工厂实例
+  - unreal.LevelSequence —— 序列资产类
+  - unreal.AssetTools.create_asset(asset_name: str, package_path: str, asset_class: Class, factory: Factory, calling_context: Name = "None", overwrite_existing: bool = False) -> Object —— 创建新资产
+  - seq.set_display_rate(display_rate: FrameRate) -> None —— 设置序列显示帧率
+  - unreal.FrameRate(numerator: int = 0, denominator: int = 1) —— 帧率结构体
+  - unreal.EditorAssetLibrary.save_asset(asset_to_save: str, only_if_is_dirty: bool = True) -> bool —— 保存资产到磁盘
+  - unreal.EditorAssetLibrary.load_asset(asset_path: str) -> Object —— 按路径加载资产
+  - seq.get_name() -> str —— 获取序列名称
+  - seq.get_bindings() -> Array[MovieSceneBindingProxy] —— 获取序列全部绑定
+  - binding.get_name() -> str —— 获取绑定名称
+  - binding.get_tracks() -> Array[MovieSceneTrack] —— 获取绑定下的轨道
+  - track.get_display_name() -> Text —— 获取轨道显示名
+  - seq.add_possessable(object_to_possess: Object) -> MovieSceneBindingProxy —— 绑定 Actor 到序列
+  - binding.add_track(track_type: Class) -> MovieSceneTrack —— 添加指定类型轨道
+  - unreal.MovieScene3DTransformTrack —— 3D 变换轨道类
+  - track.add_section() -> MovieSceneSection —— 为轨道添加分段
+  - unreal.LevelSequenceEditorBlueprintLibrary.open_level_sequence(level_sequence: LevelSequence) -> bool —— 在 Sequencer 中打开
+  - unreal.LevelSequenceEditorBlueprintLibrary.play() -> None —— 播放当前序列
+  - unreal.LevelSequenceEditorBlueprintLibrary.pause() -> None —— 暂停当前序列
+  - unreal.LevelSequenceEditorBlueprintLibrary.close_level_sequence() -> None —— 关闭当前序列
+  - unreal.LevelSequenceEditorBlueprintLibrary.set_current_time(new_frame: int) -> None —— 设置当前帧（已废弃）
+  - unreal.FrameTime(frame_number: FrameNumber = [0], sub_frame: float = 0.0) —— 帧时刻结构体
+  - unreal.LevelSequenceEditorBlueprintLibrary.get_current_time() -> int —— 获取当前帧号
+  - unreal.EditorLevelLibrary.get_selected_level_actors() -> Array[Actor] —— 获取选中的 Actor
+  - unreal.log(arg: Any) -> None —— 输出普通日志
+  - unreal.log_warning(arg: Any) -> None —— 输出警告日志
+  - unreal.log_error(arg: Any) -> None —— 输出错误日志
 =============================================================
 """
 
@@ -138,8 +169,11 @@ def open_sequence_in_sequencer(sequence_path):
     sequence = unreal.EditorAssetLibrary.load_asset(sequence_path)
     if sequence:
         # 使用 LevelSequenceEditorBlueprint 打开
+        # 【修改前】open_level_sequence(sequence_path) ——
+        # 桩签名要求传 LevelSequence 对象（open_level_sequence(level_sequence: LevelSequence) -> bool），
+        # 传路径字符串会 TypeError，传上面 load 出来的对象
         unreal.LevelSequenceEditorBlueprintLibrary.open_level_sequence(
-            sequence_path
+            sequence
         )
         unreal.log(f"已在 Sequencer 中打开: {sequence_path}")
 
@@ -159,9 +193,9 @@ def stop_sequence():
 
 def set_current_frame(frame):
     """设置当前帧"""
-    unreal.LevelSequenceEditorBlueprintLibrary.set_current_time(
-        unreal.FrameTime(frame)
-    )
+    # 【修改前】set_current_time(unreal.FrameTime(frame)) ——
+    # 桩签名是 set_current_time(new_frame: int)，参数就是整数，传 FrameTime 会 TypeError
+    unreal.LevelSequenceEditorBlueprintLibrary.set_current_time(frame)
 
 def get_current_frame():
     """获取当前帧"""

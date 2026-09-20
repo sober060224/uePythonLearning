@@ -12,6 +12,26 @@
   - 不需要重新编译材质（实时预览）
   - 非技术美术也能调整参数
   - 一个基础材质可以派生出无数变体
+
+本课可能用到的 API：
+  unreal.EditorAssetLibrary.load_asset(asset_path: str) -> Object  —— 加载资产对象
+  unreal.EditorAssetLibrary.make_directory(directory_path: str) -> bool  —— 创建资产目录
+  unreal.EditorAssetLibrary.save_asset(asset_to_save: str, only_if_is_dirty: bool = True) -> bool  —— 保存指定资产
+  unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools  —— 获取资产工具实例
+  unreal.AssetTools.create_asset(asset_name: str, package_path: str, asset_class: Class, factory: Factory, calling_context: Name = "None", overwrite_existing: bool = False) -> Object  —— 用工厂创建新资产
+  unreal.MaterialInstanceConstantFactoryNew()  —— 创建材质实例资产的工厂对象
+  obj.set_editor_property(name: str, value: object, notify_mode: PropertyAccessChangeNotifyMode = PropertyAccessChangeNotifyMode.DEFAULT) -> None  —— 设置对象编辑器属性
+  unreal.MaterialEditingLibrary.set_material_instance_parent(instance: MaterialInstanceConstant, new_parent: MaterialInterface) -> None  —— 设置材质实例的父材质
+  unreal.MaterialEditingLibrary.set_material_instance_scalar_parameter_value(instance: MaterialInstanceConstant, parameter_name: Name, value: float) -> bool  —— 设置标量参数
+  unreal.MaterialEditingLibrary.set_material_instance_vector_parameter_value(instance: MaterialInstanceConstant, parameter_name: Name, value: LinearColor) -> bool  —— 设置向量（颜色）参数
+  unreal.MaterialEditingLibrary.set_material_instance_texture_parameter_value(instance: MaterialInstanceConstant, parameter_name: Name, value: Texture) -> bool  —— 设置纹理参数值
+  unreal.MaterialEditingLibrary.set_material_instance_static_switch_parameter_value(instance: MaterialInstanceConstant, parameter_name: Name, value: bool) -> bool  —— 设置静态开关参数
+  obj.get_editor_property(name: str) -> object  —— 读取对象编辑器属性（如 parent 父材质）
+  unreal.LinearColor(r: float = 0.0, g: float = 0.0, b: float = 0.0, a: float = 0.0) -> None  —— 构造 0-1 范围线性颜色
+  unreal.EditorLevelLibrary.get_selected_level_actors() -> Array[Actor]  —— 获取当前选中的 Actor 列表
+  actor.get_component_by_class(component_class: Class = None) -> ActorComponent  —— 按类获取 Actor 的组件
+  obj.set_material(element_index: int, material: MaterialInterface) -> None  —— 设置网格指定插槽的材质（PrimitiveComponent）
+  unreal.StaticMeshComponent  —— 静态网格组件类（用于查找组件和分配材质）
 =============================================================
 """
 
@@ -41,7 +61,6 @@ def create_material_instance(parent_material_path, name,
 
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
     factory = unreal.MaterialInstanceConstantFactoryNew()
-    factory.set_editor_property("initial_parent", parent_material)
 
     instance = asset_tools.create_asset(
         name,
@@ -51,6 +70,13 @@ def create_material_instance(parent_material_path, name,
     )
 
     if instance:
+        # 【修改前】factory.set_editor_property("initial_parent", parent_material)
+        # 【问题分析】MaterialInstanceConstantFactoryNew 没有 initial_parent 属性
+        #   （见 Intermediate/PythonStub/unreal.py），父材质需要在创建后
+        #   通过 MaterialEditingLibrary.set_material_instance_parent 设置。
+        unreal.MaterialEditingLibrary.set_material_instance_parent(
+            instance, parent_material
+        )
         path = f"{destination}/{name}"
         unreal.EditorAssetLibrary.save_asset(path)
         unreal.log(f"已创建材质实例: {path}")
@@ -64,7 +90,12 @@ def create_material_instance(parent_material_path, name,
 
 def set_scalar_parameter(instance, param_name, value):
     """设置标量参数"""
-    instance.set_scalar_parameter_value(param_name, value)
+    # 【修改前】instance.set_scalar_parameter_value(param_name, value)
+    # 【问题分析】MaterialInstanceConstant 上不存在该 Python 方法，
+    #   改用 MaterialEditingLibrary.set_material_instance_scalar_parameter_value。
+    unreal.MaterialEditingLibrary.set_material_instance_scalar_parameter_value(
+        instance, param_name, value
+    )
     unreal.log(f"  标量 {param_name} = {value}")
 
 def set_vector_parameter(instance, param_name, color):
@@ -78,7 +109,9 @@ def set_vector_parameter(instance, param_name, color):
         color = (*color, 1.0)
 
     linear_color = unreal.LinearColor(color[0], color[1], color[2], color[3])
-    instance.set_vector_parameter_value(param_name, linear_color)
+    unreal.MaterialEditingLibrary.set_material_instance_vector_parameter_value(
+        instance, param_name, linear_color
+    )
     unreal.log(f"  向量 {param_name} = {color}")
 
 def set_texture_parameter(instance, param_name, texture_path):
@@ -88,13 +121,17 @@ def set_texture_parameter(instance, param_name, texture_path):
         unreal.log_error(f"无法加载纹理: {texture_path}")
         return False
 
-    instance.set_texture_parameter_value(param_name, texture)
+    unreal.MaterialEditingLibrary.set_material_instance_texture_parameter_value(
+        instance, param_name, texture
+    )
     unreal.log(f"  纹理 {param_name} = {texture_path}")
     return True
 
 def set_static_switch(instance, param_name, value):
     """设置静态开关参数"""
-    instance.set_static_switch_parameter_value(param_name, value)
+    unreal.MaterialEditingLibrary.set_material_instance_static_switch_parameter_value(
+        instance, param_name, value
+    )
     unreal.log(f"  开关 {param_name} = {value}")
 
 # ─────────────────────────────────────────────────────────
@@ -225,7 +262,9 @@ def batch_update_scalar(instance_paths, param_name, new_value):
         instance = unreal.EditorAssetLibrary.load_asset(path)
         if instance and isinstance(instance, unreal.MaterialInstanceConstant):
             try:
-                instance.set_scalar_parameter_value(param_name, new_value)
+                unreal.MaterialEditingLibrary.set_material_instance_scalar_parameter_value(
+                    instance, param_name, new_value
+                )
                 unreal.EditorAssetLibrary.save_asset(path)
                 updated += 1
             except:

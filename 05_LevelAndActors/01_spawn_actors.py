@@ -11,6 +11,22 @@
 核心类：
   - unreal.EditorLevelLibrary - 关卡编辑操作
   - unreal.Actor - Actor 基类
+
+本课可能用到的 API：
+  - unreal.EditorLevelLibrary.get_editor_world(cls) -> World —— 获取编辑器世界
+  - unreal.EditorLevelLibrary.spawn_actor_from_class(cls, actor_class: Class, location: Vector, rotation: Rotator = [0.000000, 0.000000, 0.000000], transient: bool = False) -> Actor —— 生成 Actor
+  - unreal.EditorAssetLibrary.load_asset(cls, asset_path: str) -> Object —— 加载资产
+  - unreal.EditorAssetLibrary.load_blueprint_class(cls, asset_path: str) -> Class —— 加载蓝图类
+  - unreal.ScopedSlowTask(work: float, desc: Union[Text, str] = "", enabled: bool = True) —— 创建慢速任务
+  - task.make_dialog(can_cancel: bool = False, allow_in_pie: bool = False) -> None —— 显示进度对话框
+  - task.enter_progress_frame(work: float = 1.0, desc: Union[Text, str] = "") -> None —— 推进进度
+  - task.should_cancel() -> bool —— 是否请求取消
+  - unreal.SystemLibrary.begin_transaction(context: str, description: Text, primary_object: Object) -> int —— 开启事务
+  - unreal.SystemLibrary.end_transaction() -> int —— 结束事务
+  - actor.set_actor_label(new_actor_label: str, mark_dirty: bool = True) -> None —— 设置 Actor 名称
+  - mesh_comp.set_static_mesh(new_mesh: StaticMesh) -> bool —— 设置网格体
+  - box_comp.set_box_extent(box_extent: Vector, update_overlaps: bool = True) -> None —— 设置碰撞盒范围
+  - light_comp.set_intensity(new_intensity: float) -> None —— 设置灯光强度
 =============================================================
 """
 
@@ -109,7 +125,18 @@ def spawn_grid(actor_class, rows, cols, spacing,
     task = unreal.ScopedSlowTask(total, "生成网格 Actor...")
     task.make_dialog(True)
 
-    unreal.Transactions.begin_transaction("生成网格")
+    # 【修改前】unreal.Transactions.begin_transaction("生成网格")
+    #
+    # 【问题分析】
+    # unreal.Transactions 这个类在 stub 里不存在 —— 事务方法其实在 SystemLibrary 上，
+    # 而且签名不同：begin_transaction(context, description, primary_object) -> int
+    #   - context：一般写脚本/工具名
+    #   - description：操作描述，会出现在编辑器撤销历史里
+    #   - primary_object：被修改的主对象。生成类操作开始时 Actor 还不存在，
+    #     拿编辑器 world 顶上即可（World 也是 UObject）
+    # 本文件 4 个生成函数原来全是这种错误写法，下面不再重复解释。
+    world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+    token = unreal.SystemLibrary.begin_transaction("Python脚本", "生成网格", world)
 
     for row in range(rows):
         for col in range(cols):
@@ -142,7 +169,7 @@ def spawn_grid(actor_class, rows, cols, spacing,
 
             spawned.append(actor)
 
-    unreal.Transactions.end_transaction()
+    unreal.SystemLibrary.end_transaction()
     unreal.log(f"已生成 {len(spawned)} 个 Actor ({rows}x{cols} 网格)")
     return spawned
 
@@ -166,7 +193,10 @@ def spawn_along_path(actor_class, points, count,
         return []
 
     spawned = []
-    unreal.Transactions.begin_transaction("沿路径生成")
+    # 【修改前】unreal.Transactions.begin_transaction("沿路径生成")
+    # （Transactions 类不存在，正确用法见上面"生成网格"处的注释）
+    world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+    token = unreal.SystemLibrary.begin_transaction("Python脚本", "沿路径生成", world)
 
     for i in range(count):
         # 计算路径上的位置（均匀分布）
@@ -210,7 +240,7 @@ def spawn_along_path(actor_class, points, count,
 
             current_dist += seg_len
 
-    unreal.Transactions.end_transaction()
+    unreal.SystemLibrary.end_transaction()
     unreal.log(f"沿路径生成了 {len(spawned)} 个 Actor")
     return spawned
 
@@ -235,7 +265,10 @@ def spawn_in_area(actor_class, center, radius, count,
     spawned_actors = []
     max_attempts = count * 10
 
-    unreal.Transactions.begin_transaction("随机散布")
+    # 【修改前】unreal.Transactions.begin_transaction("随机散布")
+    # （Transactions 类不存在，正确用法见上面"生成网格"处的注释）
+    world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+    token = unreal.SystemLibrary.begin_transaction("Python脚本", "随机散布", world)
 
     attempts = 0
     while len(spawned_actors) < count and attempts < max_attempts:
@@ -271,7 +304,7 @@ def spawn_in_area(actor_class, center, radius, count,
             spawned_actors.append(actor)
             spawned_locations.append(location)
 
-    unreal.Transactions.end_transaction()
+    unreal.SystemLibrary.end_transaction()
     unreal.log(
         f"在半径 {radius} 区域内散布了 {len(spawned_actors)} 个 Actor"
     )
@@ -309,7 +342,10 @@ def spawn_light_array(center, radius, count, height=300.0,
     spawned = []
     angle_step = 360.0 / count
 
-    unreal.Transactions.begin_transaction("生成灯光阵列")
+    # 【修改前】unreal.Transactions.begin_transaction("生成灯光阵列")
+    # （Transactions 类不存在，正确用法见上面"生成网格"处的注释）
+    world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+    token = unreal.SystemLibrary.begin_transaction("Python脚本", "生成灯光阵列", world)
 
     for i in range(count):
         angle = math.radians(i * angle_step)
@@ -331,7 +367,7 @@ def spawn_light_array(center, radius, count, height=300.0,
                 light_comp.set_intensity(intensity)
             spawned.append(actor)
 
-    unreal.Transactions.end_transaction()
+    unreal.SystemLibrary.end_transaction()
     unreal.log(f"已生成 {len(spawned)} 个点光源")
     return spawned
 

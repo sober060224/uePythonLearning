@@ -10,6 +10,20 @@
 
 运行方式：
   - 在 UE Python Console 中逐段执行
+
+本课可能用到的 API：
+  unreal.log(arg) -> None  —— 输出普通日志到日志窗口
+  unreal.log_warning(arg) -> None  —— 输出警告日志
+  unreal.log_error(arg) -> None  —— 输出错误日志
+  unreal.SystemLibrary.print_string(world_context_object: Object, string: str = "Hello", print_to_screen: bool = True, print_to_log: bool = True, text_color: LinearColor = [0.000000, 0.660000, 1.000000, 1.000000], duration: float = 2.000000) -> None  —— 在屏幕上显示文本消息
+  unreal.SystemLibrary.get_engine_version() -> str  —— 获取当前引擎版本号
+  unreal.Paths.project_dir() -> str  —— 获取项目根目录路径
+  unreal.Paths.get_project_file_path() -> str  —— 获取项目文件（.uproject）路径
+  unreal.Paths.get_base_filename(path: str, remove_path: bool = True) -> str  —— 获取路径末尾的文件名
+  unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  —— 列出指定目录下的资产路径
+  unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool  —— 检查资产是否存在
+  unreal.EditorAssetLibrary.load_asset(asset_path: str) -> Object  —— 加载资产并返回对象
+  unreal.Vector(x: float = 0.0, y: float = 0.0, z: float = 0.0)  —— 创建一个三维向量对象
 =============================================================
 """
 
@@ -41,7 +55,7 @@ unreal.log_error("这是一条错误消息 - 用于报告错误")
 
 # 显示一条白色消息，持续3秒
 unreal.SystemLibrary.print_string(
-    world=None,                          # 世界上下文（None 表示编辑器）
+    world_context_object=None,           # 世界上下文（None 表示编辑器）
     string="Hello from Python!",         # 消息内容
     print_to_screen=True,                # 是否显示在屏幕上
     print_to_log=True,                   # 是否同时输出到日志
@@ -69,7 +83,7 @@ unreal.SystemLibrary.print_string(
 # 4. 格式化输出
 # ─────────────────────────────────────────────────────────
 # 使用 Python 的 f-string 进行格式化输出
-project_name = unreal.Paths.get_base_filename(
+project_name: str = unreal.Paths.get_base_filename(
     unreal.Paths.get_project_file_path()
 )
 asset_count = len(unreal.EditorAssetLibrary.list_assets("/Game"))
@@ -81,7 +95,7 @@ unreal.log(f"引擎: {unreal.SystemLibrary.get_engine_version()}")
 # 使用分隔线美化输出
 separator = "=" * 40
 unreal.log(f"\n{separator}")
-unreal.log(f"  项目信息报告")
+unreal.log("  项目信息报告")
 unreal.log(f"{separator}")
 unreal.log(f"  项目名称: {project_name}")
 unreal.log(f"  资产数量: {asset_count}")
@@ -93,26 +107,26 @@ unreal.log(f"{separator}\n")
 # ─────────────────────────────────────────────────────────
 # 定义一些可复用的调试函数
 
-def log_section(title):
+def log_section(title) -> None:
     """输出一个带标题的分隔区域"""
     line = "=" * 50
     unreal.log(f"\n{line}")
     unreal.log(f"  {title}")
     unreal.log(f"{line}")
 
-def log_info(message):
+def log_info(message) -> None:
     """输出信息级别的日志"""
     unreal.log(f"[INFO] {message}")
 
-def log_warn(message):
+def log_warn(message) -> None:
     """输出警告级别的日志"""
     unreal.log_warning(f"[WARN] {message}")
 
-def log_err(message):
+def log_err(message) -> None:
     """输出错误级别的日志"""
     unreal.log_error(f"[ERROR] {message}")
 
-def show_screen(message, color=None, duration=3.0):
+def show_screen(message, color=None, duration=3.0) -> None:
     """在屏幕上显示调试消息"""
     if color is None:
         color = [1.0, 1.0, 1.0, 1.0]  # 默认白色
@@ -132,7 +146,7 @@ show_screen("屏幕消息测试!", [0.0, 1.0, 1.0, 1.0], 5.0)
 # ─────────────────────────────────────────────────────────
 # 学会检查 UE 对象的属性和方法
 
-def inspect_object(obj, max_attrs=20):
+def inspect_object(obj, max_attrs=20) -> None:
     """检查一个 UE 对象的属性和方法"""
     log_section(f"检查对象: {type(obj).__name__}")
 
@@ -165,14 +179,14 @@ inspect_object(sample_vector)
 # ─────────────────────────────────────────────────────────
 # 良好的错误处理习惯
 
-def safe_load_asset(asset_path):
+def safe_load_asset(asset_path) -> None | unreal.Object:
     """安全地加载资产，带错误处理"""
     try:
         if not unreal.EditorAssetLibrary.does_asset_exist(asset_path):
             log_warn(f"资产不存在: {asset_path}")
             return None
 
-        asset = unreal.EditorAssetLibrary.load_asset(asset_path)
+        asset: unreal.Object = unreal.EditorAssetLibrary.load_asset(asset_path)
         if asset is None:
             log_err(f"加载资产失败: {asset_path}")
             return None
@@ -184,16 +198,9 @@ def safe_load_asset(asset_path):
         log_err(f"加载资产时发生异常: {e}")
         return None
 
+
 # 测试
 safe_load_asset("/Game/SomeAssetThatDoesNotExist")
-safe_load_asset("/Game/Characters/Player")  # 替换为你项目中实际存在的资产
+safe_load_asset("/Game/Characters/Character_Default.Character_Default")  # 替换为你项目中实际存在的资产
 
 unreal.log("\n第2课完成！你已经掌握了 UE Python 的日志和调试技巧")
-
-# ─────────────────────────────────────────────────────────
-# 🎯 练习题
-# ─────────────────────────────────────────────────────────
-# 1. 编写一个函数，用不同颜色在屏幕上显示当前关卡名称
-# 2. 编写一个 inspect_all_assets() 函数，列出指定目录
-#    下所有资产的类型和名称
-# 3. 创建一个日志系统，同时输出到屏幕和日志文件

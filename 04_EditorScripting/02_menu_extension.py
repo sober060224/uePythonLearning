@@ -13,6 +13,19 @@
   - Menu Extension: 在编辑器菜单添加项
   - 这些通常通过 C++ 或 Editor Utility 实现
   - Python 脚本可以作为后端逻辑
+
+本课可能用到的 API：
+  unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools  —— 获取资产工具实例
+  asset_tools.create_asset(asset_name: str, package_path: str, asset_class: Class, factory: Factory, calling_context: Name = "None", overwrite_existing: bool = False) -> Object  —— 用指定工厂创建资产并返回该资产
+  unreal.EditorUtilityWidgetBlueprintFactory() -> EditorUtilityWidgetBlueprintFactory  —— 创建编辑器工具控件蓝图工厂
+  unreal.EditorAssetLibrary.make_directory(directory_path: str) -> bool  —— 在内容浏览器中创建目录
+  unreal.EditorUtilityLibrary.get_selected_asset_data() -> Array[AssetData]  —— 获取内容浏览器中选中的资产数据
+  unreal.EditorLevelLibrary.get_selected_level_actors() -> Array[Actor]  —— 获取当前关卡选中的 Actor 列表
+  unreal.Paths.project_dir() -> str  —— 获取项目根目录的绝对路径
+  unreal.Paths.project_saved_dir() -> str  —— 获取项目 Saved 目录的绝对路径
+  unreal.log(arg: Any) -> None  —— 输出一般消息到日志
+  unreal.log_warning(arg: Any) -> None  —— 输出警告到日志
+  unreal.log_error(arg: Any) -> None  —— 输出错误到日志
 =============================================================
 """
 

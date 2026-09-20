@@ -11,6 +11,18 @@
 核心类：unreal.EditorAssetLibrary
   - 不需要加载资产到内存即可查询
   - 适合批量操作和项目管理工具
+
+本课可能用到的 API：
+  unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  —— 列出指定路径下的资产路径数组
+  unreal.EditorAssetLibrary.does_directory_exist(directory_path: str) -> bool  —— 判断指定目录是否存在
+  unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData  —— 获取资产的元数据 AssetData
+  unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool  —— 判断指定资产是否存在
+  unreal.EditorAssetLibrary.get_tag_values(asset_path: str) -> Map[Name, str]  —— 获取资产的所有标签值映射
+  unreal.EditorAssetLibrary.find_package_referencers_for_asset(asset_path: str, load_assets_to_confirm: bool = False) -> Array[str]  —— 查找引用该资产的所有包路径
+  unreal.ScopedSlowTask(work: float, desc: Union[Text, str] = "", enabled: bool = True)  —— 创建耗时任务的进度条上下文
+  task.make_dialog(can_cancel: bool = False, allow_in_pie: bool = False) -> None  —— 显示可取消的进度对话框
+  task.should_cancel() -> bool  —— 询问用户是否已取消任务
+  task.enter_progress_frame(work: float = 1.0, desc: Union[Text, str] = "") -> None  —— 推进进度条并更新说明文字
 =============================================================
 """
 
@@ -32,9 +44,7 @@ unreal.log(f"项目共有 {len(all_assets)} 个资产")
 # 只列出 /Game/Characters 下的直接资产（不递归）
 if unreal.EditorAssetLibrary.does_directory_exist("/Game/Characters"):
     direct_assets = unreal.EditorAssetLibrary.list_assets(
-        "/Game/Characters",
-        recursive=False,
-        include_folder=False
+        "/Game/Characters", recursive=False, include_folder=False
     )
     unreal.log(f"\n/Game/Characters 目录下有 {len(direct_assets)} 个资产:")
     for asset in direct_assets:
@@ -43,6 +53,7 @@ if unreal.EditorAssetLibrary.does_directory_exist("/Game/Characters"):
 # ─────────────────────────────────────────────────────────
 # 2. 列出目录结构
 # ─────────────────────────────────────────────────────────
+
 
 def print_directory_tree(path, indent=0, max_depth=3):
     """打印资产目录树"""
@@ -55,14 +66,20 @@ def print_directory_tree(path, indent=0, max_depth=3):
     )
 
     for item in sub_dirs:
-        item_name = item.split("/")[-1]
+        # 【修改前】item.split("/")[-2] —— 对 "/Game/Folder" 取到的是 "Game"，
+        #   且文件夹路径带尾部 "/" 时 split 会取到空。
+        #   先 rstrip("/") 去掉尾部斜杠，再取最后一段作为文件夹/文件名。
+        clean_path = item.rstrip("/")
+        item_name = clean_path.split("/")[-1]
+        file_name = clean_path.split("/")[-1]
         is_folder = unreal.EditorAssetLibrary.does_directory_exist(item)
 
         if is_folder:
             unreal.log(f"{'  ' * indent}📁 {item_name}/")
             print_directory_tree(item, indent + 1, max_depth)
         else:
-            unreal.log(f"{'  ' * indent}📄 {item_name}")
+            unreal.log(f"{'  ' * indent}📄 {file_name}")
+
 
 unreal.log("\n--- 项目目录结构 (前3层) ---")
 print_directory_tree("/Game", max_depth=3)
@@ -70,6 +87,7 @@ print_directory_tree("/Game", max_depth=3)
 # ─────────────────────────────────────────────────────────
 # 3. 按类型搜索资产
 # ─────────────────────────────────────────────────────────
+
 
 def find_assets_by_class(class_name, search_path="/Game"):
     """
@@ -81,11 +99,12 @@ def find_assets_by_class(class_name, search_path="/Game"):
 
     for asset_path in all_assets:
         asset_data = unreal.EditorAssetLibrary.find_asset_data(asset_path)
-        asset_class = str(asset_data.asset_class_path)
+        asset_class = str(asset_data.asset_class_path.asset_name)
         if class_name.lower() in asset_class.lower():
             matching.append(asset_data)
 
     return matching
+
 
 # 搜索所有纹理
 textures = find_assets_by_class("Texture2D")
@@ -103,6 +122,7 @@ for mesh in meshes[:10]:
 # 4. 获取资产详细信息
 # ─────────────────────────────────────────────────────────
 
+
 def inspect_asset(asset_path):
     """打印资产的详细信息"""
     if not unreal.EditorAssetLibrary.does_asset_exist(asset_path):
@@ -117,7 +137,7 @@ def inspect_asset(asset_path):
     unreal.log(f"类型: {asset_data.asset_class_path}")
 
     # 获取标签
-    tags = asset_data.tags_and_values
+    tags = unreal.EditorAssetLibrary.get_tag_values(asset_path)
     if tags:
         unreal.log(f"标签数量: {len(tags)}")
         for tag_name, tag_value in tags.items():
@@ -131,6 +151,7 @@ def inspect_asset(asset_path):
     for ref in references[:5]:
         unreal.log(f"  ← {ref}")
 
+
 # 测试（替换为你项目中的实际资产路径）
 if all_assets:
     inspect_asset(all_assets[0])
@@ -138,6 +159,7 @@ if all_assets:
 # ─────────────────────────────────────────────────────────
 # 5. 查找未使用的资产
 # ─────────────────────────────────────────────────────────
+
 
 def find_unused_assets(search_path="/Game"):
     """查找没有被任何其他资产引用的资产（可能是废弃资产）"""
@@ -169,67 +191,9 @@ def find_unused_assets(search_path="/Game"):
 
     return unused
 
+
 # 取消注释以运行（可能需要较长时间）
 # unused = find_unused_assets("/Game")
 # unreal.log(f"\n找到 {len(unused)} 个未使用的资产:")
 # for path in unused[:20]:
 #     unreal.log(f"  {path}")
-
-# ─────────────────────────────────────────────────────────
-# 6. 资产统计报告
-# ─────────────────────────────────────────────────────────
-
-def generate_asset_report(search_path="/Game"):
-    """生成项目资产统计报告"""
-    all_assets = unreal.EditorAssetLibrary.list_assets(search_path, recursive=True)
-
-    type_counts = {}
-    folder_counts = {}
-
-    task = unreal.ScopedSlowTask(len(all_assets), "正在生成资产报告...")
-    task.make_dialog(True)
-
-    for asset_path in all_assets:
-        if task.should_cancel():
-            break
-
-        task.enter_progress_frame(1.0)
-
-        if unreal.EditorAssetLibrary.does_directory_exist(asset_path):
-            continue
-
-        asset_data = unreal.EditorAssetLibrary.find_asset_data(asset_path)
-        class_name = str(asset_data.asset_class_path).split(".")[-1]
-        type_counts[class_name] = type_counts.get(class_name, 0) + 1
-
-        # 统计每个顶级文件夹
-        parts = asset_path.split("/")
-        if len(parts) >= 3:
-            folder = parts[2]  # /Game/Folder/...
-            folder_counts[folder] = folder_counts.get(folder, 0) + 1
-
-    unreal.log(f"\n{'=' * 50}")
-    unreal.log(f"  资产统计报告")
-    unreal.log(f"{'=' * 50}")
-
-    unreal.log(f"\n--- 按类型统计 ---")
-    for type_name, count in sorted(type_counts.items(), key=lambda x: -x[1]):
-        unreal.log(f"  {type_name}: {count}")
-
-    unreal.log(f"\n--- 按文件夹统计 ---")
-    for folder, count in sorted(folder_counts.items(), key=lambda x: -x[1]):
-        unreal.log(f"  /Game/{folder}: {count}")
-
-    unreal.log(f"\n总资产数: {len(all_assets)}")
-
-generate_asset_report("/Game")
-
-unreal.log("\n资产管理第1课完成！")
-
-# ─────────────────────────────────────────────────────────
-# 🎯 练习题
-# ─────────────────────────────────────────────────────────
-# 1. 编写函数，找出项目中最大的10个资产（按文件大小）
-# 2. 搜索所有使用了特定材质的网格体
-# 3. 编写一个资产搜索工具，支持按名称、类型、路径的组合搜索
-# 4. 生成一份 Markdown 格式的项目资产报告

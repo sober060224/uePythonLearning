@@ -11,6 +11,30 @@
 核心类：
   - unreal.Texture2D - 纹理资产
   - 纹理设置通过 set_editor_property 修改
+
+本课可能用到的 API：
+  unreal.log(arg: Any) -> None  —— 输出信息到输出日志
+  unreal.log_error(arg: Any) -> None  —— 输出错误到输出日志
+  unreal.log_warning(arg: Any) -> None  —— 输出警告到输出日志
+  unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  —— 列出路径下资产的路径数组
+  unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData  —— 获取资产元数据（不加载资产）
+  unreal.EditorAssetLibrary.load_asset(asset_path: str) -> Object  —— 加载资产对象
+  unreal.EditorAssetLibrary.save_asset(asset_to_save: str, only_if_is_dirty: bool = True) -> bool  —— 保存指定资产
+  asset_data.asset_class_path -> TopLevelAssetPath  —— 资产类的路径（可判断类型）
+  asset_data.asset_name / package_name  —— 资产短名 / 所属完整包路径
+  obj.set_editor_property(name: str, value: object, notify_mode: PropertyAccessChangeNotifyMode = PropertyAccessChangeNotifyMode.DEFAULT) -> None  —— 修改纹理编辑器属性
+  obj.get_editor_property(name: str) -> object  —— 读取纹理编辑器属性（如 srgb、compression_settings）
+  texture.blueprint_get_size_x() / blueprint_get_size_y() -> int  —— 读取纹理像素宽高（Texture2D 没有 size_x/size_y 属性）
+  unreal.TextureCompressionSettings.TC_DEFAULT / TC_NORMALMAP / TC_HDR / TC_VECTOR_DISPLACEMENTMAP  —— 纹理压缩方式枚举
+  unreal.ScopedSlowTask(work: float, desc: Union[Text, str] = "", enabled: bool = True)  —— 创建耗时任务的进度条上下文
+  task.make_dialog(can_cancel: bool = False, allow_in_pie: bool = False) -> None  —— 显示可取消的进度对话框
+  task.should_cancel() -> bool  —— 询问用户是否已取消任务
+  task.enter_progress_frame(work: float = 1.0, desc: Union[Text, str] = "") -> None  —— 推进进度条并更新说明
+  unreal.AssetImportTask()  —— 构建单个资产导入任务
+  task.filename / destination_path / destination_name / replace_existing / automated / save  —— 导入任务的源文件与目标设置
+  task.imported_object_paths -> Array[str]  —— 导入后生成资产的路径列表
+  unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools  —— 获取资产工具实例
+  unreal.AssetTools.import_asset_tasks(import_tasks: Array[AssetImportTask]) -> None  —— 批量执行导入任务
 =============================================================
 """
 
@@ -54,12 +78,15 @@ def inspect_texture(texture_path):
     unreal.log(f"路径: {texture_path}")
 
     # 分辨率
-    size_x = texture.get_editor_property("size_x")
-    size_y = texture.get_editor_property("size_y")
+    # 【修改前】texture.get_editor_property("size_x"/"size_y")
+    # 【问题分析】Texture2D 没有 size_x/size_y 编辑器属性；
+    #   stub 里读取像素宽高的是 blueprint_get_size_x() / blueprint_get_size_y()。
+    size_x = texture.blueprint_get_size_x()
+    size_y = texture.blueprint_get_size_y()
     unreal.log(f"分辨率: {size_x} x {size_y}")
 
     # sRGB
-    srgb = texture.get_editor_property("s_rgb")
+    srgb = texture.get_editor_property("srgb")
     unreal.log(f"sRGB: {srgb}")
 
     # 压缩设置
@@ -103,14 +130,20 @@ def configure_texture(texture_path, srgb=True,
     if not texture or not isinstance(texture, unreal.Texture2D):
         return False
 
-    texture.set_editor_property("s_rgb", srgb)
+    # 属性名是 srgb（不是 s_rgb），见 Texture 的编辑器属性列表
+    texture.set_editor_property("srgb", srgb)
 
     # 压缩设置
+    # 【修改前】unreal.TextureCompressionSettings.TC_Default / TC_Normalmap / TC_VectorDisplacementmap
+    # 【问题分析】枚举成员名大小写写错了。stub 里 TextureCompressionSettings 的真实成员是
+    #   全大写：TC_DEFAULT、TC_NORMALMAP、TC_VECTOR_DISPLACEMENTMAP（TC_HDR 本来就对）。
+    #   枚举成员必须和 C++ 完全一致，驼峰会报 AttributeError。
+    #   自查：grep PythonStub/unreal.py 里 class TextureCompressionSettings 的成员列表。
     compression_map = {
-        "TC_Default": unreal.TextureCompressionSettings.TC_Default,
-        "TC_Normalmap": unreal.TextureCompressionSettings.TC_Normalmap,
+        "TC_Default": unreal.TextureCompressionSettings.TC_DEFAULT,
+        "TC_Normalmap": unreal.TextureCompressionSettings.TC_NORMALMAP,
         "TC_HDR": unreal.TextureCompressionSettings.TC_HDR,
-        "TC_VectorDisplacementmap": unreal.TextureCompressionSettings.TC_VectorDisplacementmap,
+        "TC_VectorDisplacementmap": unreal.TextureCompressionSettings.TC_VECTOR_DISPLACEMENTMAP,
     }
     if compression in compression_map:
         texture.set_editor_property(
@@ -206,9 +239,9 @@ def texture_audit(search_path="/Game"):
         if not texture or not isinstance(texture, unreal.Texture2D):
             continue
 
-        sx = texture.get_editor_property("size_x")
-        sy = texture.get_editor_property("size_y")
-        srgb = texture.get_editor_property("s_rgb")
+        sx = texture.blueprint_get_size_x()
+        sy = texture.blueprint_get_size_y()
+        srgb = texture.get_editor_property("srgb")
         name = tex_data.asset_name.lower()
 
         # 检查分辨率
