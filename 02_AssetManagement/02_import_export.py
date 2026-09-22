@@ -278,32 +278,70 @@ def import_texture(
 # ─────────────────────────────────────────────────────────
 
 
+# ============================================================
+# 导出资产到磁盘文件
+# 用 AssetExportTask + Exporter 的组合，才能挂自定义导出选项
+# ============================================================
+
+
 def export_asset(asset_path, export_directory, export_type="fbx"):
-    """
-    导出资产到磁盘文件
+    # --------------------------------------------------------
+    # 第一步：把 UE 里的资产加载到内存
+    # asset_path 形如 "/Game/Meshes/MyMesh"，这是"包路径"，不是磁盘路径
+    # load_asset 返回的是 UE 对象（UObject），拿不到就返回 None
+    # --------------------------------------------------------
+    asset = unreal.EditorAssetLibrary.load_asset(asset_path)
 
-    参数:
-        asset_path: 项目中的资产路径 (如 "/Game/Meshes/MyMesh")
-        export_directory: 导出到的磁盘目录
-        export_type: 导出格式 ("fbx", "obj", "png")
-    """
-    asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
+    # 加载失败（路径写错、资产不存在）就直接退出，避免后面拿着 None 去操作
+    if not asset:
+        unreal.log_error(f"找不到资产: {asset_path}")
+        return
 
-    # 【UE 概念】FbxExportOption 控制 FBX 导出时的细节：
-    #   - ascii: True 用 ASCII 格式（文件大但可读），False 用二进制（推荐）
-    #   - level_of_detail: 是否导出 LOD 级别
-    exporter = None
-    if export_type == "fbx":
-        exporter = unreal.FbxExportOption()
-        exporter.set_editor_property("ascii", False)
-        exporter.set_editor_property("level_of_detail", True)
-
-    # 【初学者易错点】export_directory 必须是磁盘路径，不是 UE 内容路径。
-    #   而且目录必须存在，否则导出会失败。makedirs 创建多级目录。
+    # --------------------------------------------------------
+    # 第二步：确保导出目录存在
+    # exist_ok=True 表示"目录已存在也别报错"，让脚本可以反复运行
+    # 没有这一句，第二次导出到同一目录时会抛 FileExistsError 中断
+    # --------------------------------------------------------
     os.makedirs(export_directory, exist_ok=True)
 
-    # export_assets 接受资产路径列表和导出目录
-    asset_tools.export_assets([asset_path], export_directory)
+    # --------------------------------------------------------
+    # 第三步：拼出导出文件的完整路径（不含扩展名）
+    # 注意：导出器会根据资产类型和选项自动补上 .fbx / .obj / .png
+    #       所以这里只给"目录 + 资产名"，不要自己写扩展名
+    # 例：C:/ExportedAssets/MyMesh
+    # --------------------------------------------------------
+    filename = os.path.join(export_directory, asset.get_name())
+
+    # --------------------------------------------------------
+    # 第四步：创建"导出任务"对象
+    # AssetExportTask 是一个容器，把"导谁、导到哪、用什么选项"打包起来
+    # --------------------------------------------------------
+    task = unreal.AssetExportTask()
+
+    task.object = asset  # 要导出的资产对象（不是路径字符串）
+    task.filename = filename  # 目标文件路径（不含扩展名）
+    task.automated = True  # 自动化模式：不弹任何对话框
+    task.prompt = False  # 不询问用户确认（无人值守脚本必备）
+    task.replace_existing = True  # 目标文件已存在时直接覆盖
+
+    # --------------------------------------------------------
+    # 第五步：根据导出格式挂不同的选项
+    # 只有 FBX 需要自定义选项；obj/png 等走默认即可
+    # --------------------------------------------------------
+    if export_type == "fbx":
+        # FbxExportOption 专门控制 FBX 导出的细节
+        fbx_opts = unreal.FbxExportOption()
+        fbx_opts.set_editor_property("ascii", False)  # False = 二进制 FBX（体积更小）
+        fbx_opts.set_editor_property("level_of_detail", True)  # 导出所有 LOD 层级
+        task.options = fbx_opts  # 把选项挂到任务上
+    # 非 FBX 时 task.options 留空，导出器会用默认配置
+
+    # --------------------------------------------------------
+    # 第六步：真正执行导出
+    # 关键点：AssetTools.export_assets 不接受自定义选项，
+    #         想用 FbxExportOption 必须走 Exporter.run_asset_export_task
+    # --------------------------------------------------------
+    unreal.Exporter.run_asset_export_task(task)
 
     unreal.log(f"已导出 {asset_path} 到 {export_directory}")
 
