@@ -14,18 +14,15 @@
   - 这些通常通过 C++ 或 Editor Utility 实现
   - Python 脚本可以作为后端逻辑
 
-本课可能用到的 API：
-  unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools  —— 获取资产工具实例
-  asset_tools.create_asset(asset_name: str, package_path: str, asset_class: Class, factory: Factory, calling_context: Name = "None", overwrite_existing: bool = False) -> Object  —— 用指定工厂创建资产并返回该资产
-  unreal.EditorUtilityWidgetBlueprintFactory() -> EditorUtilityWidgetBlueprintFactory  —— 创建编辑器工具控件蓝图工厂
+习题可能用到的 API：
+  unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools  —— 获取资产工具实例，用于创建/导入/导出资产
+  asset_tools.create_asset(asset_name: str, package_path: str, asset_class: Class, factory: Factory) -> Object  —— 用指定工厂创建新资产
   unreal.EditorAssetLibrary.make_directory(directory_path: str) -> bool  —— 在内容浏览器中创建目录
   unreal.EditorUtilityLibrary.get_selected_asset_data() -> Array[AssetData]  —— 获取内容浏览器中选中的资产数据
-  unreal.EditorLevelLibrary.get_selected_level_actors() -> Array[Actor]  —— 获取当前关卡选中的 Actor 列表
-  unreal.Paths.project_dir() -> str  —— 获取项目根目录的绝对路径
-  unreal.Paths.project_saved_dir() -> str  —— 获取项目 Saved 目录的绝对路径
-  unreal.log(arg: Any) -> None  —— 输出一般消息到日志
-  unreal.log_warning(arg: Any) -> None  —— 输出警告到日志
-  unreal.log_error(arg: Any) -> None  —— 输出错误到日志
+  unreal.Paths.project_saved_dir() -> str  —— 获取项目 Saved 目录的绝对路径（用于存储配置文件）
+  unreal.ScopedSlowTask(work: float, desc: str)  —— 创建进度任务以显示进度对话框
+  scoped_slow_task.make_dialog(can_cancel: bool) -> None  —— 显示进度对话框
+  scoped_slow_task.enter_progress_frame(work: float, desc: str) -> None  —— 推进一帧进度并更新描述
 =============================================================
 """
 
@@ -56,8 +53,23 @@ import unreal
 # ─────────────────────────────────────────────────────────
 # 2. 使用 Editor Utility Widget 创建工具面板
 # ─────────────────────────────────────────────────────────
-# 最常用的方式：创建 Editor Utility Widget
-# 然后用 Python 作为后端
+# 【什么是 Editor Utility Widget？】
+# UE5 提供的可视化编辑器扩展方式。你可以：
+# 1. 在内容浏览器右键 → Editor Utilities → Editor Utility Widget
+# 2. 在 UMG 设计器里拖拽按钮、文本框等控件
+# 3. 每个按钮绑定一个 Python 函数（或蓝图函数）
+# 这样就能做出带 UI 的编辑器工具，而不需要写 C++。
+#
+# 【create_asset 的参数详解】
+# - asset_name: 新资产的名称（不含路径）
+# - destination: 存放目录（如 /Game/EditorUtilities）
+# - asset_class: 资产类型（如 EditorUtilityWidgetBlueprint）
+# - factory: 工厂对象（告诉 UE "用什么方式创建这个资产"）
+#
+# 【为什么需要 Factory？】
+# UE 的资产系统是"工厂模式"：每种资产类型对应一个工厂类。
+# 比如 Blueprint 资产用 BlueprintFactory，Texture 用 TextureFactory。
+# Factory 负责初始化新资产的默认属性。
 
 def create_editor_utility_widget(name, destination="/Game/EditorUtilities"):
     """
@@ -66,16 +78,22 @@ def create_editor_utility_widget(name, destination="/Game/EditorUtilities"):
     注意：这个函数创建资产框架，
     具体的 UI 布局需要在编辑器中手动编辑
     """
+    # 先确保目录存在（如果目录不存在，create_asset 会失败）
+    # make_directory 是幂等的：目录已存在时返回 True 而不是报错
     unreal.EditorAssetLibrary.make_directory(destination)
 
+    # AssetTools 是 UE 管理所有资产操作的核心服务
+    # 包括：创建、重命名、移动、删除、导入、导出等
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
 
+    # EditorUtilityWidgetBlueprintFactory 是专门用来创建
+    # Editor Utility Widget 资产的工厂类
     factory = unreal.EditorUtilityWidgetBlueprintFactory()
 
     widget = asset_tools.create_asset(
         name,
         destination,
-        unreal.EditorUtilityWidgetBlueprint,
+        unreal.EditorUtilityWidgetBlueprint,  # 资产类型
         factory
     )
 
@@ -91,16 +109,30 @@ def create_editor_utility_widget(name, destination="/Game/EditorUtilities"):
 # 3. 为 Editor Utility 准备 Python 后端
 # ─────────────────────────────────────────────────────────
 # 下面是典型的 Python 后端模式
+#
+# 【设计模式】
+# Editor Utility Widget 的 UI 层（UMG）只负责显示，
+# Python 类只负责逻辑——这就是 MVC 模式的简化版。
+# UI 按钮点击时，调用 Python 类的方法（如 on_button_click("batch_rename")）。
+# Python 方法处理完逻辑后，更新状态变量，UI 刷新时读取这些变量。
 
 class EditorToolBackend:
     """编辑器工具的 Python 后端"""
 
     def __init__(self):
+        # 状态变量：UI 可以读取这些值来更新显示
         self.status_message = "就绪"
         self.progress = 0.0
 
     def on_button_click(self, button_id):
-        """处理按钮点击"""
+        """
+        处理按钮点击——用字典做"路由分发"
+
+        【为什么用字典而不是 if-else？】
+        1. 可读性更好：一眼就能看到所有按钮及其处理函数
+        2. 易扩展：新增按钮只需在字典里加一行
+        3. 避免长长的 if-else 链
+        """
         unreal.log(f"按钮 {button_id} 被点击")
 
         handlers = {
@@ -118,6 +150,9 @@ class EditorToolBackend:
 
     def _batch_rename(self):
         """批量重命名"""
+        # get_selected_asset_data() 返回 AssetData 对象数组
+        # AssetData 不是资产本身，只是资产的"元数据"（名称、类型、路径等）
+        # 好处：不需要加载资产就能获取信息，速度快
         assets = unreal.EditorUtilityLibrary.get_selected_asset_data()
         if not assets:
             self.status_message = "请先选择资产"
@@ -186,7 +221,19 @@ def list_available_scripts():
         unreal.log(f"    路径: {info['path']}")
 
 def run_script(script_id):
-    """通过 ID 运行已注册的脚本"""
+    """
+    通过 ID 运行已注册的脚本
+
+    【exec() 的用法】
+    exec(open(path).read()) 会：
+    1. 读取文件内容为字符串
+    2. 把字符串当作 Python 代码执行
+    3. 执行的代码在当前作用域内运行（可以访问当前的变量）
+
+    【安全注意】
+    exec() 会执行任意代码，只应该用于你信任的脚本。
+    这里用法正确——脚本都是项目内自己写的。
+    """
     info = SCRIPT_REGISTRY.get(script_id)
     if not info:
         unreal.log_error(f"未知脚本: {script_id}")
@@ -194,6 +241,8 @@ def run_script(script_id):
         return
 
     import os
+    # unreal.Paths.project_dir() 返回项目根目录（包含 .uproject 文件的目录）
+    # 例如：C:/Users/xxx/MyProject/
     project_dir = unreal.Paths.project_dir()
     script_path = os.path.join(project_dir, info["path"])
 
@@ -206,20 +255,32 @@ def run_script(script_id):
 # ─────────────────────────────────────────────────────────
 # 5. 使用 Editor Preferences 存储工具配置
 # ─────────────────────────────────────────────────────────
+#
+# 【为什么用 JSON 文件而不是 Editor Preferences？】
+# 1. Editor Preferences 是 UE 原生的配置系统，但 Python 访问不方便
+# 2. JSON 文件简单直观，任何文本编辑器都能查看/修改
+# 3. Saved 目录在 .gitignore 里，不会污染版本控制
+# 4. 可以在 Python 和蓝图之间共享配置
 
-# 可以创建一个配置文件来保存工具的持久化设置
 import json
 import os
 
 class ToolConfig:
-    """工具配置管理器"""
+    """
+    工具配置管理器
+
+    配置保存在 ProjectSaved/PythonToolConfigs/{tool_name}.json
+    """
 
     def __init__(self, tool_name):
         self.tool_name = tool_name
+        # 配置目录：在项目的 Saved 文件夹下
+        # Saved 文件夹是 UE 项目存放生成文件的地方（日志、配置、缓存等）
         config_dir = os.path.join(
             unreal.Paths.project_saved_dir(),
             "PythonToolConfigs"
         )
+        # exist_ok=True: 目录已存在时不报错
         os.makedirs(config_dir, exist_ok=True)
         self.config_path = os.path.join(config_dir, f"{tool_name}.json")
         self.config = {}
@@ -228,6 +289,7 @@ class ToolConfig:
     def load(self):
         """加载配置"""
         if os.path.exists(self.config_path):
+            # json.load 从文件读取 JSON 并转为 Python 字典
             with open(self.config_path, 'r') as f:
                 self.config = json.load(f)
             unreal.log(f"已加载配置: {self.config_path}")
@@ -236,6 +298,7 @@ class ToolConfig:
 
     def save(self):
         """保存配置"""
+        # json.dump 写入文件，indent=2 让 JSON 有缩进，方便人读
         with open(self.config_path, 'w') as f:
             json.dump(self.config, f, indent=2)
 
@@ -246,6 +309,7 @@ class ToolConfig:
     def set(self, key, value):
         """设置配置值并保存"""
         self.config[key] = value
+        # 每次 set 都保存，确保不会因为崩溃丢失配置
         self.save()
 
 # 使用示例

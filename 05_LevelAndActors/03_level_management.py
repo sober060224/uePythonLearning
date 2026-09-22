@@ -12,17 +12,15 @@
   - unreal.EditorLevelLibrary - 关卡操作
   - unreal.LevelSequence - 序列相关
 
-本课可能用到的 API：
-  unreal.EditorLevelLibrary.get_editor_world() -> World  —— 获取编辑器世界
-  unreal.EditorLevelLibrary.get_all_level_actors() -> Array[Actor]  —— 获取当前关卡全部 Actor
-  unreal.EditorLevelLibrary.save_current_level() -> None  —— 保存当前关卡
-  unreal.EditorLevelLibrary.save_all_dirty_levels() -> None  —— 保存所有被修改过的关卡
-  unreal.EditorLevelLibrary.load_level(level_path: str) -> None  —— 加载指定关卡
-  unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool  —— 检查资产是否存在
-  unreal.EditorAssetLibrary.make_directory(directory_path: str) -> bool  —— 创建目录
-  unreal.EditorLevelUtils.add_level_to_world(world: World, level_package_name: str, level_streaming_class: Class) -> LevelStreaming  —— 将子关卡添加到世界
-  unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools  —— 获取资产工具实例
-  unreal.WorldFactory() -> WorldFactory  —— 世界工厂（用于创建关卡资产）
+习题可能用到的 API：
+  - unreal.EditorLevelLibrary.get_editor_world() -> World —— 获取编辑器世界（练习1备份关卡需要引用当前世界）
+  - unreal.EditorLevelLibrary.save_current_level() -> None —— 保存当前关卡（练习1备份前需确保关卡已保存）
+  - unreal.EditorLevelLibrary.load_level(level_path: str) -> None —— 加载指定关卡（练习3迁移工具需切换关卡）
+  - unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool —— 检查资产是否存在（练习1备份前需验证路径）
+  - unreal.EditorAssetLibrary.list_assets(search_path, recursive) -> Array[str] —— 列出资产（练习4差异对比需遍历关卡资产）
+  - unreal.EditorLevelLibrary.get_all_level_actors() -> Array[Actor] —— 获取所有 Actor（练习2、3、4都需要操作 Actor 列表）
+  - unreal.EditorActorSubsystem.duplicate_actors(self, actors_to_duplicate, to_world, offset) -> Array[Actor] —— 复制 Actor（练习3迁移工具需要复制 Actor）
+  - unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools —— 获取资产工具（练习1创建备份需要生成新资产）
 =============================================================
 """
 
@@ -34,11 +32,16 @@ import unreal
 
 def get_current_level_info():
     """获取当前关卡的信息"""
+    # get_editor_world 获取当前编辑器正在编辑的世界（关卡）
+    # 在编辑器中同时可以打开多个关卡（通过 World Outliner 切换）
+    # 这个方法拿到的是当前被激活的那个
     world = unreal.EditorLevelLibrary.get_editor_world()
     if not world:
         unreal.log_error("无法获取编辑器世界")
         return
 
+    # get_name 返回资产名（不含路径），get_path_name 返回完整路径
+    # 比如 get_name() -> "MainMap"，get_path_name() -> "/Game/Maps/MainMap.MainMap"
     level_name = world.get_name()
     level_path = world.get_path_name()
 
@@ -46,7 +49,8 @@ def get_current_level_info():
     unreal.log(f"  名称: {level_name}")
     unreal.log(f"  路径: {level_path}")
 
-    # Actor 数量
+    # get_all_level_actors 只返回当前关卡的 Actor
+    # 如果使用了子关卡（Sub-Level），子关卡的 Actor 不会在这里出现
     actors = unreal.EditorLevelLibrary.get_all_level_actors()
     unreal.log(f"  Actor 数量: {len(actors)}")
 
@@ -62,11 +66,17 @@ def get_current_level_info():
 
 def save_current_level():
     """保存当前关卡"""
+    # save_current_level 会把当前关卡的修改写入磁盘
+    # 等同于编辑器里按 Ctrl+S
+    # 注意：这只保存当前关卡，其他已加载的"脏"关卡不受影响
     unreal.EditorLevelLibrary.save_current_level()
     unreal.log("当前关卡已保存")
 
 def save_all_levels():
     """保存所有已加载的关卡"""
+    # save_all_dirty_levels 保存所有被修改过但还没保存的关卡
+    # "dirty" 在编程术语里表示"有未保存的修改"
+    # 这在批量操作后很有用，确保所有修改都被持久化
     unreal.EditorLevelLibrary.save_all_dirty_levels()
     unreal.log("所有脏关卡已保存")
 
@@ -81,10 +91,14 @@ def load_level(level_path):
     参数:
         level_path: 关卡路径 (如 "/Game/Maps/MyLevel")
     """
+    # 先检查资产是否存在，避免加载不存在的关卡导致错误
     if not unreal.EditorAssetLibrary.does_asset_exist(level_path):
         unreal.log_error(f"关卡不存在: {level_path}")
         return False
 
+    # load_level 会关闭当前关卡并加载目标关卡
+    # 注意：当前关卡未保存的修改会丢失！
+    # 所以在调用之前应该先调用 save_current_level
     unreal.EditorLevelLibrary.load_level(level_path)
     unreal.log(f"已加载关卡: {level_path}")
     return True
@@ -103,18 +117,24 @@ def create_new_level(name, destination="/Game/Maps",
         destination: 保存路径
         template: 模板 ("Basic", "Empty" 等)
     """
+    # 先确保目标目录存在，如果不存在就创建
     unreal.EditorAssetLibrary.make_directory(destination)
 
+    # AssetTools 是 UE 的资产工厂，负责创建各种类型的资产
+    # WorldFactory 是专门用来创建关卡资产的工厂
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
     factory = unreal.WorldFactory()
 
     # 设置模板
     if template == "Basic":
-        # 使用基本模板
+        # 使用基本模板（自带地板和天空球）
         pass
     elif template == "Empty":
+        # 空关卡（什么都没有，纯黑）
         factory.set_editor_property("create_new", True)
 
+    # create_asset 参数：资产名、路径、资产类型、工厂
+    # 创建后会自动保存到内容浏览器指定路径
     new_world = asset_tools.create_asset(
         name,
         destination,
@@ -135,13 +155,20 @@ def create_new_level(name, destination="/Game/Maps",
 
 def list_all_levels(search_path="/Game"):
     """查找项目中的所有关卡"""
+    # list_assets 返回指定路径下的所有资产路径
+    # recursive=True 会递归搜索子文件夹
+    # 注意：这个操作可能很慢（大项目有成千上万个资产）
     all_assets = unreal.EditorAssetLibrary.list_assets(
         search_path, recursive=True
     )
 
     levels = []
     for asset_path in all_assets:
+        # find_asset_data 获取资产的元数据（不加载资产本身）
+        # 这比 load_asset 快得多——加载资产需要把整个资产读入内存
         asset_data = unreal.EditorAssetLibrary.find_asset_data(asset_path)
+        # UE5 中 asset_class_path 是一个 PathName 对象，转为字符串后检查
+        # 如果包含 "World" 就说明这是一个关卡资产
         class_str = str(asset_data.asset_class_path)
         if "World" in class_str:
             levels.append({
@@ -163,6 +190,7 @@ def analyze_level_actors():
     """分析当前关卡中 Actor 的组成"""
     actors = unreal.EditorLevelLibrary.get_all_level_actors()
 
+    # 按类型统计
     stats = {}
     for actor in actors:
         type_name = type(actor).__name__
@@ -179,8 +207,11 @@ def analyze_level_actors():
     unreal.log(f"{'=' * 50}")
     unreal.log(f"  总 Actor 数: {len(actors)}")
 
+    # 按数量从多到少排序输出
+    # key=lambda x: -x[1]["count"] 用负数实现降序排列
     for type_name, info in sorted(stats.items(), key=lambda x: -x[1]["count"]):
         unreal.log(f"\n  [{type_name}] x{info['count']}")
+        # 每种类型最多显示 5 个 Actor 名，超过的用省略号
         for label in info["labels"][:5]:
             unreal.log(f"    - {label}")
         if len(info["labels"]) > 5:
@@ -198,19 +229,18 @@ def list_sublevels():
     if not world:
         return []
 
-    # 获取关卡流数据
-    # 注意：具体 API 取决于引擎版本
+    # 子关卡（Sub-Level）是嵌套在主关卡中的其他关卡
+    # 常见用途：把大型地图拆分成多个小区域，按需加载
+    # UE5 中子关卡管理可以通过 Level Streaming 实现
     unreal.log("\n子关卡列表:")
     unreal.log("  （子关卡需要通过 World Composition 或 Level Streaming 管理）")
 
 def add_sublevel(level_path):
     """添加子关卡到当前关卡"""
-    # 检查关卡是否存在
     if not unreal.EditorAssetLibrary.does_asset_exist(level_path):
         unreal.log_error(f"关卡不存在: {level_path}")
         return False
 
-    # 添加为流关卡
     # 【修改前】
     # unreal.EditorLevelLibrary.add_level_to_world(
     #     unreal.EditorLevelLibrary.get_editor_world(),
@@ -251,6 +281,7 @@ def set_world_settings(game_mode_class=None):
     # 【修改前】unreal.get_engine_subsystem(unreal.LevelEditorSubsystem)
     # 【问题分析】LevelEditorSubsystem 是编辑器子系统（EditorSubsystem），
     #   必须用 get_editor_subsystem 获取，get_engine_subsystem 只用于引擎子系统。
+    #   两者获取的子系统类型不同，用错方法会返回 None 或报错
     world_settings = unreal.get_editor_subsystem(
         unreal.LevelEditorSubsystem
     )

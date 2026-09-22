@@ -1,4 +1,4 @@
-"""
+﻿"""
 =============================================================
 蓝图自动化 第3课：蓝图变量和函数
 =============================================================
@@ -12,24 +12,29 @@
   - unreal.BlueprintEditorLibrary - 蓝图编辑器工具
   - unreal.BlueprintVariable - 蓝图变量
 
-本课可能用到的 API：
-  unreal.EditorAssetLibrary.load_asset(asset_path) -> Object  —— 加载蓝图资产到内存
-  unreal.EditorAssetLibrary.save_asset(asset_to_save, only_if_is_dirty=True) -> bool  —— 保存修改后的蓝图
-  unreal.EditorAssetLibrary.list_assets(directory_path, recursive=True, include_folder=False) -> Array[str]  —— 递归列出路径下全部资产
-  unreal.EditorAssetLibrary.find_asset_data(asset_path) -> AssetData  —— 按路径查资产数据，不加载资产
-  unreal.EditorAssetLibrary.find_package_referencers_for_asset(asset_path, load_assets_to_confirm=False) -> Array[str]  —— 找引用该资产的包
-  unreal.BlueprintEditorLibrary.list_member_variable_names(blueprint, include_inherited_members=True) -> Array[str]  —— 列出蓝图成员变量名
-  bp.generated_class -> Class  —— 蓝图编译后生成的类
-  cls.get_default_object() -> Object  —— 获取类的默认对象 CDO
-  obj.set_editor_property(name, value)  —— 设置对象的编辑器属性
-  unreal.AssetRegistryHelpers.get_asset_registry() -> AssetRegistry  —— 获取资产注册表单例
-  registry.get_dependencies(package_name, dependency_options) -> Optional[Array[Name]]  —— 查该包引用了哪些包
-  unreal.AssetRegistryDependencyOptions(...)  —— 依赖类型选项，含软/硬引用开关
-  unreal.ScopedSlowTask(work, desc="", enabled=True)  —— 创建带进度的慢任务对象
-  task.make_dialog(can_cancel=False, allow_in_pie=False) -> None  —— 弹出进度对话框
-  task.enter_progress_frame(work=1.0, desc="") -> None  —— 推进一帧进度
-  task.should_cancel() -> bool  —— 用户是否请求取消
-  asset_data.asset_class_path -> TopLevelAssetPath  —— 资产类路径，判断是否蓝图
+习题可能用到的 API：
+  unreal.EditorAssetLibrary.list_assets(directory_path, recursive=True, include_folder=False) -> Array[str]
+      —— 递归列出资产，练习3/4遍历所有蓝图生成文档或审计
+  unreal.EditorAssetLibrary.load_asset(asset_path) -> Object
+      —— 加载蓝图到内存，练习1/2/3/4 都需要
+  unreal.EditorAssetLibrary.save_asset(asset_to_save, only_if_is_dirty=True) -> bool
+      —— 保存修改后的蓝图，练习1修改属性值后必须保存
+  unreal.BlueprintEditorLibrary.list_member_variable_names(blueprint, include_inherited_members=True) -> Array[str]
+      —— 列出蓝图成员变量名，练习2比较差异、练习1读取变量的核心 API
+  bp.generated_class -> Class
+      —— 蓝图编译后生成的类，通过它获取 CDO 修改默认值
+  cls.get_default_object() -> Object
+      —— 获取类的默认对象 CDO，练习1修改蓝图属性值时使用
+  obj.set_editor_property(name, value)
+      —— 设置对象的编辑器属性，练习1修改默认值的核心操作
+  unreal.AssetRegistryHelpers.get_asset_registry() -> AssetRegistry
+      —— 获取资产注册表单例，练习3/4 查资产元数据
+  registry.get_dependencies(package_name, dependency_options) -> Optional[Array[Name]]
+      —— 查询资产依赖，练习3生成文档时可列出依赖关系
+  unreal.AssetRegistryDependencyOptions(...)
+      —— 依赖类型选项，含软/硬引用开关
+  unreal.ScopedSlowTask(work, desc="", enabled=True)
+      —— 进度条工具，批量操作时给用户显示进度并允许取消
 =============================================================
 """
 
@@ -127,10 +132,14 @@ def modify_blueprint_defaults(blueprint_path, property_updates):
         return False
 
     # 获取蓝图的默认对象（CDO）
-    # CDO = Class Default Object
-    # 修改 CDO 会改变所有该蓝图实例的默认值
+    # CDO = Class Default Object（类默认对象）
+    # 每个 UE 类都有一个 CDO，存储该类所有实例的"出厂默认值"
+    # 修改 CDO 会影响所有尚未单独修改过该属性的实例
+    # 这就像修改了一个类的构造函数默认参数
     generated_class = bp.generated_class
     if not generated_class:
+        # generated_class 为 None 说明蓝图还没编译过，
+        # 没有编译就没有蓝图生成类（BlueprintGeneratedClass），也就没有 CDO
         unreal.log_error("蓝图没有已编译的类")
         return False
 
@@ -140,14 +149,17 @@ def modify_blueprint_defaults(blueprint_path, property_updates):
         return False
 
     # 应用属性修改
+    # set_editor_property 会通过 UE 反射系统找到属性并设置值
+    # 如果属性名不存在或类型不匹配，会抛出异常，所以用 try/except 包裹
     for prop_name, prop_value in property_updates.items():
         try:
             cdo.set_editor_property(prop_name, prop_value)
             unreal.log(f"  {prop_name} = {prop_value}")
         except Exception as e:
+            # 常见失败原因：属性名拼写错误、属性类型不匹配、属性不存在
             unreal.log_warning(f"  设置 {prop_name} 失败: {e}")
 
-    # 保存
+    # 修改 CDO 后必须保存蓝图资产，否则更改只在内存中
     unreal.EditorAssetLibrary.save_asset(blueprint_path)
     unreal.log(f"已更新蓝图默认值: {blueprint_path}")
     return True
@@ -175,17 +187,20 @@ def inspect_blueprint_properties(blueprint_path):
     unreal.log(f"蓝图属性检查: {bp.get_name()}")
     unreal.log(f"{'=' * 50}")
 
-    # 获取所有可编辑属性
+    # dir() 返回对象的所有属性和方法名列表
+    # 过滤掉以 _ 开头的 Python 内部属性
     attrs = [a for a in dir(cdo) if not a.startswith('_')]
     unreal.log(f"  可用属性/方法数: {len(attrs)}")
 
-    # 尝试读取一些常见属性
+    # 尝试读取前 30 个属性的值（跳过方法和会导致错误的属性）
     for attr in attrs[:30]:
         try:
             val = getattr(cdo, attr)
+            # callable() 判断是否是方法/函数，只显示属性值
             if not callable(val):
                 unreal.log(f"  .{attr} = {val}")
         except:
+            # 有些属性读取时会抛异常（如需要特定上下文），静默跳过
             pass
 
 # ─────────────────────────────────────────────────────────
@@ -207,12 +222,20 @@ def get_package_dependencies(asset_path):
     get_dependencies 的第二个参数必传 AssetRegistryDependencyOptions，
     想数出"所有"依赖就把软/硬引用都勾上。
     """
+    # AssetRegistry 是 UE 的资产注册表，记录项目中所有资产的元数据和依赖关系
+    # 通过 AssetRegistryHelpers 获取单例
     registry = unreal.AssetRegistryHelpers.get_asset_registry()
+
+    # AssetRegistryDependencyOptions 控制查询哪些类型的依赖：
+    # include_hard_package_references: 硬引用（直接使用，缺失会导致加载失败）
+    # include_soft_package_references: 软引用（SoftObjectPath，按需加载）
     options = unreal.AssetRegistryDependencyOptions()
     options.include_hard_package_references = True   # 硬引用：不用就跑不起来的
     options.include_soft_package_references = True   # 软引用：SoftObjectPath 那种
+
+    # get_dependencies 返回被当前资产引用的包名列表
+    # 查不到时返回 None（不是空列表），统一转换为空列表方便后续处理
     result = registry.get_dependencies(asset_path, options)
-    # get_dependencies 查不到时返回 None（不是空列表），统一成空列表
     return list(result) if result else []
 
 
@@ -222,19 +245,21 @@ def find_blueprint_dependencies(blueprint_path):
 
     unreal.log(f"\n蓝图 {blueprint_path} 依赖:")
     for dep in dependencies:
-        unreal.log(f"  → {dep}")
+        unreal.log(f"  -> {dep}")
 
     return dependencies
 
 def find_what_references_blueprint(blueprint_path):
     """查找哪些资产引用了指定蓝图"""
+    # find_package_referencers_for_asset 是"被引用"方向的查询
+    # 例如：如果 BP_Player 被 BP_GameMode 引用，这里会返回 BP_GameMode 的路径
     referencers = unreal.EditorAssetLibrary.find_package_referencers_for_asset(
         blueprint_path
     )
 
     unreal.log(f"\n引用蓝图 {blueprint_path} 的资产:")
     for ref in referencers:
-        unreal.log(f"  ← {ref}")
+        unreal.log(f"  <- {ref}")
 
     return referencers
 
@@ -246,7 +271,8 @@ def set_blueprint_description(blueprint_path, description):
     """设置蓝图的描述信息"""
     bp = unreal.EditorAssetLibrary.load_asset(blueprint_path)
     if bp:
-        # 设置蓝图的信息数据
+        # set_editor_property 通过 UE 反射系统设置属性
+        # 并非所有 UObject 都支持 description 属性，所以用 try/except
         if hasattr(bp, 'set_editor_property'):
             try:
                 bp.set_editor_property("description", description)
@@ -288,6 +314,7 @@ def audit_blueprints(search_path="/Game"):
         "issues": []
     }
 
+    # 批量操作时显示进度条，让编辑器不会"假死"
     task = unreal.ScopedSlowTask(len(all_assets), "审计蓝图...")
     task.make_dialog(True)
 
@@ -295,9 +322,11 @@ def audit_blueprints(search_path="/Game"):
         if task.should_cancel():
             break
 
+        # 用资产文件名（不含路径）作为进度描述
         task.enter_progress_frame(1.0, asset_path.split("/")[-1])
 
         asset_data = unreal.EditorAssetLibrary.find_asset_data(asset_path)
+        # 通过 asset_class_path 判断是否为蓝图类型
         class_str = str(asset_data.asset_class_path)
 
         if "Blueprint" not in class_str:
@@ -306,7 +335,7 @@ def audit_blueprints(search_path="/Game"):
         results["total"] += 1
         name = asset_data.asset_name
 
-        # 检查命名前缀
+        # 检查命名前缀：UE 惯例是蓝图用 "BP_" 前缀
         if not name.startswith("BP_"):
             results["no_prefix"] += 1
             results["issues"].append(f"命名不规范: {name}")
@@ -322,7 +351,7 @@ def audit_blueprints(search_path="/Game"):
                 f"依赖过多 ({len(refs)}): {name}"
             )
 
-    # 输出报告
+    # 输出审计报告
     unreal.log(f"\n{'=' * 50}")
     unreal.log(f"  蓝图审计报告")
     unreal.log(f"{'=' * 50}")

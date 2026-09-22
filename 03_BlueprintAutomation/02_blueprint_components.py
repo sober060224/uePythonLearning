@@ -1,4 +1,4 @@
-"""
+﻿"""
 =============================================================
 蓝图自动化 第2课：蓝图的创建、编译与父类管理
 =============================================================
@@ -21,17 +21,23 @@
   或者通过 C++ 编辑器扩展实现。本课改为演示 Python 确实能完成的部分：
   创建蓝图、指定/修改父类、编译、查询信息。
 
-本课可能用到的 API：
-  unreal.EditorAssetLibrary.load_asset(asset_path) -> Object  —— 加载蓝图资产到内存
-  unreal.EditorAssetLibrary.save_asset(asset_to_save, only_if_is_dirty=True) -> bool  —— 保存修改后的蓝图
-  unreal.EditorAssetLibrary.make_directory(directory_path) -> bool  —— 创建资产目录
-  unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools  —— 获取资产工具单例
-  unreal.BlueprintFactory()  —— 蓝图工厂，配合 set_editor_property("parent_class", ...) 设置父类
-  asset_tools.create_asset(asset_name, package_path, asset_class, factory, calling_context="None", overwrite_existing=False) -> Object  —— 用工厂创建新蓝图资产
-  unreal.BlueprintEditorLibrary.compile_blueprint(blueprint: Blueprint) -> bool  —— 编译蓝图
-  unreal.BlueprintEditorLibrary.get_blueprint_parent_class(blueprint: Blueprint) -> Class  —— 读取蓝图父类
-  unreal.BlueprintEditorLibrary.reparent_blueprint(blueprint: Blueprint, new_parent_class: Class) -> None  —— 重新指定蓝图父类
-  obj.get_name() -> str  —— 获取对象名称
+习题可能用到的 API：
+  unreal.BlueprintEditorLibrary.reparent_blueprint(blueprint, new_parent_class) -> None
+      —— 重新指定蓝图父类，练习3批量改父类的核心 API
+  unreal.BlueprintEditorLibrary.get_blueprint_parent_class(blueprint) -> Class
+      —— 读取蓝图父类，练习1统计父类、练习2列出父类关系都需要
+  unreal.EditorAssetLibrary.list_assets(directory_path, recursive=True, include_folder=False) -> Array[str]
+      —— 递归列出资产，练习1/2遍历蓝图的入口
+  unreal.EditorAssetLibrary.find_asset_data(asset_path) -> AssetData
+      —— 查询资产元数据，快速判断是否为蓝图
+  unreal.BlueprintEditorLibrary.compile_blueprint(blueprint) -> bool
+      —— 编译蓝图，修改父类后必须重新编译，练习3需要
+  unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools
+      —— 获取资产工具单例，创建蓝图时使用
+  unreal.BlueprintFactory() 配合 set_editor_property("parent_class", cls)
+      —— 蓝图工厂，练习1批量创建蓝图时使用
+  unreal.ScopedSlowTask(work, desc="", enabled=True)
+      —— 进度条工具，批量操作时给用户显示进度
 =============================================================
 """
 
@@ -50,13 +56,21 @@ def create_blueprint(name, parent_class, destination="/Game/Blueprints"):
         parent_class: 父类 (如 unreal.Actor、unreal.Pawn)
         destination: 保存路径
     """
+    # make_directory 类似 mkdir -p，会自动创建不存在的目录层级
+    # 如果目录已存在则什么也不做，不会报错
     unreal.EditorAssetLibrary.make_directory(destination)
 
+    # 获取资产工具单例，UE 编辑器通过它来执行所有资产操作
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
+
+    # BlueprintFactory 是蓝图专用的工厂类，
+    # 工厂模式是 UE 创建资产的标准流程：创建工厂 -> 配置参数 -> create_asset
     factory = unreal.BlueprintFactory()
     # 蓝图工厂通过 parent_class 属性指定新蓝图的父类
+    # 属性名必须与 UE 反射系统注册的名称完全一致（大小写敏感）
     factory.set_editor_property("parent_class", parent_class)
 
+    # create_asset 创建新蓝图，返回蓝图 UObject 或 None（失败时）
     new_bp = asset_tools.create_asset(
         name,
         destination,
@@ -68,8 +82,11 @@ def create_blueprint(name, parent_class, destination="/Game/Blueprints"):
         unreal.log_error(f"创建蓝图失败: {name}")
         return None
 
-    # 创建后编译一次，保证 GeneratedClass 可用
+    # 创建后编译一次，保证 GeneratedClass（蓝图编译后生成的类）可用
+    # 未编译的蓝图就像未编译的 C++ 源码——不能运行
     unreal.BlueprintEditorLibrary.compile_blueprint(new_bp)
+
+    # 保存到磁盘（.uasset 文件），否则只存在于内存中
     full_path = f"{destination}/{name}"
     unreal.EditorAssetLibrary.save_asset(full_path)
     unreal.log(f"已创建蓝图: {full_path} 父类={parent_class.get_name()}")
@@ -81,14 +98,21 @@ def create_blueprint(name, parent_class, destination="/Game/Blueprints"):
 
 def inspect_blueprint(blueprint_path):
     """读取蓝图的名称、类型和父类"""
+    # load_asset 加载蓝图到内存，返回 Blueprint UObject
+    # 注意：load_asset 可能返回 None（路径错误、资产损坏等），必须检查
     bp = unreal.EditorAssetLibrary.load_asset(blueprint_path)
+    # isinstance 检查确保加载的确实是蓝图，而不是其他类型的资产
     if not bp or not isinstance(bp, unreal.Blueprint):
         unreal.log_error(f"无法加载蓝图: {blueprint_path}")
         return None
 
     unreal.log(f"\n蓝图: {bp.get_name()}")
+    # get_class() 返回 UClass（UE 反射系统的类元信息），不是 Python 的 type()
     unreal.log(f"  类: {bp.get_class().get_name()}")
 
+    # get_blueprint_parent_class 是 BlueprintEditorLibrary 提供的方法，
+    # 专门用于查询蓝图继承的父类（如 Actor、Pawn、Character 等）
+    # 注意：它返回的是 UClass 对象，不是蓝图资产
     parent = unreal.BlueprintEditorLibrary.get_blueprint_parent_class(bp)
     if parent:
         unreal.log(f"  父类: {parent.get_name()}")
@@ -106,16 +130,22 @@ def reparent_blueprint(blueprint_path, new_parent_class):
         unreal.log_error(f"无法加载蓝图: {blueprint_path}")
         return False
 
+    # 先记录旧父类，方便打印日志
     old_parent = unreal.BlueprintEditorLibrary.get_blueprint_parent_class(bp)
     old_name = old_parent.get_name() if old_parent else "None"
 
-    # reparent_blueprint 会重建蓝图的父类继承关系
+    # reparent_blueprint 会重建蓝图的父类继承关系：
+    # 1. 移除旧父类的默认组件和函数
+    # 2. 继承新父类的组件和函数
+    # 3. 蓝图中与新父类不兼容的节点可能产生编译错误
     unreal.BlueprintEditorLibrary.reparent_blueprint(bp, new_parent_class)
+    # 修改父类后必须重新编译，否则蓝图处于不一致状态
     unreal.BlueprintEditorLibrary.compile_blueprint(bp)
+    # 保存到磁盘，确保修改持久化
     unreal.EditorAssetLibrary.save_asset(blueprint_path)
 
     unreal.log(
-        f"已修改父类: {bp.get_name()}  {old_name} → {new_parent_class.get_name()}"
+        f"已修改父类: {bp.get_name()}  {old_name} -> {new_parent_class.get_name()}"
     )
     return True
 
@@ -138,10 +168,13 @@ def create_blueprint_set(blueprint_defs, destination="/Game/Blueprints"):
     """
     created = []
 
+    # ScopedSlowTask 创建进度条对话框
+    # 参数1: 总工作量（每步占1帧），参数2: 标题文字
     task = unreal.ScopedSlowTask(len(blueprint_defs), "批量创建蓝图...")
-    task.make_dialog(True)
+    task.make_dialog(True)  # 弹出进度对话框
 
     for name, parent_class in blueprint_defs:
+        # should_cancel() 检查用户是否点了"取消"，长时间操作必须支持取消
         if task.should_cancel():
             break
 
@@ -164,6 +197,8 @@ def compile_blueprint(blueprint_path):
         unreal.log_error(f"无法加载蓝图: {blueprint_path}")
         return False
 
+    # 编译将蓝图的可视化脚本转换为可执行字节码
+    # 编译成功返回 True，有错误返回 False
     unreal.BlueprintEditorLibrary.compile_blueprint(bp)
     unreal.log(f"已编译蓝图: {blueprint_path}")
     return True

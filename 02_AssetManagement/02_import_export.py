@@ -12,29 +12,15 @@
   - unreal.AssetTools - 资产创建、导入、导出
   - unreal.AssetImportTask - 导入任务配置
 
-本课可能用到的 API：
+习题可能用到的 API：
   unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools  —— 获取 AssetTools 实例以执行导入导出
-  unreal.AssetImportTask()  —— 创建导入任务对象
-  task.filename = ...  —— 源文件路径
-  task.destination_path = ...  —— 目标包路径
-  task.destination_name = ...  —— 资产名（不含扩展名）
-  task.replace_existing = ...  —— 是否覆盖已有资产
-  task.automated = ...  —— 是否启用自动化模式（无弹窗）
-  task.save = ...  —— 导入后是否保存资产
-  task.options = ...  —— 导入选项配置对象
-  task.imported_object_paths -> Array[str]  —— 导入完成后产出的资产路径数组
+  unreal.AssetImportTask()  —— 创建导入任务对象（配置源文件、目标路径等）
   asset_tools.import_asset_tasks(import_tasks: Array[AssetImportTask]) -> None  —— 按导入任务列表批量导入资产
   asset_tools.export_assets(assets_to_export: Array[str], export_path: str) -> None  —— 导出资产到指定磁盘目录
-  asset_tools.create_asset(asset_name: str, package_path: str, asset_class: Class, factory: Factory, calling_context: Name = "None", overwrite_existing: bool = False) -> Object  —— 用工厂在指定包路径创建资产
-  unreal.FbxImportUI()  —— FBX 导入选项界面类
-  unreal.AutomatedAssetImportData()  —— 自动化导入所需的数据容器类
-  unreal.FbxExportOption()  —— FBX 导出选项类
-  unreal.MaterialInstanceConstantFactoryNew()  —— 材质实例常量资产的创建工厂
-  unreal.MaterialInstanceConstant  —— 材质实例常量资产类
-  unreal.TextureGroup.TEXTUREGROUP_WORLD  —— 世界纹理组枚举成员
-  obj.set_editor_property(name: str, value: object, notify_mode: PropertyAccessChangeNotifyMode = PropertyAccessChangeNotifyMode.DEFAULT) -> None  —— 设置对象的编辑器属性值
-  unreal.EditorAssetLibrary.load_asset(asset_path: str) -> Object  —— 加载资产到内存并返回对象
+  unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  —— 列出资产路径（用于筛选待导入/导出文件）
+  unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData  —— 获取资产元数据（用于按类型分类）
   unreal.EditorAssetLibrary.save_asset(asset_to_save: str, only_if_is_dirty: bool = True) -> bool  —— 保存指定资产
+  asset_tools.create_asset(asset_name: str, package_path: str, asset_class: Class, factory: Factory, calling_context: Name = "None", overwrite_existing: bool = False) -> Object  —— 用工厂在指定包路径创建资产
 =============================================================
 """
 
@@ -44,7 +30,11 @@ import os
 # ─────────────────────────────────────────────────────────
 # 1. 基本导入流程
 # ─────────────────────────────────────────────────────────
-# UE 的导入使用 "任务" 模式：创建任务 → 配置选项 → 执行
+# 【UE 概念】UE 的导入使用"任务"模式：先创建一个 AssetImportTask 对象，
+#   填好各项配置，然后把任务交给 AssetTools 执行。
+#   这种设计支持批量操作——你可以创建多个任务一起执行。
+#   相比逐个导入，批量导入效率更高（减少磁盘 I/O 和引擎开销）。
+
 
 def import_single_file(file_path, destination_path):
     """
@@ -54,33 +44,42 @@ def import_single_file(file_path, destination_path):
         file_path: 磁盘上的文件路径 (如 "C:/Models/character.fbx")
         destination_path: 项目中的目标路径 (如 "/Game/Characters")
     """
-    # 创建导入任务
+    # 【UE 概念】AssetImportTask 是一个"任务描述"对象，包含导入所需的全部配置。
+    #   它不会立即执行导入，只是告诉引擎"我要做什么"。
     task = unreal.AssetImportTask()
 
     # 基本设置
-    task.filename = file_path                              # 源文件
-    task.destination_path = destination_path                # 目标目录
-    task.destination_name = os.path.splitext(
-        os.path.basename(file_path)
-    )[0]                                                   # 资产名称（不含扩展名）
-    task.replace_existing = True                           # 覆盖已有资产
-    task.automated = True                                  # 自动化模式（无弹窗）
-    task.save = True                                       # 导入后自动保存
+    task.filename = file_path  # 源文件：磁盘上的完整路径
+    task.destination_path = destination_path  # 目标目录：/Game/ 下的路径
+    # 【注意】destination_name 不包含路径，也不包含文件扩展名。
+    #   比如导入 "C:/Models/hero.fbx"，资产名就是 "hero"。
+    #   os.path.splitext(os.path.basename(file_path))[0] 就是取文件名去掉扩展名。
+    task.destination_name = os.path.splitext(os.path.basename(file_path))[
+        0
+    ]  # 资产名称（不含扩展名）
+    task.replace_existing = True  # 覆盖已有资产（避免重复导入产生冲突）
+    task.automated = True  # 自动化模式：跳过所有弹窗确认，适合脚本批量操作
+    task.save = True  # 导入后自动保存到磁盘（否则资产在内存中未保存，关闭编辑器会丢失）
 
-    # 获取 AssetTools 并执行导入
+    # 【UE 概念】AssetTools 是 UE 的资产管理工具类，提供导入、导出、创建等功能。
+    #   不能直接实例化，必须通过 AssetToolsHelpers.get_asset_tools() 获取。
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
+    # 导入任务列表可以包含多个任务，一次性执行比逐个调用更高效
     asset_tools.import_asset_tasks([task])
 
-    # 返回导入的资产路径
+    # 【注意】imported_object_paths 只有在导入成功后才有值。
+    #   如果文件格式不支持或导入失败，这个列表会为空。
     imported_paths = task.imported_object_paths
     for path in imported_paths:
         unreal.log(f"已导入: {path}")
 
     return imported_paths
 
+
 # ─────────────────────────────────────────────────────────
 # 2. FBX 导入（带详细选项）
 # ─────────────────────────────────────────────────────────
+
 
 def import_fbx(file_path, destination_path, import_type="static_mesh"):
     """
@@ -96,36 +95,49 @@ def import_fbx(file_path, destination_path, import_type="static_mesh"):
     task.automated = True
     task.save = True
 
-    # 根据类型配置 FBX 导入选项
+    # 【UE 概念】FbxImportUI 是 FBX 专用的导入选项类。
+    #   它控制导入行为：是当静态网格体导入还是骨骼网格体？要不要导入动画？
+    #   不同类型的资产有不同的子选项（static_mesh_import_data, skeletal_mesh_import_data 等）。
+    #   设置错误会导致导入结果不符合预期（比如骨骼网格体被当静态网格体导入）。
     options = unreal.FbxImportUI()
 
     if import_type == "static_mesh":
+        # 【初学者易错点】import_as_skeletal 是关键开关：
+        #   False = 作为静态网格体导入（没有骨骼，不能播放动画）
+        #   True = 作为骨骼网格体导入（有骨骼，支持动画）
         options.import_as_skeletal = False
         options.import_mesh = True
         options.import_animations = False
 
         # 静态网格体选项
-        options.static_mesh_import_data.import_uniform_scale = 1.0
+        options.static_mesh_import_data.import_uniform_scale = 1.0  # 导入缩放比例
+        # combine_meshes=True 会把 FBX 中所有网格体合并成一个，减少 DrawCall
         options.static_mesh_import_data.combine_meshes = True
+        # 生成光照贴图 UV（用于静态光照烘焙）
         options.static_mesh_import_data.generate_lightmap_u_vs = True
 
     elif import_type == "skeletal_mesh":
-        options.import_as_skeletal = True
+        options.import_as_skeletal = True  # 这是骨骼网格体的关键！
         options.import_mesh = True
         options.import_animations = True
-        options.import_materials = True
-        options.import_textures = True
+        options.import_materials = True  # 一起导入材质
+        options.import_textures = True  # 一起导入纹理
 
         # 骨骼网格体选项
         options.skeletal_mesh_import_data.import_uniform_scale = 1.0
-        options.skeletal_mesh_import_data.import_morph_targets = True
-        options.skeletal_mesh_import_data.update_skeleton_reference_pose = False
+        options.skeletal_mesh_import_data.import_morph_targets = (
+            True  # 导入变形目标（表情等）
+        )
+        options.skeletal_mesh_import_data.update_skeleton_reference_pose = (
+            False  # 不更新骨骼参考姿势
+        )
 
     elif import_type == "animation":
         options.import_as_skeletal = True
-        options.import_mesh = False
+        options.import_mesh = False  # 动画导入不需要网格体
         options.import_animations = True
-        # 需要指定骨骼资产
+        # 【重要】导入动画需要指定一个已有的骨骼资产（Skeleton）。
+        #   引擎需要知道这个动画绑定在哪套骨骼上。
         # options.skeleton = unreal.load_asset("/Game/Characters/Skeleton")
 
     task.options = options
@@ -135,9 +147,11 @@ def import_fbx(file_path, destination_path, import_type="static_mesh"):
 
     return task.imported_object_paths
 
+
 # ─────────────────────────────────────────────────────────
 # 3. 批量导入
 # ─────────────────────────────────────────────────────────
+
 
 def batch_import(source_folder, destination_path, file_extensions=None):
     """
@@ -148,13 +162,16 @@ def batch_import(source_folder, destination_path, file_extensions=None):
         destination_path: 目标路径 (如 "/Game/BatchImport")
         file_extensions: 文件扩展名过滤 (如 [".fbx", ".obj"])
     """
+    # 【为什么设置默认值要用 None？】Python 的可变默认参数（如 []）是"陷阱"：
+    #   函数只会在定义时创建一次这个列表，后续调用会共享同一个对象。
+    #   用 None 作为默认值，在函数内部再创建新列表是安全的做法。
     if file_extensions is None:
         file_extensions = [".fbx", ".obj", ".png", ".tga", ".wav"]
 
-    # 收集文件
+    # 收集文件：用 os.listdir 遍历磁盘目录，按扩展名过滤
     files_to_import = []
     for filename in os.listdir(source_folder):
-        ext = os.path.splitext(filename)[1].lower()
+        ext = os.path.splitext(filename)[1].lower()  # .lower() 统一大小写
         if ext in file_extensions:
             files_to_import.append(os.path.join(source_folder, filename))
 
@@ -164,7 +181,8 @@ def batch_import(source_folder, destination_path, file_extensions=None):
 
     unreal.log(f"找到 {len(files_to_import)} 个文件要导入")
 
-    # 创建导入任务列表
+    # 【效率技巧】批量导入的关键：先创建所有任务，再一次性交给引擎执行。
+    #   引擎内部会优化批量操作的内存和 I/O，比逐个导入快很多。
     tasks = []
     for file_path in files_to_import:
         task = unreal.AssetImportTask()
@@ -180,7 +198,7 @@ def batch_import(source_folder, destination_path, file_extensions=None):
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
     asset_tools.import_asset_tasks(tasks)
 
-    # 汇总结果
+    # 汇总结果：每个 task 有自己的 imported_object_paths
     all_imported = []
     for task in tasks:
         all_imported.extend(task.imported_object_paths)
@@ -188,12 +206,19 @@ def batch_import(source_folder, destination_path, file_extensions=None):
     unreal.log(f"成功导入 {len(all_imported)} 个资产")
     return all_imported
 
+
 # ─────────────────────────────────────────────────────────
 # 4. 导入纹理（带配置）
 # ─────────────────────────────────────────────────────────
 
-def import_texture(file_path, destination_path, compression="default",
-                   srgb=True, texture_group="TEXTUREGROUP_World"):
+
+def import_texture(
+    file_path,
+    destination_path,
+    compression="default",
+    srgb=True,
+    texture_group="TEXTUREGROUP_World",
+):
     """
     导入纹理文件并配置压缩设置
 
@@ -212,39 +237,46 @@ def import_texture(file_path, destination_path, compression="default",
     task.automated = True
     task.save = True
 
-    # 纹理导入选项
+    # 【注意】这里用 AutomatedAssetImportData 作为通用导入选项容器。
+    #   纹理导入的大部分选项可以在导入后通过 set_editor_property 修改。
     options = unreal.AutomatedAssetImportData()
-    # 注意：具体可用的导入选项取决于引擎版本
 
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
     asset_tools.import_asset_tasks([task])
 
-    # 导入后修改纹理设置
+    # 【UE 概念】导入纹理后，引擎会用默认设置创建纹理资产。
+    #   但很多时候默认设置不够用——比如法线贴图需要特殊压缩，
+    #   UI 纹理需要禁用 sRGB，不同用途的纹理属于不同的纹理组（LOD 分组）。
+    #   所以我们导入后再通过代码修改这些属性。
     imported_paths = task.imported_object_paths
     for path in imported_paths:
+        # 【UE 概念】load_asset 把资产从磁盘加载到内存，返回对象引用。
+        #   只有加载后才能读取和修改资产的属性。
+        #   【注意】load_asset 有性能开销，不要在大循环里反复调用。
         texture = unreal.EditorAssetLibrary.load_asset(path)
         if texture and isinstance(texture, unreal.Texture2D):
-            # 【修改前】texture.set_editor_property("s_rgb", srgb)
-            # 【问题分析】纹理的 sRGB 属性名是 srgb（stub 里 Texture.srgb），不是 s_rgb。
+            # 【初学者易错点】set_editor_property 的属性名必须和 C++/Python 桩里完全一致。
+            #   纹理的 sRGB 属性名是 "srgb"（全小写），不是 "s_rgb"。
+            #   如果写错会报 AttributeError。
             texture.set_editor_property("srgb", srgb)
-            # 【修改前】unreal.TextureGroup.TEXTUREGROUP_World
-            # 【问题分析】枚举成员名是全大写：stub 里写的是 TEXTUREGROUP_WORLD。
-            #   Python 的枚举成员必须和 C++ 里完全一致，驼峰写法会报 AttributeError。
-            #   自查方法：grep PythonStub/unreal.py 里 class TextureGroup 的成员。
+            # 【初学者易错点】枚举成员名必须全大写：TEXTUREGROUP_WORLD，不是 TEXTUREGROUP_World。
+            #   Python 的 UE 枚举值必须和 C++ 定义完全一致。
+            #   不确定时可以用 dir(unreal.TextureGroup) 查看所有成员。
             texture.set_editor_property(
-                "lod_group",
-                unreal.TextureGroup.TEXTUREGROUP_WORLD
+                "lod_group", unreal.TextureGroup.TEXTUREGROUP_WORLD
             )
 
-            # 保存修改
+            # 修改后必须保存，否则更改不会写入磁盘
             unreal.EditorAssetLibrary.save_asset(path)
             unreal.log(f"已配置纹理: {path}")
 
     return imported_paths
 
+
 # ─────────────────────────────────────────────────────────
 # 5. 导出资产
 # ─────────────────────────────────────────────────────────
+
 
 def export_asset(asset_path, export_directory, export_type="fbx"):
     """
@@ -257,23 +289,24 @@ def export_asset(asset_path, export_directory, export_type="fbx"):
     """
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
 
-    # 导出选项
+    # 【UE 概念】FbxExportOption 控制 FBX 导出时的细节：
+    #   - ascii: True 用 ASCII 格式（文件大但可读），False 用二进制（推荐）
+    #   - level_of_detail: 是否导出 LOD 级别
     exporter = None
     if export_type == "fbx":
         exporter = unreal.FbxExportOption()
         exporter.set_editor_property("ascii", False)
         exporter.set_editor_property("level_of_detail", True)
 
-    # 确保导出目录存在
+    # 【初学者易错点】export_directory 必须是磁盘路径，不是 UE 内容路径。
+    #   而且目录必须存在，否则导出会失败。makedirs 创建多级目录。
     os.makedirs(export_directory, exist_ok=True)
 
-    # 执行导出
-    asset_tools.export_assets(
-        [asset_path],
-        export_directory
-    )
+    # export_assets 接受资产路径列表和导出目录
+    asset_tools.export_assets([asset_path], export_directory)
 
     unreal.log(f"已导出 {asset_path} 到 {export_directory}")
+
 
 def export_all_assets_of_type(class_name, export_directory):
     """导出指定类型的所有资产"""
@@ -282,6 +315,7 @@ def export_all_assets_of_type(class_name, export_directory):
     matching = []
     for asset_path in all_assets:
         asset_data = unreal.EditorAssetLibrary.find_asset_data(asset_path)
+        # 用 find_asset_data 获取资产类型，模糊匹配
         if class_name.lower() in str(asset_data.asset_class_path).lower():
             matching.append(asset_path)
 
@@ -297,40 +331,52 @@ def export_all_assets_of_type(class_name, export_directory):
 
     unreal.log(f"已导出 {len(matching)} 个资产到 {export_directory}")
 
+
 # ─────────────────────────────────────────────────────────
 # 6. 创建程序化资产（不导入外部文件）
 # ─────────────────────────────────────────────────────────
+
 
 def create_material_instance(base_material_path, new_asset_name, destination_path):
     """创建材质实例（不需要外部文件）"""
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
 
-    # 加载基础材质
+    # 【UE 概念】材质实例（Material Instance）是基于父材质创建的"衍生品"。
+    #   它可以覆盖父材质的参数（颜色、纹理等），而不需要重新创建材质。
+    #   这是一种高效的材质管理方式——多个物体共享一个父材质，但外观各不相同。
+
+    # load_asset 把材质从磁盘加载到内存
     base_material = unreal.EditorAssetLibrary.load_asset(base_material_path)
     if not base_material:
         unreal.log_error(f"无法加载基础材质: {base_material_path}")
         return None
 
-    # 创建材质实例
+    # 【UE 概念】Factory（工厂）是 UE 创建资产的"模板"。
+    #   MaterialInstanceConstantFactoryNew 是专门创建材质实例的工厂。
+    #   每种资产类型都有对应的 Factory 类。
     factory = unreal.MaterialInstanceConstantFactoryNew()
 
-    # 使用 AssetTools 创建
+    # 【初学者易错点】create_asset 的参数：
+    #   - asset_name: 新资产名称（不含路径）
+    #   - package_path: /Game/ 下的目标目录
+    #   - asset_class: 资产类（如 unreal.MaterialInstanceConstant）
+    #   - factory: 创建资产的工厂对象
+    #   返回值是创建成功的资产对象，失败返回 None。
     new_asset = asset_tools.create_asset(
-        new_asset_name,
-        destination_path,
-        unreal.MaterialInstanceConstant,
-        factory
+        new_asset_name, destination_path, unreal.MaterialInstanceConstant, factory
     )
 
     if new_asset:
-        # 【修改前】factory.set_editor_property("initial_parent", base_material)
-        # 【问题分析】MaterialInstanceConstantFactoryNew 没有 initial_parent 属性，
-        #   父材质需在创建后通过 MaterialEditingLibrary.set_material_instance_parent 设置。
+        # 【初学者易错点】Factory 不负责设置父材质。
+        #   MaterialInstanceConstantFactoryNew 没有 initial_parent 属性。
+        #   父材质必须在资产创建后，通过 MaterialEditingLibrary 设置。
+        #   这是 UE API 设计的一个"分步"模式：先创建，再配置。
         unreal.MaterialEditingLibrary.set_material_instance_parent(
             new_asset, base_material
         )
         unreal.log(f"已创建材质实例: {destination_path}/{new_asset_name}")
     return new_asset
+
 
 # ─────────────────────────────────────────────────────────
 # 使用示例（取消注释来运行）
