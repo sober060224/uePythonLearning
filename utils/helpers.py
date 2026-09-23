@@ -103,19 +103,29 @@ def asset_exists(asset_path):
 
 def get_all_actors():
     """获取关卡中所有 Actor"""
-    return unreal.EditorLevelLibrary.get_all_level_actors()
+    # 【UE5】EditorLevelLibrary 属于已废弃的 Editor Scripting Utilities 插件，
+    #   Actor 查询统一走 EditorActorSubsystem（调用旧 API 会打 DeprecationWarning）。
+    return unreal.get_editor_subsystem(
+        unreal.EditorActorSubsystem
+    ).get_all_level_actors()
 
 
 def get_selected_actors():
     """获取选中的 Actor"""
-    return unreal.EditorLevelLibrary.get_selected_level_actors()
+    return unreal.get_editor_subsystem(
+        unreal.EditorActorSubsystem
+    ).get_selected_level_actors()
 
 
 def get_actors_by_label(label_contains):
     """按标签搜索 Actor"""
     all_actors = get_all_actors()
+    # get_actor_label() 返回的是 unreal.Name，不是 str —— 没有 .lower()，
+    #   先 str() 转换再比较。
     return [
-        a for a in all_actors if label_contains.lower() in a.get_actor_label().lower()
+        a
+        for a in all_actors
+        if label_contains.lower() in str(a.get_actor_label()).lower()
     ]
 
 
@@ -144,7 +154,11 @@ def vector_from_dict(d):
 
 def rotator_from_dict(d):
     """从 dict 创建 Rotator"""
-    return unreal.Rotator(d.get("pitch", 0), d.get("yaw", 0), d.get("roll", 0))
+    # 【易错点】Rotator 的 Python 构造函数按 (roll, pitch, yaw) 取位置参数，
+    #   写成 Rotator(pitch, yaw, roll) 会让三个角度整体串位，所以这里用关键字参数。
+    return unreal.Rotator(
+        pitch=d.get("pitch", 0), yaw=d.get("yaw", 0), roll=d.get("roll", 0)
+    )
 
 
 def distance_between(actor1, actor2):
@@ -160,12 +174,11 @@ def lerp_vector(v1, v2, t):
 
 
 def direction_to_rotation(direction):
-    """将方向向量转换为旋转"""
     yaw = math.degrees(math.atan2(direction.y, direction.x))
     pitch = math.degrees(
         math.atan2(direction.z, math.sqrt(direction.x**2 + direction.y**2))
     )
-    return unreal.Rotator(-pitch, yaw, 0)
+    return unreal.Rotator(pitch=-pitch, yaw=yaw, roll=0)
 
 
 # ─────────────────────────────────────────────────────────

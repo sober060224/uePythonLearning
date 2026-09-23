@@ -1,4 +1,4 @@
-﻿"""
+"""
 =============================================================
 蓝图自动化 第1课：蓝图基础 - 创建和修改蓝图
 =============================================================
@@ -275,7 +275,7 @@ def compile_all_blueprints(search_path="/Game"):
         if task.should_cancel():
             break
 
-        task.enter_progress_frame(1.0, bp_data.asset_name)
+        task.enter_progress_frame(1.0, str(bp_data.asset_name))  # Name -> str
         if compile_blueprint(bp_data.package_name):
             compiled += 1
 

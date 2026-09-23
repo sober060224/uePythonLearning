@@ -72,9 +72,8 @@ if editor_subsystem:
 #   - 关卡 Actor 操作 → EditorActorSubsystem（获取/生成/销毁 Actor）
 # 记忆方法：老 API 是一个大而全的静态库（EditorLevelLibrary），
 # 新 API 按职责拆成多个子系统，统一用 get_editor_subsystem() 获取。
-current_level = unreal.get_editor_subsystem(
-    unreal.UnrealEditorSubsystem
-).get_editor_world()  # 复用上面第 1 节拿到的子系统
+# 复用第 1 节拿到的子系统对象，不必再调一次 get_editor_subsystem
+current_level = editor_subsystem.get_editor_world()
 
 if current_level:
     unreal.log(f"当前关卡: {current_level.get_name()}")
@@ -189,6 +188,9 @@ else:
     # 进度条总量 = 资产数量
     task = unreal.ScopedSlowTask(float(total), "正在扫描资产...")
     # make_dialog(True) 弹出模态进度弹窗，参数表示"是否显示取消按钮"
+    # 【易错点】只创建 ScopedSlowTask 并不会显示进度条，
+    #   必须调用 make_dialog() 才会真的弹窗 —— 漏掉这一步就会出现"没反应"。
+    task.make_dialog(True)
 
     type_counts = {}
     for i, asset_path in enumerate(all_asset_paths):
@@ -229,7 +231,7 @@ else:
 #   - UE5 Python 里"通知用户"只有两条路：
 #     1. EditorDialog.show_message —— 模态弹窗，会阻塞脚本，用户点 OK 才继续
 #     2. SystemLibrary.print_string —— 非阻塞，文字画在视口上，几秒后自动消失
-world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+world = editor_subsystem.get_editor_world()
 unreal.SystemLibrary.print_string(
     world,
     "Python 脚本执行完成！",

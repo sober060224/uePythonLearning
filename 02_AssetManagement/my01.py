@@ -74,9 +74,9 @@ def inspect_asset(asset_path):
     unreal.log(f"类型: {asset_data.asset_class_path}")
 
     # 获取标签
-    # 使用 EditorAssetLibrary.get_tag_values(asset_path) 获取所有标签
-    # 返回类型是 Map[Name, str]，即字典
-    tag_values = unreal.EditorAssetLibrary.get_tag_values(asset_path)
+    # 【易错点】get_tag_values 在 EditorAssetSubsystem 上，EditorAssetLibrary 没有这个方法。
+    #   返回类型是 Map[Name, str]，即字典。
+    tag_values = unreal.get_editor_subsystem(unreal.EditorAssetSubsystem).get_tag_values(asset_path)
     if tag_values:
         unreal.log(f"标签数量: {len(tag_values)}")
         for tag_name, tag_value in tag_values.items():
@@ -147,7 +147,8 @@ def generate_asset_report(search_path="/Game"):
 # ─────────────────────────────────────────────────────────
 # 1. 编写函数，找出项目中最大的10个资产（按文件大小）
 def first(path):
-    project_dir = r"C:\Users\sober\Documents\Unreal Projects\LyraStarterGame"
+    # 用 unreal.Paths.project_dir() 拿项目目录，不要写死某台机器的绝对路径
+    project_dir = unreal.Paths.project_dir()
     assets = []
 
     for asset_path in all_assets:

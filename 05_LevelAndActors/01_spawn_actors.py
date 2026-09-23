@@ -23,7 +23,29 @@
 =============================================================
 """
 
+import contextlib
 import unreal
+
+# ─────────────────────────────────────────────────────────
+# 工具：编辑器事务上下文
+# ─────────────────────────────────────────────────────────
+@contextlib.contextmanager
+def editor_transaction(description, context):
+    """
+    在编辑器事务里执行一段操作：
+
+      - 正常结束    -> 提交事务（用户可以 Ctrl+Z 一次性撤销整段操作）
+      - 抛异常      -> cancel_transaction 回滚，撤销栈不会留在"半开"状态
+      - 中途 return -> __exit__ 照样执行，收尾不会漏
+    """
+    token = unreal.SystemLibrary.begin_transaction("Python脚本", description, context)
+    try:
+        yield token
+    except BaseException:
+        unreal.SystemLibrary.cancel_transaction(token)
+        raise
+    else:
+        unreal.SystemLibrary.end_transaction()
 import math
 import random
 
@@ -143,38 +165,41 @@ def spawn_grid(actor_class, rows, cols, spacing,
     #   - "Python脚本" 是上下文名称（显示在撤销历史里）
     #   - "生成网格" 是操作描述
     #   - world 是被修改的主对象（生成操作中 Actor 还不存在，用 World 代替）
+    # 【性能】mesh_path 在每次迭代里都是同一个资产，加载一次就够了。
+    #   原来把它写在双重循环里，rows*cols 次调用 load_asset 纯属浪费。
+    mesh = unreal.EditorAssetLibrary.load_asset(mesh_path) if mesh_path else None
+    if mesh_path and not mesh:
+        unreal.log_warning(f"网格体加载失败，将只生成空 Actor: {mesh_path}")
+
     world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
-    token = unreal.SystemLibrary.begin_transaction("Python脚本", "生成网格", world)
+    with editor_transaction("生成网格", world):
+        for row in range(rows):
+            for col in range(cols):
+                # 检查用户是否点了取消按钮
+                if task.should_cancel():
+                    break
 
-    for row in range(rows):
-        for col in range(cols):
-            # 检查用户是否点了取消按钮
-            if task.should_cancel():
-                break
+                # 每生成一个 Actor，进度条就前进一格
+                task.enter_progress_frame(1.0)
 
-            # 每生成一个 Actor，进度条就前进一格
-            task.enter_progress_frame(1.0)
+                # 计算网格位置：
+                # x 轴方向由 col 控制（左右移动），y 轴方向由 row 控制（前后移动）
+                # spacing 是相邻 Actor 之间的距离（单位：厘米）
+                location = unreal.Vector(
+                    start_location.x + col * spacing,
+                    start_location.y + row * spacing,
+                    start_location.z
+                )
 
-            # 计算网格位置：
-            # x 轴方向由 col 控制（左右移动），y 轴方向由 row 控制（前后移动）
-            # spacing 是相邻 Actor 之间的距离（单位：厘米）
-            location = unreal.Vector(
-                start_location.x + col * spacing,
-                start_location.y + row * spacing,
-                start_location.z
-            )
+                actor = spawn_basic_actor(
+                    actor_class,
+                    location,
+                    label=f"Grid_R{row}_C{col}"
+                )
 
-            actor = spawn_basic_actor(
-                actor_class,
-                location,
-                label=f"Grid_R{row}_C{col}"
-            )
-
-            # 如果指定了网格体路径，就给生成的 Actor 设置网格体
-            # Actor 本身只是一个"容器"，真正显示 3D 模型的是它的 StaticMeshComponent
-            if actor and mesh_path:
-                mesh = unreal.EditorAssetLibrary.load_asset(mesh_path)
-                if mesh:
+                # 如果指定了网格体路径，就给生成的 Actor 设置网格体
+                # Actor 本身只是一个"容器"，真正显示 3D 模型的是它的 StaticMeshComponent
+                if actor and mesh:
                     # get_component_by_class 获取 Actor 上指定类型的组件
                     # StaticMeshComponent 是负责渲染静态网格体的组件
                     mesh_comp = actor.get_component_by_class(
@@ -185,10 +210,9 @@ def spawn_grid(actor_class, rows, cols, spacing,
                         # 这就像给 Actor "穿上"一个 3D 模型
                         mesh_comp.set_static_mesh(mesh)
 
-            spawned.append(actor)
+                spawned.append(actor)
 
-    # 结束事务——到这里为止的所有操作会被打包成一个"可撤销"的整体
-    unreal.SystemLibrary.end_transaction()
+    # with 块结束时事务提交：整批生成操作在撤销历史里是一个整体
     unreal.log(f"已生成 {len(spawned)} 个 Actor ({rows}x{cols} 网格)")
     return spawned
 
@@ -214,58 +238,56 @@ def spawn_along_path(actor_class, points, count,
 
     spawned = []
     world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
-    token = unreal.SystemLibrary.begin_transaction("Python脚本", "沿路径生成", world)
+    with editor_transaction("沿路径生成", world):
+        for i in range(count):
+            # t 是 0~1 之间的归一化参数，表示在整条路径上的百分比位置
+            # 比如 count=10 时，i=0 得 t=0（起点），i=9 得 t=1（终点）
+            t = i / max(count - 1, 1)
+            total_length = 0
 
-    for i in range(count):
-        # t 是 0~1 之间的归一化参数，表示在整条路径上的百分比位置
-        # 比如 count=10 时，i=0 得 t=0（起点），i=9 得 t=1（终点）
-        t = i / max(count - 1, 1)
-        total_length = 0
+            # 先计算每段路径的长度，累加得到总长度
+            # Vector 相减可以得到两点间的向量，.length() 得到向量长度
+            segments = []
+            for j in range(len(points) - 1):
+                seg_len = (points[j+1] - points[j]).length()
+                segments.append(seg_len)
+                total_length += seg_len
 
-        # 先计算每段路径的长度，累加得到总长度
-        # Vector 相减可以得到两点间的向量，.length() 得到向量长度
-        segments = []
-        for j in range(len(points) - 1):
-            seg_len = (points[j+1] - points[j]).length()
-            segments.append(seg_len)
-            total_length += seg_len
+            # 找到 t 对应的实际距离位置
+            target_dist = t * total_length
+            current_dist = 0
 
-        # 找到 t 对应的实际距离位置
-        target_dist = t * total_length
-        current_dist = 0
+            for j, seg_len in enumerate(segments):
+                if current_dist + seg_len >= target_dist:
+                    # local_t 是在当前线段上的局部比例（0~1）
+                    # 用线性插值计算最终位置：A*(1-t) + B*t
+                    # 这是最基本的向量插值（Lerp）公式
+                    local_t = (target_dist - current_dist) / seg_len
+                    location = (
+                        points[j] * (1 - local_t) +
+                        points[j+1] * local_t
+                    )
 
-        for j, seg_len in enumerate(segments):
-            if current_dist + seg_len >= target_dist:
-                # local_t 是在当前线段上的局部比例（0~1）
-                # 用线性插值计算最终位置：A*(1-t) + B*t
-                # 这是最基本的向量插值（Lerp）公式
-                local_t = (target_dist - current_dist) / seg_len
-                location = (
-                    points[j] * (1 - local_t) +
-                    points[j+1] * local_t
-                )
+                    # 计算朝向：用 atan2 算出方向向量的角度
+                    # atan2 返回弧度，用 math.degrees 转换为角度
+                    # 这样 Actor 会面朝路径的前进方向
+                    direction = points[j+1] - points[j]
+                    yaw = math.degrees(math.atan2(direction.y, direction.x))
+                    # 【易错点】Rotator 位置参数顺序是 (roll, pitch, yaw)，用关键字参数避免串位。
+                    rotation = unreal.Rotator(
+                        pitch=0,
+                        yaw=yaw + (random.uniform(0, 360) if randomize_rotation else 0),
+                        roll=0,
+                    )
 
-                # 计算朝向：用 atan2 算出方向向量的角度
-                # atan2 返回弧度，用 math.degrees 转换为角度
-                # 这样 Actor 会面朝路径的前进方向
-                direction = points[j+1] - points[j]
-                yaw = math.degrees(math.atan2(direction.y, direction.x))
-                rotation = unreal.Rotator(
-                    0,
-                    yaw + (random.uniform(0, 360) if randomize_rotation else 0),
-                    0
-                )
+                    actor = spawn_basic_actor(
+                        actor_class, location, rotation,
+                        label=f"Path_{i}"
+                    )
+                    spawned.append(actor)
+                    break
 
-                actor = spawn_basic_actor(
-                    actor_class, location, rotation,
-                    label=f"Path_{i}"
-                )
-                spawned.append(actor)
-                break
-
-            current_dist += seg_len
-
-    unreal.SystemLibrary.end_transaction()
+                current_dist += seg_len
     unreal.log(f"沿路径生成了 {len(spawned)} 个 Actor")
     return spawned
 
@@ -291,49 +313,46 @@ def spawn_in_area(actor_class, center, radius, count,
     max_attempts = count * 10
 
     world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
-    token = unreal.SystemLibrary.begin_transaction("Python脚本", "随机散布", world)
+    with editor_transaction("随机散布", world):
+        attempts = 0
+        while len(spawned_actors) < count and attempts < max_attempts:
+            attempts += 1
 
-    attempts = 0
-    while len(spawned_actors) < count and attempts < max_attempts:
-        attempts += 1
+            # 在圆内均匀随机采样的经典算法：
+            # 1. angle 在 0~2π 之间随机（决定方向）
+            # 2. dist = radius * sqrt(random) 而不是 radius * random
+            #    为什么用 sqrt？因为圆的面积和半径平方成正比
+            #    如果直接用 random，点会聚集在圆心附近
+            #    用 sqrt 可以让点在整个圆内均匀分布
+            angle = random.uniform(0, 2 * math.pi)
+            dist = radius * math.sqrt(random.uniform(0, 1))
 
-        # 在圆内均匀随机采样的经典算法：
-        # 1. angle 在 0~2π 之间随机（决定方向）
-        # 2. dist = radius * sqrt(random) 而不是 radius * random
-        #    为什么用 sqrt？因为圆的面积和半径平方成正比
-        #    如果直接用 random，点会聚集在圆心附近
-        #    用 sqrt 可以让点在整个圆内均匀分布
-        angle = random.uniform(0, 2 * math.pi)
-        dist = radius * math.sqrt(random.uniform(0, 1))
+            x = center.x + dist * math.cos(angle)
+            y = center.y + dist * math.sin(angle)
+            z = random.uniform(height_range[0], height_range[1])
 
-        x = center.x + dist * math.cos(angle)
-        y = center.y + dist * math.sin(angle)
-        z = random.uniform(height_range[0], height_range[1])
+            location = unreal.Vector(x, y, z)
 
-        location = unreal.Vector(x, y, z)
+            # min_distance 可以防止点之间太近（比如避免岩石重叠）
+            # 这是一个简单的"排斥"机制，但不是泊松圆盘采样
+            if min_distance > 0:
+                too_close = False
+                for existing in spawned_locations:
+                    if (location - existing).length() < min_distance:
+                        too_close = True
+                        break
+                if too_close:
+                    continue
 
-        # min_distance 可以防止点之间太近（比如避免岩石重叠）
-        # 这是一个简单的"排斥"机制，但不是泊松圆盘采样
-        if min_distance > 0:
-            too_close = False
-            for existing in spawned_locations:
-                if (location - existing).length() < min_distance:
-                    too_close = True
-                    break
-            if too_close:
-                continue
+            rotation = unreal.Rotator(pitch=0, yaw=random.uniform(0, 360), roll=0)
+            actor = spawn_basic_actor(
+                actor_class, location, rotation,
+                label=f"Scatter_{len(spawned_actors)}"
+            )
 
-        rotation = unreal.Rotator(0, random.uniform(0, 360), 0)
-        actor = spawn_basic_actor(
-            actor_class, location, rotation,
-            label=f"Scatter_{len(spawned_actors)}"
-        )
-
-        if actor:
-            spawned_actors.append(actor)
-            spawned_locations.append(location)
-
-    unreal.SystemLibrary.end_transaction()
+            if actor:
+                spawned_actors.append(actor)
+                spawned_locations.append(location)
     unreal.log(
         f"在半径 {radius} 区域内散布了 {len(spawned_actors)} 个 Actor"
     )
@@ -373,38 +392,41 @@ def spawn_light_array(center, radius, count, height=300.0,
                        intensity=5000.0):
     """在圆形区域生成灯光阵列"""
     spawned = []
+    # 【易错点】count 为 0 时 360.0 / count 会抛 ZeroDivisionError，
+    #   先挡掉非法输入，返回空列表并说明原因。
+    if count <= 0:
+        unreal.log_error(f"灯光数量必须大于 0（收到 count={count}）")
+        return []
+
     # 360度除以灯光数量，得到每个灯光之间的角度间隔
     angle_step = 360.0 / count
 
     world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
-    token = unreal.SystemLibrary.begin_transaction("Python脚本", "生成灯光阵列", world)
+    with editor_transaction("生成灯光阵列", world):
+        for i in range(count):
+            # math.radians 将角度转为弧度（UE的三角函数用弧度制）
+            angle = math.radians(i * angle_step)
+            x = center.x + radius * math.cos(angle)
+            y = center.y + radius * math.sin(angle)
+            z = center.z + height
 
-    for i in range(count):
-        # math.radians 将角度转为弧度（UE的三角函数用弧度制）
-        angle = math.radians(i * angle_step)
-        x = center.x + radius * math.cos(angle)
-        y = center.y + radius * math.sin(angle)
-        z = center.z + height
-
-        # PointLight 是点光源 Actor，会向四周均匀发光
-        actor = unreal.EditorLevelLibrary.spawn_actor_from_class(
-            unreal.PointLight,
-            unreal.Vector(x, y, z)
-        )
-
-        if actor:
-            actor.set_actor_label(f"Light_{i}")
-            # PointLightComponent 是点光源的核心组件
-            # set_intensity 设置光照强度（单位：流明）
-            # 数值越大越亮，典型室内灯 500-2000，阳光 10000+
-            light_comp = actor.get_component_by_class(
-                unreal.PointLightComponent
+            # PointLight 是点光源 Actor，会向四周均匀发光
+            actor = unreal.EditorLevelLibrary.spawn_actor_from_class(
+                unreal.PointLight,
+                unreal.Vector(x, y, z)
             )
-            if light_comp:
-                light_comp.set_intensity(intensity)
-            spawned.append(actor)
 
-    unreal.SystemLibrary.end_transaction()
+            if actor:
+                actor.set_actor_label(f"Light_{i}")
+                # PointLightComponent 是点光源的核心组件
+                # set_intensity 设置光照强度（单位：流明）
+                # 数值越大越亮，典型室内灯 500-2000，阳光 10000+
+                light_comp = actor.get_component_by_class(
+                    unreal.PointLightComponent
+                )
+                if light_comp:
+                    light_comp.set_intensity(intensity)
+                spawned.append(actor)
     unreal.log(f"已生成 {len(spawned)} 个点光源")
     return spawned
 

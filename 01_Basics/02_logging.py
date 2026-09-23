@@ -50,12 +50,14 @@ unreal.log_error("这是一条错误消息 - 用于报告错误")
 # ─────────────────────────────────────────────────────────
 # 3. 屏幕消息（Screen Message）
 # ─────────────────────────────────────────────────────────
-# 屏幕消息直接显示在编辑器视口上，非常适合调试
-# 参数: 消息文本, 是否显示, 持续时间(秒), 颜色
+# 【易错点】print_string 的第一个参数 world_context_object 必须是有效的 World。
+#   传 None 时引擎不知道该"往哪个世界"画 —— 屏幕上什么都不会出现，而且不报错（静默失败）。
+#   编辑器脚本里先通过 UnrealEditorSubsystem 拿到编辑器 World，再作为上下文传进去。
+editor_world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
 
 # 显示一条白色消息，持续3秒
 unreal.SystemLibrary.print_string(
-    world_context_object=None,           # 世界上下文（None 表示编辑器）
+    world_context_object=editor_world,   # 世界上下文（编辑器 World）
     string="Hello from Python!",         # 消息内容
     print_to_screen=True,                # 是否显示在屏幕上
     print_to_log=True,                   # 是否同时输出到日志
@@ -65,20 +67,19 @@ unreal.SystemLibrary.print_string(
 
 # 不同颜色的屏幕消息
 unreal.SystemLibrary.print_string(
-    None, "红色警告消息", True, True,
+    editor_world, "红色警告消息", True, True,
     [1.0, 0.0, 0.0, 1.0], 5.0   # 红色
 )
 
 unreal.SystemLibrary.print_string(
-    None, "绿色成功消息", True, True,
+    editor_world, "绿色成功消息", True, True,
     [0.0, 1.0, 0.0, 1.0], 5.0   # 绿色
 )
 
 unreal.SystemLibrary.print_string(
-    None, "蓝色信息消息", True, True,
+    editor_world, "蓝色信息消息", True, True,
     [0.0, 0.5, 1.0, 1.0], 5.0   # 蓝色
 )
-
 # ─────────────────────────────────────────────────────────
 # 4. 格式化输出
 # ─────────────────────────────────────────────────────────

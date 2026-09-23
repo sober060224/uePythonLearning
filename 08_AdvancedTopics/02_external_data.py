@@ -1,4 +1,4 @@
-﻿"""
+"""
 =============================================================
 高级主题 第2课：与外部数据交互
 =============================================================
@@ -19,14 +19,36 @@
   unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools  -- 获取 AssetTools 实例以执行导入
   asset_tools.import_asset_tasks(import_tasks: Array[AssetImportTask]) -> None  -- 批量执行导入任务
   unreal.EditorAssetLibrary.load_asset(asset_path: str) -> Object  -- 按路径加载资产到内存
-  unreal.EditorLevelLibrary.get_all_level_actors() -> Array[Actor]  -- 获取当前关卡全部 Actor
-  unreal.EditorLevelLibrary.spawn_actor_from_class(actor_class: Class, location: Vector, rotation: Rotator) -> Actor  -- 从类生成新 Actor
+  unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_all_level_actors() -> Array[Actor]  -- 获取当前关卡全部 Actor
+  unreal.get_editor_subsystem(unreal.EditorActorSubsystem).spawn_actor_from_class(actor_class: Class, location: Vector, rotation: Rotator) -> Actor  -- 从类生成新 Actor
   unreal.EditorAssetLibrary.make_directory(directory_path: str) -> bool  -- 创建目录
   unreal.SystemLibrary.begin_transaction(context: str, description: Text, primary_object: Object) -> int  -- 开启可撤销事务并返回索引
 =============================================================
 """
 
+import contextlib
 import unreal
+
+# ─────────────────────────────────────────────────────────
+# 工具：编辑器事务上下文
+# ─────────────────────────────────────────────────────────
+@contextlib.contextmanager
+def editor_transaction(description, context):
+    """
+    在编辑器事务里执行一段操作：
+
+      - 正常结束    -> 提交事务（用户可以 Ctrl+Z 一次性撤销整段操作）
+      - 抛异常      -> cancel_transaction 回滚，撤销栈不会留在"半开"状态
+      - 中途 return -> __exit__ 照样执行，收尾不会漏
+    """
+    token = unreal.SystemLibrary.begin_transaction("Python脚本", description, context)
+    try:
+        yield token
+    except BaseException:
+        unreal.SystemLibrary.cancel_transaction(token)
+        raise
+    else:
+        unreal.SystemLibrary.end_transaction()
 import json
 import csv
 import os
@@ -112,18 +134,31 @@ def write_csv(data, file_path, fieldnames=None):
         file_path: 文件路径
         fieldnames: 列名（当 data 是 list of list 时需要手动指定）
     """
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    parent = os.path.dirname(file_path)
+    if parent:
+        os.makedirs(parent, exist_ok=True)
 
-    # 如果 data 是 dict 列表，从第一个字典的键中提取列名
-    # 为什么检查 isinstance(data[0], dict)？因为 list of list 没有键的概念
-    if data and isinstance(data[0], dict):
+    if not data:
+        unreal.log_warning(f"没有数据可写: {file_path}")
+        return
+
+    # 两种数据形态要分开处理（原来只处理了 dict 列表，
+    # 传 list of list 时会用 DictWriter 去写列表，直接抛异常）：
+    #   - list of dict  -> csv.DictWriter，列名从第一个字典的键提取
+    #   - list of list  -> csv.writer，列名由调用方通过 fieldnames 给出
+    if isinstance(data[0], dict):
         fieldnames = list(data[0].keys())
-
-    with open(file_path, 'w', newline='', encoding='utf-8') as f:
-        # newline='' 是 CSV 写入的标准做法，避免 Windows 上出现多余的空行
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()  # 写入列名行
-        writer.writerows(data)  # 写入所有数据行
+        with open(file_path, 'w', newline='', encoding='utf-8') as f:
+            # newline='' 是 CSV 写入的标准做法，避免 Windows 上出现多余的空行
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()  # 写入列名行
+            writer.writerows(data)  # 写入所有数据行
+    else:
+        with open(file_path, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            if fieldnames:
+                writer.writerow(fieldnames)
+            writer.writerows(data)
 
     unreal.log(f"已写入 CSV: {file_path} ({len(data)} 行)")
 
@@ -267,18 +302,20 @@ def add_row_to_datatable(table_path, row_name, row_data):
     if not table:
         return False
 
-    unreal.log(f"添加行: {row_name} 到 {table_path}")
-
-    # 实际操作中，可能需要：
-    # 1. 获取 Row Structure（通过 table.get_row_struct()）
-    # 2. 创建新的 Structure 实例
-    # 3. 逐个填充字段数据
-    # 4. 使用 add_row() 方法添加到 DataTable
-    # 这些步骤依赖具体的 Row Structure 定义
-
-    # 修改后需要保存资产，否则更改不会持久化到磁盘
-    unreal.EditorAssetLibrary.save_asset(table_path)
-    return True
+    # 【重要】UE 的 Python API 里没有 DataTable.add_row（在 PythonStub/unreal.py 中
+    #   搜索 add_row 查不到），所以这个函数没法真正写入数据。
+    #   与其 save_asset 一下就 return True 让调用方以为写成功了，不如如实返回 False。
+    #
+    # 想给 DataTable 加数据，可行路线是把数据写成 CSV，再整体导入：
+    #   unreal.DataTableFunctionLibrary.fill_data_table_from_csv_file(table, csv_path)
+    # （需要 CSV 的列名和 DataTable 的 Row Structure 完全对应）
+    row_struct = table.get_row_struct()
+    unreal.log_error(
+        f"无法直接新增行: UE Python 没有 DataTable.add_row。"
+        f"该表的行结构是 {row_struct.get_name() if row_struct else '未知'}；"
+        f"请改用 CSV + fill_data_table_from_csv_file 导入。"
+    )
+    return False
 
 # --------------------------------------------------
 # 5. 导出项目数据
@@ -322,7 +359,7 @@ def export_asset_list_to_csv(search_path="/Game",
 
         rows.append({
             "Path": asset_path,
-            "Name": asset_data.asset_name,
+            "Name": str(asset_data.asset_name),  # Name -> str，CSV 才写得出来
             "Type": str(asset_data.asset_class_path).split(".")[-1],
             "ReferenceCount": len(refs),
         })
@@ -346,7 +383,8 @@ def export_actor_data_to_json(output_path=None):
 
     # get_all_level_actors 获取当前关卡中的所有 Actor
     # 注意：这只获取当前打开的关卡，不是整个项目
-    actors = unreal.EditorLevelLibrary.get_all_level_actors()
+    # 【UE5】EditorLevelLibrary 已废弃，统一用 EditorActorSubsystem
+    actors = unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_all_level_actors()
 
     data = []
     for actor in actors:
@@ -366,7 +404,7 @@ def export_actor_data_to_json(output_path=None):
             "rotation": {"pitch": rot.pitch, "yaw": rot.yaw, "roll": rot.roll},
             "scale": {"x": scale.x, "y": scale.y, "z": scale.z},
             # get_folder_path 获取 Actor 在大纲视图中的文件夹路径
-            "folder": actor.get_folder_path() if hasattr(actor, 'get_folder_path') else "",
+            "folder": str(actor.get_folder_path()),  # get_folder_path() 返回 Name，json 需要 str
         }
 
         # 尝试获取网格体信息（只有 StaticMeshActor 才有）
@@ -428,62 +466,63 @@ def spawn_actors_from_json(json_path):
     # 注意：unreal.Transactions 不存在，事务方法在 SystemLibrary 上
     # primary_object 用编辑器 World，因为生成 Actor 的操作作用于关卡
     world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
-    token = unreal.SystemLibrary.begin_transaction("Python脚本", "从JSON生成Actor", world)
+    with editor_transaction("从JSON生成Actor", world):
+        for item in data:
+            # 从 JSON 中读取类名，映射为实际的 UE 类
+            class_name = item.get("class", "StaticMeshActor")
+            actor_class = class_map.get(class_name, unreal.StaticMeshActor)
 
-    for item in data:
-        # 从 JSON 中读取类名，映射为实际的 UE 类
-        class_name = item.get("class", "StaticMeshActor")
-        actor_class = class_map.get(class_name, unreal.StaticMeshActor)
+            # 从字典中提取位置和旋转数据，构造 UE 的 Vector 和 Rotator
+            loc = item.get("location", {})
+            rot = item.get("rotation", {})
 
-        # 从字典中提取位置和旋转数据，构造 UE 的 Vector 和 Rotator
-        loc = item.get("location", {})
-        rot = item.get("rotation", {})
+            location = unreal.Vector(
+                loc.get("x", 0), loc.get("y", 0), loc.get("z", 0)
+            )
+            # 【易错点】Rotator 位置参数顺序是 (roll, pitch, yaw)，用关键字参数避免串位。
+            rotation = unreal.Rotator(
+                pitch=rot.get("pitch", 0), yaw=rot.get("yaw", 0), roll=rot.get("roll", 0)
+            )
 
-        location = unreal.Vector(
-            loc.get("x", 0), loc.get("y", 0), loc.get("z", 0)
-        )
-        rotation = unreal.Rotator(
-            rot.get("pitch", 0), rot.get("yaw", 0), rot.get("roll", 0)
-        )
+            # spawn_actor_from_class 在关卡中生成一个新的 Actor
+            # 这是关卡编辑脚本中最常用的函数之一
+            actor = unreal.get_editor_subsystem(
+            unreal.EditorActorSubsystem
+        ).spawn_actor_from_class(
+                actor_class, location, rotation
+            )
 
-        # spawn_actor_from_class 在关卡中生成一个新的 Actor
-        # 这是关卡编辑脚本中最常用的函数之一
-        actor = unreal.EditorLevelLibrary.spawn_actor_from_class(
-            actor_class, location, rotation
-        )
+            if actor:
+                # set_actor_label 设置 Actor 在编辑器大纲视图中显示的名称
+                actor.set_actor_label(item.get("label", "FromJSON"))
 
-        if actor:
-            # set_actor_label 设置 Actor 在编辑器大纲视图中显示的名称
-            actor.set_actor_label(item.get("label", "FromJSON"))
+                # 设置缩放
+                scale = item.get("scale", {})
+                if scale:
+                    actor.set_actor_scale3d(unreal.Vector(
+                        scale.get("x", 1),
+                        scale.get("y", 1),
+                        scale.get("z", 1)
+                    ))
 
-            # 设置缩放
-            scale = item.get("scale", {})
-            if scale:
-                actor.set_actor_scale3d(unreal.Vector(
-                    scale.get("x", 1),
-                    scale.get("y", 1),
-                    scale.get("z", 1)
-                ))
+                # 设置网格体（仅对 StaticMeshActor 有效）
+                mesh_path = item.get("mesh")
+                if mesh_path:
+                    # load_asset 从路径加载资产到内存
+                    mesh = unreal.EditorAssetLibrary.load_asset(mesh_path)
+                    if mesh:
+                        # 获取 Actor 的 StaticMeshComponent 组件
+                        comp = actor.get_component_by_class(
+                            unreal.StaticMeshComponent
+                        )
+                        if comp:
+                            # set_static_mesh 将网格体赋值给组件
+                            comp.set_static_mesh(mesh)
 
-            # 设置网格体（仅对 StaticMeshActor 有效）
-            mesh_path = item.get("mesh")
-            if mesh_path:
-                # load_asset 从路径加载资产到内存
-                mesh = unreal.EditorAssetLibrary.load_asset(mesh_path)
-                if mesh:
-                    # 获取 Actor 的 StaticMeshComponent 组件
-                    comp = actor.get_component_by_class(
-                        unreal.StaticMeshComponent
-                    )
-                    if comp:
-                        # set_static_mesh 将网格体赋值给组件
-                        comp.set_static_mesh(mesh)
+                spawned.append(actor)
 
-            spawned.append(actor)
-
-    # 结束事务，提交所有操作
-    # 如果之后执行 SystemLibrary.cancel_transaction(token) 可以撤销
-    unreal.SystemLibrary.end_transaction()
+        # 结束事务，提交所有操作
+        # 如果之后执行 SystemLibrary.cancel_transaction(token) 可以撤销
     unreal.log(f"从 JSON 生成了 {len(spawned)} 个 Actor")
     return spawned
 

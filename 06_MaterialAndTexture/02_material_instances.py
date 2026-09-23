@@ -160,11 +160,17 @@ def list_instance_parameters(instance_path):
     if parent:
         unreal.log(f"父材质: {parent.get_name()}")
 
-    # 列出参数（通过检查表达式）
-    # 注意：Python API 不一定提供完整的参数列表查询方法，
-    # 实际项目中可能需要通过 C++ 或编辑器 UI 来查看完整参数。
-    if hasattr(instance, 'get_scalar_parameter_value'):
-        unreal.log("  （使用材质编辑器查看完整参数列表）")
+    # 列出参数：MaterialEditingLibrary 能直接查询参数名，不用打开材质编辑器。
+    # 【修改前】这里用 hasattr(instance, 'get_scalar_parameter_value') 做判断，
+    #   但 UE 的 Python 包装对象对"未知属性"也返回 True —— 判断永远成立，等于没写。
+    scalar_names = unreal.MaterialEditingLibrary.get_scalar_parameter_names(instance)
+    vector_names = unreal.MaterialEditingLibrary.get_vector_parameter_names(instance)
+    if scalar_names:
+        unreal.log(f"  标量参数: {', '.join(str(n) for n in scalar_names)}")
+    if vector_names:
+        unreal.log(f"  向量参数: {', '.join(str(n) for n in vector_names)}")
+    if not scalar_names and not vector_names:
+        unreal.log("  （该实例没有覆盖参数，全部继承父材质）")
 
     return instance
 
@@ -279,14 +285,19 @@ def batch_update_scalar(instance_paths, param_name, new_value):
         # isinstance 检查确保确实是材质实例，避免在其他资产类型上误操作
         if instance and isinstance(instance, unreal.MaterialInstanceConstant):
             try:
-                unreal.MaterialEditingLibrary.set_material_instance_scalar_parameter_value(
+                # 这个函数返回 bool：参数不存在时返回 False（而不是抛异常），
+                # 所以要检查返回值，否则会把"没改成功"也算进 updated。
+                ok = unreal.MaterialEditingLibrary.set_material_instance_scalar_parameter_value(
                     instance, param_name, new_value
                 )
-                unreal.EditorAssetLibrary.save_asset(path)
-                updated += 1
-            except:
-                # 如果某个实例没有这个参数，set 操作会失败，跳过即可
-                pass
+                if ok:
+                    unreal.EditorAssetLibrary.save_asset(path)
+                    updated += 1
+                else:
+                    unreal.log_warning(f"  {path} 上没有标量参数 {param_name}，已跳过")
+            except Exception as e:
+                # 不要用裸 except：至少把原因打出来，否则出错时完全查不到线索
+                unreal.log_warning(f"  设置 {path} 的 {param_name} 失败: {e}")
 
     unreal.log(f"已更新 {updated} 个材质实例的 {param_name}")
 
@@ -310,12 +321,23 @@ def assign_material_to_actors(material_path, actor_label_contains=None,
         return
 
     if actor_label_contains:
-        from utils.helpers import get_actors_by_label
-        actors = get_actors_by_label(actor_label_contains)
+        # 直接在关卡里按标签过滤。
+        # 【易错点】这里原来写的是 from utils.helpers import get_actors_by_label，
+        #   但本课没有把 PythonLearning 加进 sys.path，单独运行会 ModuleNotFoundError。
+        #   课程要求"每个脚本都能独立运行"，所以这里内联实现。
+        actors = [
+            a for a in unreal.get_editor_subsystem(
+                unreal.EditorActorSubsystem
+            ).get_all_level_actors()
+            if actor_label_contains in str(a.get_actor_label())
+        ]
     else:
         # get_selected_level_actors 返回编辑器视口中当前选中的 Actor 列表
         # 如果没有选中任何 Actor，返回空列表
-        actors = unreal.EditorLevelLibrary.get_selected_level_actors()
+        # （EditorLevelLibrary 已废弃，改用 EditorActorSubsystem）
+        actors = unreal.get_editor_subsystem(
+            unreal.EditorActorSubsystem
+        ).get_selected_level_actors()
 
     count = 0
     for actor in actors:

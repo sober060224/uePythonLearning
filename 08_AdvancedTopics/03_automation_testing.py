@@ -1,4 +1,4 @@
-﻿"""
+"""
 =============================================================
 高级主题 第3课：自动化测试脚本
 =============================================================
@@ -18,7 +18,7 @@
   unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  -- 递归列出目录下全部资产/文件夹
   unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData  -- 获取资产元数据（类、名称等）
   unreal.EditorAssetLibrary.find_package_referencers_for_asset(asset_path: str, load_assets_to_confirm: bool = False) -> Array[str]  -- 查找引用该资产的全部包路径
-  unreal.EditorLevelLibrary.get_all_level_actors() -> Array[Actor]  -- 获取当前关卡全部 Actor
+  unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_all_level_actors() -> Array[Actor]  -- 获取当前关卡全部 Actor
   unreal.EditorAssetLibrary.load_asset(asset_path: str) -> Object  -- 按路径加载资产到内存
   unreal.Paths.project_saved_dir() -> str  -- 获取项目 Saved 目录的绝对路径
   unreal.log(arg: Any) -> None  -- 输出一般消息到日志
@@ -248,7 +248,8 @@ class AssetValidationTests:
             # find_asset_data 返回 AssetData 元数据对象
             # 不需要加载资产本身，效率高
             asset_data = unreal.EditorAssetLibrary.find_asset_data(asset_path)
-            name = asset_data.asset_name  # 资产短名称
+            # asset_name 是 unreal.Name：转成 str 才能用 in / startswith
+            name = str(asset_data.asset_name)  # 资产短名称
             class_str = str(asset_data.asset_class_path)  # 完整类路径
 
             # 检查1：名称不能包含空格
@@ -285,7 +286,8 @@ class AssetValidationTests:
 
             # find_package_referencers_for_asset 查找所有引用该资产的包
             refs = unreal.EditorAssetLibrary.find_package_referencers_for_asset(
-                asset_path
+                asset_path,
+                load_assets_to_confirm=True,  # 删除/判定前把需要加载才能确认的引用也算进来
             )
             # 排除自身引用（资产自身会引用自身）
             external_refs = [r for r in refs if r != asset_path]
@@ -435,7 +437,9 @@ def run_all_tests():
         (LevelValidationTests.test_lighting_built, "光照构建"),
     ]
 
-    suite.run_all(tests)
+    # 【易错点】run_all 返回的是"全部通过了吗"的 bool，
+    #   不 return 出去的话，CI 里调用 run_all_tests() 永远拿到 None（等于永远成功）。
+    return suite.run_all(tests)
 
 # --------------------------------------------------
 # 命令行运行（CI/CD 集成）

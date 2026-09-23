@@ -27,7 +27,29 @@
 =============================================================
 """
 
+import contextlib
 import unreal
+
+# ─────────────────────────────────────────────────────────
+# 工具：编辑器事务上下文
+# ─────────────────────────────────────────────────────────
+@contextlib.contextmanager
+def editor_transaction(description, context):
+    """
+    在编辑器事务里执行一段操作：
+
+      - 正常结束    -> 提交事务（用户可以 Ctrl+Z 一次性撤销整段操作）
+      - 抛异常      -> cancel_transaction 回滚，撤销栈不会留在"半开"状态
+      - 中途 return -> __exit__ 照样执行，收尾不会漏
+    """
+    token = unreal.SystemLibrary.begin_transaction("Python脚本", description, context)
+    try:
+        yield token
+    except BaseException:
+        unreal.SystemLibrary.cancel_transaction(token)
+        raise
+    else:
+        unreal.SystemLibrary.end_transaction()
 import math
 
 # ─────────────────────────────────────────────────────────
@@ -101,10 +123,11 @@ def rotate_actor_relative(actor, delta_rotation):
     # Rotator 不能直接用 + 号相加（不像 Vector 那样重载了运算符）
     # 所以需要手动把三个分量分别相加
     current = actor.get_actor_rotation()
+    # 【易错点】Rotator 位置参数顺序是 (roll, pitch, yaw)，用关键字参数避免串位。
     new_rot = unreal.Rotator(
-        current.pitch + delta_rotation.pitch,
-        current.yaw + delta_rotation.yaw,
-        current.roll + delta_rotation.roll
+        pitch=current.pitch + delta_rotation.pitch,
+        yaw=current.yaw + delta_rotation.yaw,
+        roll=current.roll + delta_rotation.roll,
     )
     actor.set_actor_rotation(new_rot, False)
 
@@ -210,10 +233,9 @@ def batch_move_actors(actors, offset):
         primary = unreal.get_editor_subsystem(
             unreal.UnrealEditorSubsystem
         ).get_editor_world()
-    token = unreal.SystemLibrary.begin_transaction("Python脚本", "批量移动", primary)
-    for actor in actors:
-        move_actor_relative(actor, offset)
-    unreal.SystemLibrary.end_transaction()
+    with editor_transaction("批量移动", primary):
+        for actor in actors:
+            move_actor_relative(actor, offset)
     unreal.log(f"已移动 {len(actors)} 个 Actor")
 
 def batch_scale_actors(actors, scale_factor):
@@ -226,16 +248,15 @@ def batch_scale_actors(actors, scale_factor):
         primary = unreal.get_editor_subsystem(
             unreal.UnrealEditorSubsystem
         ).get_editor_world()
-    token = unreal.SystemLibrary.begin_transaction("Python脚本", "批量缩放", primary)
-    for actor in actors:
-        current_scale = actor.get_actor_scale3d()
-        new_scale = unreal.Vector(
-            current_scale.x * scale_factor,
-            current_scale.y * scale_factor,
-            current_scale.z * scale_factor
-        )
-        actor.set_actor_scale3d(new_scale)
-    unreal.SystemLibrary.end_transaction()
+    with editor_transaction("批量缩放", primary):
+        for actor in actors:
+            current_scale = actor.get_actor_scale3d()
+            new_scale = unreal.Vector(
+                current_scale.x * scale_factor,
+                current_scale.y * scale_factor,
+                current_scale.z * scale_factor
+            )
+            actor.set_actor_scale3d(new_scale)
     unreal.log(f"已缩放 {len(actors)} 个 Actor (倍率: {scale_factor})")
 
 def batch_set_material(actors, material_path):
@@ -324,7 +345,8 @@ def delete_actor(actor):
     """删除 Actor"""
     # 先保存名字再删除（删除后就拿不到了）
     label = actor.get_actor_label()
-    unreal.EditorLevelLibrary.destroy_actor(actor)
+    # 【UE5】EditorLevelLibrary 已废弃，删除 Actor 用 EditorActorSubsystem.destroy_actor
+    unreal.get_editor_subsystem(unreal.EditorActorSubsystem).destroy_actor(actor)
     unreal.log(f"已删除: {label}")
 
 def delete_actors_by_label(label_contains):
@@ -333,8 +355,9 @@ def delete_actors_by_label(label_contains):
     # 先搜出来，再统一删除
     actors = get_actors_by_label(label_contains)
     count = len(actors)
+    editor_actors = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
     for actor in actors:
-        unreal.EditorLevelLibrary.destroy_actor(actor)
+        editor_actors.destroy_actor(actor)
     unreal.log(f"已删除 {count} 个标签包含 '{label_contains}' 的 Actor")
 
 # ─────────────────────────────────────────────────────────

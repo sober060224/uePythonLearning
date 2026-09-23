@@ -183,7 +183,7 @@ def batch_import(source_folder, destination_path, file_extensions=None):
 
     # 【效率技巧】批量导入的关键：先创建所有任务，再一次性交给引擎执行。
     #   引擎内部会优化批量操作的内存和 I/O，比逐个导入快很多。
-    tasks = []
+    tasks: list[unreal.AssetImportTask] = []
     for file_path in files_to_import:
         task = unreal.AssetImportTask()
         task.filename = file_path
@@ -217,7 +217,7 @@ def import_texture(
     destination_path,
     compression="default",
     srgb=True,
-    texture_group="TEXTUREGROUP_World",
+    texture_group="TEXTUREGROUP_WORLD",
 ):
     """
     导入纹理文件并配置压缩设置
@@ -227,7 +227,7 @@ def import_texture(
         destination_path: 目标路径
         compression: 压缩设置 ("default", "normalmap", "ui", "skybox")
         srgb: 是否启用 sRGB
-        texture_group: 纹理组
+        texture_group: 纹理组 ("TEXTUREGROUP_WORLD", "TEXTUREGROUP_UI", "TEXTUREGROUP_CHARACTER", "TEXTUREGROUP_SKYBOX")
     """
     task = unreal.AssetImportTask()
     task.filename = file_path
@@ -239,10 +239,25 @@ def import_texture(
 
     # 【注意】这里用 AutomatedAssetImportData 作为通用导入选项容器。
     #   纹理导入的大部分选项可以在导入后通过 set_editor_property 修改。
-    options = unreal.AutomatedAssetImportData()
+    # options = unreal.AutomatedAssetImportData()
 
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
     asset_tools.import_asset_tasks([task])
+
+    # 【易错点】compression_settings / lod_group 都是枚举属性，不能直接赋字符串
+    #   （会报 TypeError），先把"好记的字符串"映射成枚举成员再赋值。
+    compression_map = {
+        "default": unreal.TextureCompressionSettings.TC_DEFAULT,
+        "normalmap": unreal.TextureCompressionSettings.TC_NORMALMAP,
+        "ui": unreal.TextureCompressionSettings.TC_EDITOR_ICON,
+        "skybox": unreal.TextureCompressionSettings.TC_HDR,
+    }
+    texture_group_map = {
+        "TEXTUREGROUP_WORLD": unreal.TextureGroup.TEXTUREGROUP_WORLD,
+        "TEXTUREGROUP_UI": unreal.TextureGroup.TEXTUREGROUP_UI,
+        "TEXTUREGROUP_CHARACTER": unreal.TextureGroup.TEXTUREGROUP_CHARACTER,
+        "TEXTUREGROUP_SKYBOX": unreal.TextureGroup.TEXTUREGROUP_SKYBOX,
+    }
 
     # 【UE 概念】导入纹理后，引擎会用默认设置创建纹理资产。
     #   但很多时候默认设置不够用——比如法线贴图需要特殊压缩，
@@ -260,10 +275,16 @@ def import_texture(
             #   如果写错会报 AttributeError。
             texture.set_editor_property("srgb", srgb)
             # 【初学者易错点】枚举成员名必须全大写：TEXTUREGROUP_WORLD，不是 TEXTUREGROUP_World。
-            #   Python 的 UE 枚举值必须和 C++ 定义完全一致。
             #   不确定时可以用 dir(unreal.TextureGroup) 查看所有成员。
             texture.set_editor_property(
-                "lod_group", unreal.TextureGroup.TEXTUREGROUP_WORLD
+                "lod_group",
+                texture_group_map.get(
+                    texture_group, unreal.TextureGroup.TEXTUREGROUP_WORLD
+                ),
+            )
+            # compression_settings 是 TextureCompressionSettings 枚举，不能直接赋字符串
+            texture.compression_settings = compression_map.get(
+                compression, unreal.TextureCompressionSettings.TC_DEFAULT
             )
 
             # 修改后必须保存，否则更改不会写入磁盘
@@ -322,7 +343,7 @@ def export_asset(asset_path, export_directory, export_type="fbx"):
     task.filename = filename  # 目标文件路径（不含扩展名）
     task.automated = True  # 自动化模式：不弹任何对话框
     task.prompt = False  # 不询问用户确认（无人值守脚本必备）
-    task.replace_existing = True  # 目标文件已存在时直接覆盖
+    task.replace_identical = True  # 目标文件已存在时直接覆盖
 
     # --------------------------------------------------------
     # 第五步：根据导出格式挂不同的选项
@@ -331,8 +352,8 @@ def export_asset(asset_path, export_directory, export_type="fbx"):
     if export_type == "fbx":
         # FbxExportOption 专门控制 FBX 导出的细节
         fbx_opts = unreal.FbxExportOption()
-        fbx_opts.set_editor_property("ascii", False)  # False = 二进制 FBX（体积更小）
-        fbx_opts.set_editor_property("level_of_detail", True)  # 导出所有 LOD 层级
+        fbx_opts.ascii = False
+        fbx_opts.level_of_detail = True
         task.options = fbx_opts  # 把选项挂到任务上
     # 非 FBX 时 task.options 留空，导出器会用默认配置
 
@@ -424,7 +445,7 @@ def create_material_instance(base_material_path, new_asset_name, destination_pat
 # import_fbx("C:/Models/character.fbx", "/Game/Characters", "skeletal_mesh")
 
 # 示例2: 批量导入
-# batch_import("C:/Models/Batch", "/Game/BatchImport")
+# batch_import(r"D:\Users\26800\Downloads\fbx", "/Game/Textures")
 
 # 示例3: 导出资产
 # export_asset("/Game/Meshes/MyMesh", "C:/ExportedAssets")

@@ -253,7 +253,28 @@ def add_material_nodes(material):
         "A"           # 目标输入引脚名（Multiply 的第一个输入）
     )
 
-    unreal.log("已添加材质节点")
+    # 【修改前】只连了 const -> multiply.A，另外三个节点全是"孤岛"：
+    #   VectorParameter 没接、Multiply 的结果也没接到材质输出，等于白建。
+    # 把颜色参数接到 Multiply 的第二个输入 B：
+    #   输出引脚名传 "" 表示"该节点的默认输出"（Epic 官方 Python 示例的写法）。
+    unreal.MaterialEditingLibrary.connect_material_expressions(
+        vector_param,  # 源节点：颜色参数
+        "",            # 默认输出（VectorParameter 是一个 4 分量向量）
+        multiply,      # 目标节点
+        "B"            # Multiply 的第二个输入
+    )
+
+    # 最后一步最关键：把 Multiply 的结果接到材质的 Base Color 属性上。
+    # 只有连到 MaterialProperty，材质才会有实际效果。
+    connected = unreal.MaterialEditingLibrary.connect_material_property(
+        multiply,                            # 源节点
+        "",                                  # 默认输出
+        unreal.MaterialProperty.MP_BASE_COLOR  # 目标材质属性
+    )
+    if not connected:
+        unreal.log_warning("连接 Base Color 失败，请在材质编辑器里手动检查")
+
+    unreal.log(f"已添加材质节点（共 {len(unreal.MaterialEditingLibrary.get_material_expressions(material))} 个）")
     # 每次修改材质图后都要重新编译，否则视口不会更新
     unreal.MaterialEditingLibrary.recompile_material(material)
 

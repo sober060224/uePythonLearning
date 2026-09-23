@@ -1,4 +1,4 @@
-﻿"""
+"""
 =============================================================
 蓝图自动化 第3课：蓝图变量和函数
 =============================================================
@@ -136,14 +136,18 @@ def modify_blueprint_defaults(blueprint_path, property_updates):
     # 每个 UE 类都有一个 CDO，存储该类所有实例的"出厂默认值"
     # 修改 CDO 会影响所有尚未单独修改过该属性的实例
     # 这就像修改了一个类的构造函数默认参数
-    generated_class = bp.generated_class
+    # 【易错点】generated_class 是方法不是属性，必须加括号：
+    #   写 bp.generated_class（不加括号）拿到的是"绑定方法对象"，它永远为真，
+    #   下面的空值判断会形同虚设，也不能当类使用。
+    generated_class = bp.generated_class()
     if not generated_class:
-        # generated_class 为 None 说明蓝图还没编译过，
+        # generated_class 为空说明蓝图还没编译过，
         # 没有编译就没有蓝图生成类（BlueprintGeneratedClass），也就没有 CDO
         unreal.log_error("蓝图没有已编译的类")
         return False
 
-    cdo = generated_class.get_default_object()
+    # 取 CDO 用模块级函数 unreal.get_default_object(类对象)
+    cdo = unreal.get_default_object(generated_class)
     if not cdo:
         unreal.log_error("无法获取默认对象")
         return False
@@ -174,12 +178,12 @@ def inspect_blueprint_properties(blueprint_path):
     if not bp:
         return
 
-    generated_class = bp.generated_class
+    generated_class = bp.generated_class()
     if not generated_class:
         unreal.log("蓝图未编译，无法检查属性")
         return
 
-    cdo = generated_class.get_default_object()
+    cdo = unreal.get_default_object(generated_class)
     if not cdo:
         return
 
@@ -271,26 +275,26 @@ def set_blueprint_description(blueprint_path, description):
     """设置蓝图的描述信息"""
     bp = unreal.EditorAssetLibrary.load_asset(blueprint_path)
     if bp:
-        # set_editor_property 通过 UE 反射系统设置属性
-        # 并非所有 UObject 都支持 description 属性，所以用 try/except
-        if hasattr(bp, 'set_editor_property'):
-            try:
-                bp.set_editor_property("description", description)
-                unreal.EditorAssetLibrary.save_asset(blueprint_path)
-                unreal.log(f"已设置描述: {description}")
-            except:
-                unreal.log_warning("设置描述失败（可能不支持该属性）")
+        # 【易错点】BluePrint 的描述属性名是 blueprint_description，
+        #   不叫 description —— 写错会抛异常，所以这里用 try/except 兜住并打印原因。
+        try:
+            bp.set_editor_property("blueprint_description", description)
+            unreal.EditorAssetLibrary.save_asset(blueprint_path)
+            unreal.log(f"已设置描述: {description}")
+        except Exception as e:
+            unreal.log_warning(f"设置描述失败: {e}")
 
 def set_blueprint_category(blueprint_path, category):
     """设置蓝图的分类（影响在内容浏览器中的分类）"""
     bp = unreal.EditorAssetLibrary.load_asset(blueprint_path)
     if bp and hasattr(bp, 'set_editor_property'):
+        # 【易错点】分类属性名是 blueprint_category，不是 category_name
         try:
-            bp.set_editor_property("category_name", category)
+            bp.set_editor_property("blueprint_category", category)
             unreal.EditorAssetLibrary.save_asset(blueprint_path)
             unreal.log(f"已设置分类: {category}")
-        except:
-            unreal.log_warning("设置分类失败")
+        except Exception as e:
+            unreal.log_warning(f"设置分类失败: {e}")
 
 # ─────────────────────────────────────────────────────────
 # 7. 实用工具：蓝图审计
@@ -309,7 +313,6 @@ def audit_blueprints(search_path="/Game"):
     results = {
         "total": 0,
         "no_prefix": 0,
-        "no_description": 0,
         "high_dependency": 0,
         "issues": []
     }
@@ -333,7 +336,8 @@ def audit_blueprints(search_path="/Game"):
             continue
 
         results["total"] += 1
-        name = asset_data.asset_name
+        # asset_name 是 Name 类型，startswith 需要真正的字符串
+        name = str(asset_data.asset_name)
 
         # 检查命名前缀：UE 惯例是蓝图用 "BP_" 前缀
         if not name.startswith("BP_"):

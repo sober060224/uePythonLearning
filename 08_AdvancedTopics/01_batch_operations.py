@@ -168,7 +168,8 @@ class ProjectCleaner:
             # find_package_referencers_for_asset 查找所有引用该资产的包
             # 这是判断资产是否被使用的标准方法
             refs = unreal.EditorAssetLibrary.find_package_referencers_for_asset(
-                asset_path
+                asset_path,
+                load_assets_to_confirm=True,  # 删除/判定前把需要加载才能确认的引用也算进来
             )
             # 排除自身引用（资产自身会引用自身）
             external_refs = [r for r in refs if r != asset_path]
@@ -215,22 +216,25 @@ class ProjectCleaner:
         )
 
         def fix_name(asset_path):
-            if unreal.EditorAssetLibrary.does_directory_exist(asset_path):
-                return None
-
+            # list_assets 默认 include_folder=False，返回的都是资产路径，
+            # 不需要再判断"是不是文件夹"（原判断永远不会成立）。
             # find_asset_data 获取资产的元数据，包括类名和短名称
             # 为什么不用 load_asset？因为 load_asset 会加载资产到内存，对于大量资产太慢
             asset_data = unreal.EditorAssetLibrary.find_asset_data(asset_path)
-            # asset_name 是资产的短名称（不含路径）
-            name = asset_data.asset_name
+            # 【易错点】asset_name 是 unreal.Name，不是 str —— 它没有 startswith，
+            #   必须先 str() 转成普通字符串。
+            name = str(asset_data.asset_name)
             # asset_class_path 是资产类的完整路径，转为字符串后可以包含类名
             class_str = str(asset_data.asset_class_path)
 
-            # 检查是否需要添加前缀
+            # 【易错点】不要用 "class_key in class_str" 做子串匹配：
+            #   class_str 形如 "/Script/Engine.MaterialInstanceConstant"，
+            #   字典里 "Material" 排在前面，于是 MI_Foo 会被当成材质改成 M_MI_Foo。
+            #   正确做法是取出 "." 之后真正的类名，做精确比较。
+            class_name = class_str.split(".")[-1]
+
             for class_key, prefix in prefix_map.items():
-                # class_key 在 class_str 中出现，说明资产属于该类
-                # not name.startswith(prefix) 说明缺少正确前缀
-                if class_key in class_str and not name.startswith(prefix):
+                if class_name == class_key and not name.startswith(prefix):
                     new_name = prefix + name
                     # 构建新路径：保持原目录，只改文件名
                     new_path = f"{os.path.dirname(asset_path)}/{new_name}"

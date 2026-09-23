@@ -102,10 +102,8 @@ def batch_rename(search_path, prefix="", suffix="",
 
         current_name = asset_path.split("/")[-1]
 
-        # 跳过文件夹——文件夹不是资产，不能用 rename_asset 重命名
-        if unreal.EditorAssetLibrary.does_directory_exist(asset_path):
-            task.enter_progress_frame(1.0)
-            continue
+        # 不需要判断文件夹：list_assets 默认 include_folder=False，
+        #   返回的都是资产路径，文件夹不会出现在这里。
 
         new_name = current_name
 
@@ -158,9 +156,7 @@ def add_standard_prefixes(search_path):
 
     renamed = 0
     for asset_path in assets:
-        if unreal.EditorAssetLibrary.does_directory_exist(asset_path):
-            continue
-
+        # list_assets 默认 include_folder=False，列表里不会有文件夹，无需再过滤
         asset_data = unreal.EditorAssetLibrary.find_asset_data(asset_path)
         # 【注意】find_asset_data 返回的 asset_class_path 是一个 SoftClassPath 对象，
         #   str() 转换后可能包含模块前缀（如 "Engine.Texture2D"），
@@ -251,8 +247,10 @@ def safe_delete_asset(asset_path):
     # 【UE 概念】在 UE 中删除资产前必须检查引用。
     #   如果一个纹理被某个材质引用，删除纹理会导致材质变黑（引用断裂）。
     #   find_package_referencers_for_asset 返回所有引用该资产的包路径。
+    # load_assets_to_confirm=True：把需要加载才能确认的引用也算进来，
+    #   默认的 False 会漏掉这类引用，导致"以为没被引用"而误删。
     referencers = unreal.EditorAssetLibrary.find_package_referencers_for_asset(
-        asset_path
+        asset_path, load_assets_to_confirm=True
     )
 
     # 【注意】资产可能自引用（比如蓝图的默认值引用自身），
@@ -270,14 +268,23 @@ def safe_delete_asset(asset_path):
     # 没有外部引用，可以安全删除
     return True, []
 
-def delete_asset(asset_path, force=False):
+def delete_asset(asset_path, force=False, confirm_force=False):
     """
     删除资产
 
     参数:
         asset_path: 资产路径
         force: 是否强制删除（忽略引用检查）
+        confirm_force: force=True 时必须再传 True 表示"确认要忽略引用"
+            （删除资产不可撤销，光一个 force=True 太容易误删）
     """
+    if force and not confirm_force:
+        unreal.log_error(
+            f"force=True 会跳过引用检查、可能造成引用断裂。"
+            f"确认要这么做请调用 delete_asset({asset_path!r}, force=True, confirm_force=True)"
+        )
+        return False
+
     if not force:
         is_safe, refs = safe_delete_asset(asset_path)
         if not is_safe:
@@ -312,11 +319,10 @@ def cleanup_unused_assets(search_path="/Game", dry_run=True):
 
         task.enter_progress_frame(1.0, asset_path.split("/")[-1])
 
-        if unreal.EditorAssetLibrary.does_directory_exist(asset_path):
-            continue
-
+        # list_assets 默认 include_folder=False，这里拿到的都是资产路径
         referencers = unreal.EditorAssetLibrary.find_package_referencers_for_asset(
-            asset_path
+            asset_path,
+            load_assets_to_confirm=True,  # 删除/判定前把需要加载才能确认的引用也算进来
         )
         external_refs = [r for r in referencers if r != asset_path]
 
@@ -407,8 +413,9 @@ def save_current_level():
     """保存当前关卡"""
     # 【UE 概念】关卡（Level）和普通资产的保存方式不同。
     #   普通资产用 EditorAssetLibrary.save_asset，
-    #   关卡用 EditorLevelLibrary.save_current_level，因为关卡是特殊的持久化对象。
-    unreal.EditorLevelLibrary.save_current_level()
+    #   【UE5】关卡操作用 LevelEditorSubsystem：EditorLevelLibrary 属于已废弃的
+    #   Editor Scripting Utilities 插件，调用会打 DeprecationWarning。
+    unreal.get_editor_subsystem(unreal.LevelEditorSubsystem).save_current_level()
     unreal.log("关卡已保存")
 
 # ─────────────────────────────────────────────────────────

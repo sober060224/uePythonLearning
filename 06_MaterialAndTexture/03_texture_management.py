@@ -163,6 +163,21 @@ def configure_texture(texture_path, srgb=True,
             "compression_settings",
             compression_map[compression]
         )
+    else:
+        unreal.log_warning(f"未知压缩类型 {compression!r}，保持默认（可用: {', '.join(compression_map)}）")
+
+    # LOD 组：和压缩设置一样必须传真正的枚举成员。
+    # 【修改前】lod_group 参数收下了却从没被使用 —— 传什么都被静默忽略。
+    texture_group_map = {
+        "TEXTUREGROUP_World": unreal.TextureGroup.TEXTUREGROUP_WORLD,
+        "TEXTUREGROUP_UI": unreal.TextureGroup.TEXTUREGROUP_UI,
+        "TEXTUREGROUP_Character": unreal.TextureGroup.TEXTUREGROUP_CHARACTER,
+        "TEXTUREGROUP_Skybox": unreal.TextureGroup.TEXTUREGROUP_SKYBOX,
+    }
+    if lod_group in texture_group_map:
+        texture.set_editor_property("lod_group", texture_group_map[lod_group])
+    else:
+        unreal.log_warning(f"未知 LOD 组 {lod_group!r}，已跳过（可用: {', '.join(texture_group_map)}）")
 
     # 修改后保存——纹理修改不像材质那样需要 recompile，但需要 save 才会持久化
     unreal.EditorAssetLibrary.save_asset(texture_path)
@@ -199,8 +214,11 @@ def auto_configure_textures(search_path="/Game"):
 
         # enter_progress_frame 推进一步，并显示当前正在处理的纹理名。
         # work=1.0 表示完成 1 个工作单位。
-        task.enter_progress_frame(1.0, tex_data.asset_name)
-        name = tex_data.asset_name.lower()  # 转小写方便后缀匹配
+        # asset_name 是 Name 类型（不是 str），传参前显式转成 str 更保险
+        task.enter_progress_frame(1.0, str(tex_data.asset_name))
+        # 【易错点】asset_name 是 unreal.Name，不是 str —— 它没有 .lower() 方法，
+        #   直接调用会 AttributeError，必须先 str() 转成普通字符串。
+        name = str(tex_data.asset_name).lower()  # 转小写方便后缀匹配
 
         # 根据文件名后缀判断纹理类型——这是游戏行业的命名惯例：
         # _N/_Normal/_Nrm = 法线贴图，_R/_Roughness = 粗糙度，
@@ -261,7 +279,8 @@ def texture_audit(search_path="/Game"):
         if task.should_cancel():
             break
 
-        task.enter_progress_frame(1.0, tex_data.asset_name)
+        # asset_name 是 Name 类型（不是 str），传参前显式转成 str 更保险
+        task.enter_progress_frame(1.0, str(tex_data.asset_name))
 
         texture = unreal.EditorAssetLibrary.load_asset(tex_data.package_name)
         if not texture or not isinstance(texture, unreal.Texture2D):
@@ -270,7 +289,9 @@ def texture_audit(search_path="/Game"):
         sx = texture.blueprint_get_size_x()
         sy = texture.blueprint_get_size_y()
         srgb = texture.get_editor_property("srgb")
-        name = tex_data.asset_name.lower()
+        # 【易错点】asset_name 是 unreal.Name，不是 str —— 它没有 .lower() 方法，
+        #   直接调用会 AttributeError，必须先 str() 转成普通字符串。
+        name = str(tex_data.asset_name).lower()
 
         # 检查分辨率是否为 2 的幂
         if not ((sx & (sx-1) == 0) and (sy & (sy-1) == 0)):
@@ -303,6 +324,12 @@ def texture_audit(search_path="/Game"):
     if report["oversized"]:
         unreal.log(f"\n  ⚠️ 超大纹理 ({len(report['oversized'])}):")
         for name in report["oversized"]:
+            unreal.log(f"    {name}")
+
+    if report["undersized"]:
+        # 【修改前】undersized 一直在收集，但报告里从来没有打印过 —— 白收集。
+        unreal.log(f"\n  ⚠️ 过小纹理 ({len(report['undersized'])}):")
+        for name in report["undersized"]:
             unreal.log(f"    {name}")
 
     if report["no_srgb_color"]:
@@ -375,9 +402,13 @@ def import_texture_pack(source_folder, destination="/Game/Textures",
     unreal.log(f"已导入 {len(imported)} 个纹理")
 
     # 自动配置：根据纹理名称后缀设置 sRGB 和压缩方式
-    if auto_configure:
-        for path in imported:
-            auto_configure_textures(os.path.dirname(path))
+    if auto_configure and imported:
+        # 【性能】原来是在 for 循环里对"每个资产"调用一次，
+        #   而 auto_configure_textures 内部会把整个目录重新扫一遍 ——
+        #   一个目录导入 100 个纹理，就被重复扫描 100 次。这里按目录去重后只配一次。
+        directories = sorted({os.path.dirname(path) for path in imported})
+        for directory in directories:
+            auto_configure_textures(directory)
 
     return imported
 

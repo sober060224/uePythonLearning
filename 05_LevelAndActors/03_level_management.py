@@ -69,7 +69,9 @@ def save_current_level():
     # save_current_level 会把当前关卡的修改写入磁盘
     # 等同于编辑器里按 Ctrl+S
     # 注意：这只保存当前关卡，其他已加载的"脏"关卡不受影响
-    unreal.EditorLevelLibrary.save_current_level()
+    # 【UE5】关卡保存/加载都在 LevelEditorSubsystem 上
+    #   （EditorLevelLibrary 属于已废弃的 Editor Scripting Utilities 插件）
+    unreal.get_editor_subsystem(unreal.LevelEditorSubsystem).save_current_level()
     unreal.log("当前关卡已保存")
 
 def save_all_levels():
@@ -77,7 +79,7 @@ def save_all_levels():
     # save_all_dirty_levels 保存所有被修改过但还没保存的关卡
     # "dirty" 在编程术语里表示"有未保存的修改"
     # 这在批量操作后很有用，确保所有修改都被持久化
-    unreal.EditorLevelLibrary.save_all_dirty_levels()
+    unreal.get_editor_subsystem(unreal.LevelEditorSubsystem).save_all_dirty_levels()
     unreal.log("所有脏关卡已保存")
 
 # ─────────────────────────────────────────────────────────
@@ -99,7 +101,7 @@ def load_level(level_path):
     # load_level 会关闭当前关卡并加载目标关卡
     # 注意：当前关卡未保存的修改会丢失！
     # 所以在调用之前应该先调用 save_current_level
-    unreal.EditorLevelLibrary.load_level(level_path)
+    unreal.get_editor_subsystem(unreal.LevelEditorSubsystem).load_level(level_path)
     unreal.log(f"已加载关卡: {level_path}")
     return True
 
@@ -126,12 +128,14 @@ def create_new_level(name, destination="/Game/Maps",
     factory = unreal.WorldFactory()
 
     # 设置模板
-    if template == "Basic":
-        # 使用基本模板（自带地板和天空球）
-        pass
-    elif template == "Empty":
-        # 空关卡（什么都没有，纯黑）
+    # 【易错点】"Basic"（自带地板和天空球）只是编辑器"新建关卡"对话框里的选项，
+    #   Python 的 WorldFactory 没有对应开关 —— 原来那个 pass 分支什么也没做，
+    #   却让人以为已经应用了模板。这里把行为写清楚。
+    if template == "Empty":
+        # 空关卡：create_new=True 表示不复制任何已有世界
         factory.set_editor_property("create_new", True)
+    elif template != "Basic":
+        unreal.log_warning(f"未知模板 {template!r}，按 Basic（默认世界）处理")
 
     # create_asset 参数：资产名、路径、资产类型、工厂
     # 创建后会自动保存到内容浏览器指定路径
@@ -225,15 +229,27 @@ def analyze_level_actors():
 
 def list_sublevels():
     """列出当前关卡的所有子关卡"""
-    world = unreal.EditorLevelLibrary.get_editor_world()
+    world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
     if not world:
         return []
 
     # 子关卡（Sub-Level）是嵌套在主关卡中的其他关卡
     # 常见用途：把大型地图拆分成多个小区域，按需加载
-    # UE5 中子关卡管理可以通过 Level Streaming 实现
+    # 【UE5】EditorLevelUtils.get_levels(world) 直接列出世界里的所有关卡对象。
+    #   注意：UWorld 本身也是 ULevel 的子类，所以列表里第一个就是持久化关卡，
+    #   要减掉它才是真正的"子关卡"。
+    levels = unreal.EditorLevelUtils.get_levels(world)
+    sublevels = [level for level in levels if level != world]
+
     unreal.log("\n子关卡列表:")
-    unreal.log("  （子关卡需要通过 World Composition 或 Level Streaming 管理）")
+    if not sublevels:
+        unreal.log("  （当前世界没有子关卡）")
+    for level in sublevels:
+        unreal.log(f"  - {level.get_name()}")
+
+    # 【重要】函数必须有返回值：原来这里没有 return，调用方拿到的是 None，
+    #   一旦有人写 for lv in list_sublevels() 就会 TypeError。
+    return sublevels
 
 def add_sublevel(level_path):
     """添加子关卡到当前关卡"""
@@ -274,19 +290,23 @@ def set_world_settings(game_mode_class=None):
     参数:
         game_mode_class: 默认 GameMode 类
     """
-    world = unreal.EditorLevelLibrary.get_editor_world()
+    world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
     if not world:
         return
 
-    # 【修改前】unreal.get_engine_subsystem(unreal.LevelEditorSubsystem)
-    # 【问题分析】LevelEditorSubsystem 是编辑器子系统（EditorSubsystem），
-    #   必须用 get_editor_subsystem 获取，get_engine_subsystem 只用于引擎子系统。
-    #   两者获取的子系统类型不同，用错方法会返回 None 或报错
-    world_settings = unreal.get_editor_subsystem(
-        unreal.LevelEditorSubsystem
-    )
+    # 【UE5】WorldSettings 通过 World.get_world_settings() 获取（UWorld 上的方法）。
+    # 【修改前】这里用 get_engine_subsystem 拿 LevelEditorSubsystem 就完事了 ——
+    #   既没有真正读到 WorldSettings，world_settings 变量也从未被使用。
+    world_settings = world.get_world_settings()
+    if not world_settings:
+        unreal.log_error("无法获取 WorldSettings")
+        return
+
+    current_mode = world_settings.get_editor_property("default_game_mode")
+    unreal.log(f"当前默认 GameMode: {current_mode if current_mode else '（未设置，用项目默认）'}")
 
     if game_mode_class:
+        world_settings.set_editor_property("default_game_mode", game_mode_class)
         unreal.log(f"设置 GameMode: {game_mode_class}")
 
     unreal.log("世界设置已更新")

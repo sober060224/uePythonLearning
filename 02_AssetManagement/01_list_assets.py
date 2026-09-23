@@ -17,7 +17,8 @@
   unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData  —— 获取资产的元数据（类型、名称、路径等）
   unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool  —— 判断指定资产是否存在
   unreal.EditorAssetLibrary.find_package_referencers_for_asset(asset_path: str, load_assets_to_confirm: bool = False) -> Array[str]  —— 查找引用该资产的所有包
-  unreal.EditorAssetLibrary.get_tag_values(asset_path: str) -> Map[Name, str]  —— 获取资产的所有标签值（用于过滤和筛选）
+  unreal.get_editor_subsystem(unreal.EditorAssetSubsystem).get_tag_values(asset_path: str) -> Map[Name, str]  —— 获取资产的所有标签值
+    （注意：get_tag_values 只在 EditorAssetSubsystem 上，EditorAssetLibrary 没有这个方法）
   unreal.ScopedSlowTask(work: float, desc: Union[Text, str] = "", enabled: bool = True)  —— 创建耗时任务的进度条上下文
   task.enter_progress_frame(work: float = 1.0, desc: Union[Text, str] = "") -> None  —— 推进进度条并更新说明文字
 =============================================================
@@ -82,7 +83,6 @@ def print_directory_tree(path, indent=0, max_depth=3):
         #   所以先 rstrip("/") 去掉尾部斜杠，再取最后一段作为名称。
         clean_path = item.rstrip("/")
         item_name = clean_path.split("/")[-1]
-        file_name = clean_path.split("/")[-1]
         # 【UE 概念】does_directory_exist 判断的是 UE 内容目录，不是磁盘目录。
         #   这个函数返回 True 说明这个路径在 UE 里是一个文件夹。
         is_folder = unreal.EditorAssetLibrary.does_directory_exist(item)
@@ -92,7 +92,7 @@ def print_directory_tree(path, indent=0, max_depth=3):
             # 递归进入子文件夹，indent+1 让输出缩进更清晰
             print_directory_tree(item, indent + 1, max_depth)
         else:
-            unreal.log(f"{'  ' * indent}📄 {file_name}")
+            unreal.log(f"{'  ' * indent}📄 {item_name}")
 
 
 unreal.log("\n--- 项目目录结构 (前3层) ---")
@@ -172,7 +172,9 @@ def inspect_asset(asset_path):
     #   比如你可以在纹理上设置 "Author" 标签记录作者名。
     #   get_tag_values 返回一个字典：{标签名: 标签值}。
     #   标签是 Name 类型（不是 str），所以打印时需要转成字符串。
-    tags = unreal.EditorAssetLibrary.get_tag_values(asset_path)
+    # 【易错点】get_tag_values 定义在 EditorAssetSubsystem 上，不在 EditorAssetLibrary 上，
+    #   调 EditorAssetLibrary.get_tag_values 会直接 AttributeError。
+    tags = unreal.get_editor_subsystem(unreal.EditorAssetSubsystem).get_tag_values(asset_path)
     if tags:
         unreal.log(f"标签数量: {len(tags)}")
         for tag_name, tag_value in tags.items():
@@ -192,8 +194,12 @@ def inspect_asset(asset_path):
 
 
 # 测试（替换为你项目中的实际资产路径）
+# 先判断列表非空再取下标 —— 空目录时 all_assets[0] 会 IndexError。
 if all_assets:
+    # 演示：检查列表里的第一个资产
     inspect_asset(all_assets[0])
+else:
+    unreal.log_warning("没有找到任何资产，跳过演示")
 
 # ─────────────────────────────────────────────────────────
 # 5. 查找未使用的资产
@@ -223,13 +229,13 @@ def find_unused_assets(search_path="/Game"):
         # 第一个参数是工作量（和构造时的总数对应），第二个参数是当前描述
         task.enter_progress_frame(1.0, f"检查: {asset_path.split('/')[-1]}")
 
-        # 【为什么跳过文件夹？】文件夹本身不算"资产"，而且文件夹通常
-        #   会被内部引用（比如关卡引用文件夹结构），跳过可以避免误报。
-        if unreal.EditorAssetLibrary.does_directory_exist(asset_path):
-            continue
+        # 【为什么这里不用判断文件夹？】list_assets 默认 include_folder=False，
+        #   返回的全是资产路径，不会包含文件夹 —— 只有显式传 include_folder=True
+        #   时才需要再用 does_directory_exist 过滤。
 
         referencers = unreal.EditorAssetLibrary.find_package_referencers_for_asset(
-            asset_path
+            asset_path,
+            load_assets_to_confirm=True,  # 删除/判定前把需要加载才能确认的引用也算进来
         )
 
         # 【初学者易错点】find_package_referencers_for_asset 的结果可能包含

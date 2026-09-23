@@ -25,7 +25,29 @@
 =============================================================
 """
 
+import contextlib
 import unreal
+
+# ─────────────────────────────────────────────────────────
+# 工具：编辑器事务上下文
+# ─────────────────────────────────────────────────────────
+@contextlib.contextmanager
+def editor_transaction(description, context):
+    """
+    在编辑器事务里执行一段操作：
+
+      - 正常结束    -> 提交事务（用户可以 Ctrl+Z 一次性撤销整段操作）
+      - 抛异常      -> cancel_transaction 回滚，撤销栈不会留在"半开"状态
+      - 中途 return -> __exit__ 照样执行，收尾不会漏
+    """
+    token = unreal.SystemLibrary.begin_transaction("Python脚本", description, context)
+    try:
+        yield token
+    except BaseException:
+        unreal.SystemLibrary.cancel_transaction(token)
+        raise
+    else:
+        unreal.SystemLibrary.end_transaction()
 
 # ─────────────────────────────────────────────────────────
 # 1. 编辑器工具的基本模式
@@ -90,19 +112,13 @@ def transactional_operation(operation_name, func, *args, **kwargs):
     # 开始事务
     # 获取编辑器世界作为 primary_object（因为操作可能涉及多个 Actor，没有单一的"主对象"）
     world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
-    token = unreal.SystemLibrary.begin_transaction("Python脚本", operation_name, world)
-
-    try:
+    # 【修改后】手写的 try/except + begin/end/cancel 统一交给 editor_transaction：
+    #   正常结束自动提交；抛异常自动 cancel 回滚，不会把编辑器留在"事务进行中"。
+    with editor_transaction(operation_name, world):
         result = func(*args, **kwargs)
-        # end_transaction 返回的 int 是 0=成功，非 0=失败
-        unreal.SystemLibrary.end_transaction()
-        unreal.log(f"事务完成: {operation_name}")
-        return result
-    except Exception as e:
-        # 任何异常都要回滚，否则编辑器会卡在"事务进行中"状态
-        unreal.SystemLibrary.cancel_transaction(token)
-        unreal.log_error(f"事务失败，已回滚: {e}")
-        raise
+
+    unreal.log(f"事务完成: {operation_name}")
+    return result
 
 # ─────────────────────────────────────────────────────────
 # 3. 编辑器通知系统
@@ -362,10 +378,12 @@ def randomize_rotation(selected_actors=None, max_yaw=360.0,
     def do_randomize():
         for actor in actors:
             # random.uniform(a, b) 返回 [a, b] 之间的随机浮点数
+            # 【易错点】Rotator 的位置参数顺序是 (roll, pitch, yaw)，不是 (pitch, yaw, roll)。
+            #   按旧顺序传会让三个角度整体串位，这里一律用关键字参数。
             rot = unreal.Rotator(
-                random.uniform(-max_pitch, max_pitch),  # Pitch
-                random.uniform(-max_yaw, max_yaw),       # Yaw
-                random.uniform(-max_roll, max_roll)      # Roll
+                pitch=random.uniform(-max_pitch, max_pitch),
+                yaw=random.uniform(-max_yaw, max_yaw),
+                roll=random.uniform(-max_roll, max_roll),
             )
             # set_actor_rotation 的第二个参数 teleport_physics=False
             # 表示不强制传送物理体（如果是物理模拟的 Actor，会更平滑）

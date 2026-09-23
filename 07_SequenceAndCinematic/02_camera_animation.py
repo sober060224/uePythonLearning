@@ -169,8 +169,14 @@ def create_camera_path_waypoints(camera, waypoints, duration_frames=150):
     # 例如 150 帧放 3 个点，每 75 帧一个关键帧
     frames_per_point = duration_frames // max(len(waypoints) - 1, 1)
 
-    unreal.log(f"为相机创建 {len(waypoints)} 个关键帧的动画")
+    # 【重要】这一步只创建了"轨道 + Section"，还没有写入任何关键帧。
+    #   关键帧要用 section.get_channels_by_type(unreal.MovieSceneScriptingFloatChannel)
+    #   找到通道后再 channel.add_key(unreal.FrameNumber(frame), value)。
+    #   本课先不写关键帧（通道名要靠编辑器确认，写错了不会报错），
+    #   所以下面的日志只描述"已经做了什么"，不假装动画已经生成。
+    unreal.log(f"已创建相机 Transform 轨道 + Section：{len(waypoints)} 个路径点，间隔 {frames_per_point} 帧")
     unreal.log(f"总帧数: {duration_frames} ({duration_frames/30:.1f} 秒)")
+    unreal.log("【练习】参考文件末尾的说明，把路径点写进关键帧通道")
 
     # 保存序列资产——序列创建后必须保存才能持久化
     path = f"/Game/Cinematics/{seq_name}"
@@ -229,7 +235,7 @@ def generate_orbit_waypoints(center, radius, height,
         )
         # [UE概念] Rotator(pitch, yaw, roll)——注意顺序是 Pitch 在前
         # pitch 用负值是因为 UE 中正 pitch 是抬头，我们要向下看
-        rotation = unreal.Rotator(-pitch, yaw, 0)
+        rotation = unreal.Rotator(pitch=-pitch, yaw=yaw, roll=0)
 
         waypoints.append((location, rotation))
 
@@ -279,7 +285,7 @@ def generate_dolly_waypoints(start, end, count=4,
                 next_x - x, next_y - y, 0
             )
             yaw = math.degrees(math.atan2(direction.y, direction.x))
-            rotation = unreal.Rotator(0, yaw, 0)
+            rotation = unreal.Rotator(pitch=0, yaw=yaw, roll=0)
         else:
             # 最后一个点：沿用上一个点的旋转，保持一致
             rotation = waypoints[-1][1] if waypoints else unreal.Rotator(0, 0, 0)
@@ -311,7 +317,7 @@ def generate_crane_waypoints(start_location, end_height,
         )
         # [UE概念] Rotator(-90, 0, 0) 表示相机朝下看
         # Pitch=-90 就是正下方，这是升降机拍摄的经典角度
-        rotation = unreal.Rotator(-90, 0, 0)
+        rotation = unreal.Rotator(pitch=-90, yaw=0, roll=0)
         waypoints.append((location, rotation))
 
     return waypoints

@@ -22,9 +22,32 @@
 =============================================================
 """
 
-import unreal
+import contextlib
 import math
 import random
+import unreal
+
+# ─────────────────────────────────────────────────────────
+# 工具：编辑器事务上下文
+# ─────────────────────────────────────────────────────────
+@contextlib.contextmanager
+def editor_transaction(description, context):
+    """
+    在编辑器事务里执行一段操作：
+
+      - 正常结束    -> 提交事务（用户可以 Ctrl+Z 一次性撤销整段操作）
+      - 抛异常      -> cancel_transaction 回滚，撤销栈不会留在"半开"状态
+      - 中途 return -> __exit__ 照样执行，收尾不会漏
+    """
+    token = unreal.SystemLibrary.begin_transaction("Python脚本", description, context)
+    try:
+        yield token
+    except BaseException:
+        unreal.SystemLibrary.cancel_transaction(token)
+        raise
+    else:
+        unreal.SystemLibrary.end_transaction()
+
 
 # ═════════════════════════════════════════════════════════
 # 工具 1: 资产健康检查器 (Asset Health Checker)
@@ -291,33 +314,31 @@ class LevelLayoutTool:
         # 【事务操作】
         # 排列多个 Actor 是可逆操作，必须包在事务里
         # primary_object 传第一个 Actor（它是被修改的主要对象之一）
-        token = unreal.SystemLibrary.begin_transaction("Python脚本", "排列为圆形", actors[0])
+        with editor_transaction("排列为圆形", actors[0]):
+            for i, actor in enumerate(actors):
+                # 【math.radians】
+                # 角度 → 弧度转换。Python 的 math.cos/sin 接收弧度，不是角度。
+                # 0° = 0 弧度，360° = 2π 弧度
+                angle = math.radians(i * angle_step)
+                x = radius * math.cos(angle)
+                y = radius * math.sin(angle)
 
-        for i, actor in enumerate(actors):
-            # 【math.radians】
-            # 角度 → 弧度转换。Python 的 math.cos/sin 接收弧度，不是角度。
-            # 0° = 0 弧度，360° = 2π 弧度
-            angle = math.radians(i * angle_step)
-            x = radius * math.cos(angle)
-            y = radius * math.sin(angle)
+                new_loc = unreal.Vector(x, y, z_height)
+                # sweep=False: 不做碰撞检测（直接传送到目标位置）
+                # teleport=False: 正常更新物理状态
+                actor.set_actor_location(new_loc, False, False)
 
-            new_loc = unreal.Vector(x, y, z_height)
-            # sweep=False: 不做碰撞检测（直接传送到目标位置）
-            # teleport=False: 正常更新物理状态
-            actor.set_actor_location(new_loc, False, False)
-
-            # 【让 Actor 朝向圆心】
-            # 计算从当前位置到圆心(0,0)的方向向量
-            # 然后用 atan2 算出偏航角(Yaw)
-            look_at = unreal.Vector(0, 0, z_height)
-            direction = look_at - new_loc
-            # atan2(y, x) 返回 [-π, π] 的弧度值
-            # math.degrees 再转回角度
-            yaw = math.degrees(math.atan2(direction.y, direction.x))
-            # Rotator(Pitch, Yaw, Roll) —— 只设置 Yaw，其他为 0
-            actor.set_actor_rotation(unreal.Rotator(0, yaw, 0), False)
-
-        unreal.SystemLibrary.end_transaction()
+                # 【让 Actor 朝向圆心】
+                # 计算从当前位置到圆心(0,0)的方向向量
+                # 然后用 atan2 算出偏航角(Yaw)
+                look_at = unreal.Vector(0, 0, z_height)
+                direction = look_at - new_loc
+                # atan2(y, x) 返回 [-π, π] 的弧度值
+                # math.degrees 再转回角度
+                yaw = math.degrees(math.atan2(direction.y, direction.x))
+                # 【易错点】Rotator 的位置参数顺序其实是 (roll, pitch, yaw)，
+                #   写成 Rotator(0, yaw, 0) 会把 yaw 塞进 pitch。这里用关键字参数最稳。
+                actor.set_actor_rotation(unreal.Rotator(pitch=0, yaw=yaw, roll=0), False)
         unreal.log(f"已将 {count} 个 Actor 排列为半径 {radius} 的圆形")
 
     @staticmethod
@@ -341,21 +362,18 @@ class LevelLayoutTool:
         if start_pos is None:
             start_pos = actors[0].get_actor_location()
 
-        token = unreal.SystemLibrary.begin_transaction("Python脚本", "排列为直线", actors[0])
+        with editor_transaction("排列为直线", actors[0]):
+            # 方向向量：只在目标轴上为 1，其他为 0
+            axis_map = {"x": (1, 0, 0), "y": (0, 1, 0), "z": (0, 0, 1)}
+            dx, dy, dz = axis_map.get(direction.lower(), (1, 0, 0))
 
-        # 方向向量：只在目标轴上为 1，其他为 0
-        axis_map = {"x": (1, 0, 0), "y": (0, 1, 0), "z": (0, 0, 1)}
-        dx, dy, dz = axis_map.get(direction.lower(), (1, 0, 0))
-
-        for i, actor in enumerate(actors):
-            new_loc = unreal.Vector(
-                start_pos.x + dx * spacing * i,  # 起始 + 方向 × 间距 × 序号
-                start_pos.y + dy * spacing * i,
-                start_pos.z + dz * spacing * i,
-            )
-            actor.set_actor_location(new_loc, False, False)
-
-        unreal.SystemLibrary.end_transaction()
+            for i, actor in enumerate(actors):
+                new_loc = unreal.Vector(
+                    start_pos.x + dx * spacing * i,  # 起始 + 方向 × 间距 × 序号
+                    start_pos.y + dy * spacing * i,
+                    start_pos.z + dz * spacing * i,
+                )
+                actor.set_actor_location(new_loc, False, False)
         unreal.log(f"已将 {len(actors)} 个 Actor 排列为直线")
 
     @staticmethod
@@ -373,27 +391,25 @@ class LevelLayoutTool:
             unreal.log_warning("请先选中 Actor")
             return
 
-        token = unreal.SystemLibrary.begin_transaction("Python脚本", "随机散布", actors[0])
-
-        for actor in actors:
-            # 在边界框内随机取点
-            # random.uniform(a, b) 返回 [a, b] 之间的随机浮点数
-            loc = unreal.Vector(
-                random.uniform(bounds_min.x, bounds_max.x),
-                random.uniform(bounds_min.y, bounds_max.y),
-                random.uniform(bounds_min.z, bounds_max.z),
-            )
-            actor.set_actor_location(loc, False, False)
-
-            if random_rotation:
-                rot = unreal.Rotator(
-                    0,                           # Pitch = 0（不抬头/低头）
-                    random.uniform(0, 360),      # Yaw 随机（水平随机朝向）
-                    0,                           # Roll = 0（不侧翻）
+        with editor_transaction("随机散布", actors[0]):
+            for actor in actors:
+                # 在边界框内随机取点
+                # random.uniform(a, b) 返回 [a, b] 之间的随机浮点数
+                loc = unreal.Vector(
+                    random.uniform(bounds_min.x, bounds_max.x),
+                    random.uniform(bounds_min.y, bounds_max.y),
+                    random.uniform(bounds_min.z, bounds_max.z),
                 )
-                actor.set_actor_rotation(rot, False)
+                actor.set_actor_location(loc, False, False)
 
-        unreal.SystemLibrary.end_transaction()
+                if random_rotation:
+                    # 【易错点】Rotator 的位置参数顺序是 (roll, pitch, yaw)，必须用关键字参数。
+                    rot = unreal.Rotator(
+                        pitch=0,                     # 不抬头/低头
+                        yaw=random.uniform(0, 360),  # 水平随机朝向
+                        roll=0,                      # 不侧翻
+                    )
+                    actor.set_actor_rotation(rot, False)
         unreal.log(f"已随机散布 {len(actors)} 个 Actor")
 
     @staticmethod
@@ -416,30 +432,27 @@ class LevelLayoutTool:
             unreal.log_warning("请先选中 Actor")
             return
 
-        token = unreal.SystemLibrary.begin_transaction("Python脚本", "镜像 Actor", actors[0])
+        with editor_transaction("镜像 Actor", actors[0]):
+            for actor in actors:
+                loc = actor.get_actor_location()
+                # 根据镜像轴翻转对应的坐标分量
+                if axis == "x":
+                    loc.x = -loc.x
+                elif axis == "y":
+                    loc.y = -loc.y
+                elif axis == "z":
+                    loc.z = -loc.z
+                actor.set_actor_location(loc, False, False)
 
-        for actor in actors:
-            loc = actor.get_actor_location()
-            # 根据镜像轴翻转对应的坐标分量
-            if axis == "x":
-                loc.x = -loc.x
-            elif axis == "y":
-                loc.y = -loc.y
-            elif axis == "z":
-                loc.z = -loc.z
-            actor.set_actor_location(loc, False, False)
+                # 镜像旋转（只有 X 和 Y 轴需要处理旋转）
+                rot = actor.get_actor_rotation()
+                if axis == "x":
+                    rot.yaw = -rot.yaw
+                elif axis == "y":
+                    rot.yaw = 180 - rot.yaw
+                # Z 轴镜像不改旋转
 
-            # 镜像旋转（只有 X 和 Y 轴需要处理旋转）
-            rot = actor.get_actor_rotation()
-            if axis == "x":
-                rot.yaw = -rot.yaw
-            elif axis == "y":
-                rot.yaw = 180 - rot.yaw
-            # Z 轴镜像不改旋转
-
-            actor.set_actor_rotation(rot)
-
-        unreal.SystemLibrary.end_transaction()
+                actor.set_actor_rotation(rot, False)  # teleport_physics=False
         unreal.log(f"已沿 {axis.upper()} 轴镜像 {len(actors)} 个 Actor")
 
 # ═════════════════════════════════════════════════════════
