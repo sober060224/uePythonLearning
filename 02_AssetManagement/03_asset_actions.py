@@ -32,7 +32,8 @@ import unreal
 # 1. 重命名资产
 # ─────────────────────────────────────────────────────────
 
-def rename_asset(current_path, new_name):
+
+def rename_asset(current_path: str, new_name: str):
     """
     重命名单个资产
 
@@ -64,12 +65,13 @@ def rename_asset(current_path, new_name):
 
     return success
 
+
 # ─────────────────────────────────────────────────────────
 # 2. 批量重命名
 # ─────────────────────────────────────────────────────────
 
-def batch_rename(search_path, prefix="", suffix="",
-                 find_text="", replace_text=""):
+
+def batch_rename(search_path, prefix="", suffix="", find_text="", replace_text=""):
     """
     批量重命名指定路径下的资产
 
@@ -91,15 +93,8 @@ def batch_rename(search_path, prefix="", suffix="",
 
     unreal.log(f"找到 {len(assets)} 个资产要重命名")
 
-    # ScopedSlowTask 显示进度条，让用户知道重命名到哪了
-    task = unreal.ScopedSlowTask(len(assets), "批量重命名...")
-    task.make_dialog(True)
-
     renamed_count = 0
     for asset_path in assets:
-        if task.should_cancel():
-            break
-
         current_name = asset_path.split("/")[-1]
 
         # 不需要判断文件夹：list_assets 默认 include_folder=False，
@@ -117,14 +112,12 @@ def batch_rename(search_path, prefix="", suffix="",
         if suffix:
             new_name = new_name + suffix
 
-        task.enter_progress_frame(1.0, f"{current_name} → {new_name}")
-
         # 只有名称变化了才执行重命名，避免无意义的操作
-        if new_name != current_name:
-            if rename_asset(asset_path, new_name):
-                renamed_count += 1
+        if new_name != current_name and rename_asset(asset_path, new_name):
+            renamed_count += 1
 
     unreal.log(f"批量重命名完成: {renamed_count} 个资产已重命名")
+
 
 # ─────────────────────────────────────────────────────────
 # 3. 添加命名前缀（UE 资产命名规范）
@@ -149,6 +142,7 @@ PREFIX_MAP = {
     "DataTable": "DT_",
     "DataAsset": "DA_",
 }
+
 
 def add_standard_prefixes(search_path):
     """为资产添加标准命名前缀"""
@@ -175,9 +169,14 @@ def add_standard_prefixes(search_path):
 
     unreal.log(f"已为 {renamed} 个资产添加前缀")
 
+
+# path = "B_abc"
+# unreal.log(path.split('_'))
+
 # ─────────────────────────────────────────────────────────
 # 4. 移动资产
 # ─────────────────────────────────────────────────────────
+
 
 def move_asset(source_path, destination_directory):
     """
@@ -212,28 +211,31 @@ def move_asset(source_path, destination_directory):
         unreal.log(f"移动成功: {source_path} → {dest_path}")
     return success
 
+
 def move_assets_to_folder(asset_paths, destination_directory):
     """批量移动多个资产"""
     unreal.EditorAssetLibrary.make_directory(destination_directory)
 
-    task = unreal.ScopedSlowTask(len(asset_paths), "移动资产...")
-    task.make_dialog(True)
-
     moved = 0
-    for asset_path in asset_paths:
-        if task.should_cancel():
-            break
+    with unreal.ScopedSlowTask(len(asset_paths), "移动资产...") as task:
+        task.make_dialog(True)
 
-        task.enter_progress_frame(1.0, f"移动: {asset_path}")
+        for asset_path in asset_paths:
+            if task.should_cancel():
+                break
 
-        if move_asset(asset_path, destination_directory):
-            moved += 1
+            task.enter_progress_frame(1.0, f"移动: {asset_path}")
+
+            if move_asset(asset_path, destination_directory):
+                moved += 1
 
     unreal.log(f"已移动 {moved}/{len(asset_paths)} 个资产")
+
 
 # ─────────────────────────────────────────────────────────
 # 5. 删除资产
 # ─────────────────────────────────────────────────────────
+
 
 def safe_delete_asset(asset_path):
     """
@@ -258,15 +260,14 @@ def safe_delete_asset(asset_path):
     external_refs = [r for r in referencers if r != asset_path]
 
     if external_refs:
-        unreal.log_warning(
-            f"资产 {asset_path} 被 {len(external_refs)} 个其他资产引用:"
-        )
+        unreal.log_warning(f"资产 {asset_path} 被 {len(external_refs)} 个其他资产引用:")
         for ref in external_refs[:5]:
             unreal.log(f"  ← {ref}")
         return False, external_refs
 
     # 没有外部引用，可以安全删除
     return True, []
+
 
 def delete_asset(asset_path, force=False, confirm_force=False):
     """
@@ -299,6 +300,7 @@ def delete_asset(asset_path, force=False, confirm_force=False):
         unreal.log(f"已删除: {asset_path}")
     return success
 
+
 def cleanup_unused_assets(search_path="/Game", dry_run=True):
     """
     清理未使用的资产
@@ -310,24 +312,24 @@ def cleanup_unused_assets(search_path="/Game", dry_run=True):
     all_assets = unreal.EditorAssetLibrary.list_assets(search_path, recursive=True)
     unused = []
 
-    task = unreal.ScopedSlowTask(len(all_assets), "检查引用...")
-    task.make_dialog(True)
+    with unreal.ScopedSlowTask(len(all_assets), "检查引用...") as task:
+        task.make_dialog(True)
 
-    for asset_path in all_assets:
-        if task.should_cancel():
-            break
+        for asset_path in all_assets:
+            if task.should_cancel():
+                break
 
-        task.enter_progress_frame(1.0, asset_path.split("/")[-1])
+            task.enter_progress_frame(1.0, asset_path.split("/")[-1])
 
-        # list_assets 默认 include_folder=False，这里拿到的都是资产路径
-        referencers = unreal.EditorAssetLibrary.find_package_referencers_for_asset(
-            asset_path,
-            load_assets_to_confirm=True,  # 删除/判定前把需要加载才能确认的引用也算进来
-        )
-        external_refs = [r for r in referencers if r != asset_path]
+            # list_assets 默认 include_folder=False，这里拿到的都是资产路径
+            referencers = unreal.EditorAssetLibrary.find_package_referencers_for_asset(
+                asset_path,
+                load_assets_to_confirm=True,  # 删除/判定前把需要加载才能确认的引用也算进来
+            )
+            external_refs = [r for r in referencers if r != asset_path]
 
-        if not external_refs:
-            unused.append(asset_path)
+            if not external_refs:
+                unused.append(asset_path)
 
     unreal.log(f"\n找到 {len(unused)} 个未使用的资产:")
     for path in unused:
@@ -345,9 +347,11 @@ def cleanup_unused_assets(search_path="/Game", dry_run=True):
 
     return unused
 
+
 # ─────────────────────────────────────────────────────────
 # 6. 资产整合（Consolidate）
 # ─────────────────────────────────────────────────────────
+
 
 def consolidate_assets(asset_to_keep, asset_to_replace):
     """
@@ -377,10 +381,7 @@ def consolidate_assets(asset_to_keep, asset_to_replace):
     #   它会把所有引用 replace_obj 的地方自动改成引用 keep_obj，
     #   然后删除 replace_obj。比手动查找引用再替换高效得多。
     #   常用于清理重复导入的资产（比如同一张纹理被导入了两次）。
-    success = unreal.EditorAssetLibrary.consolidate_assets(
-        keep_obj,
-        [replace_obj]
-    )
+    success = unreal.EditorAssetLibrary.consolidate_assets(keep_obj, [replace_obj])
 
     if success:
         unreal.log(f"整合成功: {asset_to_replace} → {asset_to_keep}")
@@ -389,9 +390,11 @@ def consolidate_assets(asset_to_keep, asset_to_replace):
 
     return success
 
+
 # ─────────────────────────────────────────────────────────
 # 7. 保存资产
 # ─────────────────────────────────────────────────────────
+
 
 def save_asset(asset_path):
     """保存单个资产"""
@@ -401,6 +404,7 @@ def save_asset(asset_path):
         unreal.EditorAssetLibrary.save_asset(asset_path)
         unreal.log(f"已保存: {asset_path}")
 
+
 def save_all_dirty_assets():
     """保存所有未保存的资产"""
     # 【UE 概念】"脏资产"（dirty asset）是指修改过但还没保存到磁盘的资产。
@@ -408,6 +412,7 @@ def save_all_dirty_assets():
     #   only_if_is_dirty 参数避免重新保存没修改过的资产，节省时间。
     unreal.EditorAssetLibrary.save_directory("/Game", only_if_is_dirty=True)
     unreal.log("已保存所有脏资产")
+
 
 def save_current_level():
     """保存当前关卡"""
@@ -418,12 +423,15 @@ def save_current_level():
     unreal.get_editor_subsystem(unreal.LevelEditorSubsystem).save_current_level()
     unreal.log("关卡已保存")
 
+
 # ─────────────────────────────────────────────────────────
 # 使用示例
 # ─────────────────────────────────────────────────────────
 
 # 示例1: 批量重命名（添加前缀）
-# batch_rename("/Game/Meshes", prefix="SM_", find_text="mesh", replace_text="Mesh")
+# batch_rename(
+#     "/Game/EditorWidgetUtilities", prefix="BP_", find_text="My", replace_text="my"
+# )
 
 # 示例2: 添加标准前缀
 # add_standard_prefixes("/Game/NewAssets")

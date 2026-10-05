@@ -39,10 +39,28 @@
 `http://127.0.0.1:8000/mcp`）且可访问，也可以直接通过它让脚本在已运行的编辑器里执行，
 不必每次麻烦用户。前提：编辑器必须先开着。
 
+## UE Python API — 查证规则（强制）
+
+**回答任何 UE5 Python API 问题前，必须先查 `..\Intermediate\PythonStub\unreal.py`。**
+这个文件是引擎自动生成的 Python 桩文件，包含所有类、方法、属性的**真实签名**。
+不要凭记忆、不要凭文档、不要编造——只信桩文件。
+
+验证方法：
+```powershell
+# 搜索类名
+Select-String -Path "..\Intermediate\PythonStub\unreal.py" -Pattern "class AssetData"
+
+# 搜索方法名
+Select-String -Path "..\Intermediate\PythonStub\unreal.py" -Pattern "disk_size"
+
+# 查看类的属性
+Select-String -Path "..\Intermediate\PythonStub\unreal.py" -Pattern "class AssetData" -Context 0,50
+```
+
+如果桩文件里找不到某个 API，**不要回答"应该是 XXX"**，直接说"桩文件里没有这个 API"。
+
 ## UE Python API 注意事项（已验证）
 
-- **签名以生成的桩文件为准**，别信文档：`..\Intermediate\PythonStub\unreal.py`
-  由引擎生成，是权威参考。
 - **`unreal.Transactions` 不存在。** 事务接口在 `unreal.SystemLibrary` 上：
   `begin_transaction(context: str, description, primary_object) -> int`、
   `end_transaction()`、以及 `cancel_transaction(index: int)`（必须传回 `begin_transaction`
@@ -50,3 +68,14 @@
 - 资产查询（列目录/统计）用 `EditorAssetLibrary.list_assets` / `find_asset_data`，
   **不要**用 `load_asset` 去枚举——逐个加载很慢，遇到坏资产还会返回 `None`。UE5 里
   资产类别名是 `asset_data.asset_class_path.asset_name`（UE4 的 `asset_class` 已移除）。
+- `AssetData` 没有 `disk_size` 属性。获取文件大小需要转磁盘路径：
+  `content_dir = unreal.Paths.project_content_dir()`，然后
+  `disk_path = content_dir + asset_path.replace("/Game/", "") + ".uasset"`，
+  再用 `os.path.getsize(disk_path)`。
+
+## 全局指令
+
+- 始终使用简体中文回答用户（包括代码注释、解释和总结）。
+- 除非用户明确要求，否则不要用英文回复。
+- 每次给出代码之后，还要在最后给出简洁的 API 函数签名和相应的简要介绍。
+- 如果是 Unreal 相关代码，还要简洁地说明在官方文档 https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/index 里 API 的具体路径，别的代码不需要官方文档链接。例：ScopedSlowTask: https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/ScopedSlowTask

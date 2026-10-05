@@ -43,6 +43,7 @@ import unreal
 # 1. 查找和加载现有蓝图
 # ─────────────────────────────────────────────────────────
 
+
 def find_all_blueprints(search_path="/Game"):
     """查找项目中所有蓝图"""
     # list_assets 会递归遍历 search_path 下的所有资产，
@@ -65,6 +66,7 @@ def find_all_blueprints(search_path="/Game"):
 
     return blueprints
 
+
 # 查找所有蓝图
 # 注意：这会在 /Game 下递归搜索，项目大时可能需要较长时间
 bps = find_all_blueprints()
@@ -73,19 +75,23 @@ for bp in bps[:20]:
     # package_name 是完整路径，asset_name 是纯文件名
     unreal.log(f"  {bp.package_name} - {bp.asset_name}")
 
+
 # ─────────────────────────────────────────────────────────
 # 2. 加载和检查蓝图
 # ─────────────────────────────────────────────────────────
+
 
 def inspect_blueprint(blueprint_path):
     """详细检查一个蓝图的信息"""
     # load_asset 会把资产真正加载到内存，返回的是一个 UObject 对象。
     # 如果路径不存在或资产损坏，返回 None —— 所以一定要做空值检查！
     bp = unreal.EditorAssetLibrary.load_asset(blueprint_path)
-
     if not bp:
         unreal.log_error(f"无法加载蓝图: {blueprint_path}")
         return None
+
+    if not isinstance(bp, unreal.Blueprint):
+        return
 
     unreal.log(f"\n{'=' * 50}")
     # get_name() 返回对象名称（不含路径），是 UObject 基类提供的方法
@@ -97,20 +103,21 @@ def inspect_blueprint(blueprint_path):
     # 检查是否是 Blueprint 类型
     # hasattr 是 Python 内置函数，检查对象是否有某属性
     # 在 UE Python 中，不同类型的对象有不同的属性集，用 hasattr 做安全检查
-    if hasattr(bp, 'get_class'):
+    if hasattr(bp, "get_class"):
         # get_class() 返回对象的 Unreal 类（UClass），不是 Python 类
         # UClass 是 UE 反射系统的核心，描述一个类的元信息
         unreal.log(f"类名: {bp.get_class().get_name()}")
 
     # 获取父类信息
-    # parent_class 是蓝图资产对象的属性，表示该蓝图继承自哪个 C++ 类
-    # 例如一个继承自 Actor 的蓝图，parent_class 就是 unreal.Actor
-    if hasattr(bp, 'parent_class'):
-        parent = bp.parent_class
-        if parent:
-            unreal.log(f"父类: {parent.get_name()}")
+    # get_blueprint_parent_class() 是 Blueprint 实例方法（而非属性），
+    # 返回该蓝图继承的 C++ 类（UClass）。例如一个继承自 Actor 的蓝图，
+    # 返回值 get_name() 就是 "Actor"。
+    parent = bp.get_blueprint_parent_class()
+    if parent:
+        unreal.log(f"父类: {parent.get_name()}")
 
     return bp
+
 
 # 加载第一个蓝图进行检查（替换为你项目中的蓝图路径）
 if bps:
@@ -119,6 +126,7 @@ if bps:
 # ─────────────────────────────────────────────────────────
 # 3. 创建新蓝图
 # ─────────────────────────────────────────────────────────
+
 
 def create_blueprint(name, parent_class, destination_path="/Game/Blueprints"):
     """
@@ -152,12 +160,9 @@ def create_blueprint(name, parent_class, destination_path="/Game/Blueprints"):
     #   package_path: 保存目录路径
     #   asset_class: 资产类（unreal.Blueprint 是蓝图资产的类）
     #   factory: 工厂对象，负责创建资产的具体逻辑
-    new_bp = asset_tools.create_asset(
-        name,
-        destination_path,
-        unreal.Blueprint,
-        factory
-    )
+    new_bp = asset_tools.create_asset(name, destination_path, unreal.Blueprint, factory)
+    if not isinstance(new_bp, unreal.Blueprint):
+        return
 
     if new_bp:
         full_path = f"{destination_path}/{name}"
@@ -171,6 +176,7 @@ def create_blueprint(name, parent_class, destination_path="/Game/Blueprints"):
         unreal.log_error(f"创建蓝图失败: {name}")
         return None
 
+
 # ─────────────────────────────────────────────────────────
 # 4. 创建 Actor 蓝图的实用封装
 # ─────────────────────────────────────────────────────────
@@ -180,29 +186,36 @@ def create_blueprint(name, parent_class, destination_path="/Game/Blueprints"):
 # Character 自带移动组件，Pawn 可被控制器 Possess，
 # PlayerController 处理玩家输入，GameModeBase 定义游戏规则。
 
+
 def create_actor_blueprint(name, destination="/Game/Blueprints"):
     """创建基于 Actor 的蓝图 —— Actor 是最基本的可放置对象"""
     return create_blueprint(name, unreal.Actor, destination)
+
 
 def create_pawn_blueprint(name, destination="/Game/Blueprints"):
     """创建基于 Pawn 的蓝图 —— Pawn 可以被 Controller Possess（控制）"""
     return create_blueprint(name, unreal.Pawn, destination)
 
+
 def create_player_controller_blueprint(name, destination="/Game/Blueprints"):
     """创建基于 PlayerController 的蓝图 —— 处理玩家输入和相机"""
     return create_blueprint(name, unreal.PlayerController, destination)
+
 
 def create_game_mode_blueprint(name, destination="/Game/Blueprints"):
     """创建基于 GameMode 的蓝图 —— 定义游戏规则、玩家生成等"""
     return create_blueprint(name, unreal.GameModeBase, destination)
 
+
 def create_actor_component_blueprint(name, destination="/Game/Blueprints"):
     """创建基于 ActorComponent 的蓝图 —— 可复用的组件逻辑"""
     return create_blueprint(name, unreal.ActorComponent, destination)
 
+
 # ─────────────────────────────────────────────────────────
 # 5. 批量创建蓝图模板
 # ─────────────────────────────────────────────────────────
+
 
 def create_blueprint_set(blueprint_defs, destination="/Game/Blueprints"):
     """
@@ -244,9 +257,11 @@ def create_blueprint_set(blueprint_defs, destination="/Game/Blueprints"):
     unreal.log(f"成功创建 {len(created)}/{len(blueprint_defs)} 个蓝图")
     return created
 
+
 # ─────────────────────────────────────────────────────────
 # 6. 蓝图的编译
 # ─────────────────────────────────────────────────────────
+
 
 def compile_blueprint(blueprint_path):
     """编译蓝图"""
@@ -262,6 +277,7 @@ def compile_blueprint(blueprint_path):
     unreal.BlueprintEditorLibrary.compile_blueprint(bp)
     unreal.log(f"已编译蓝图: {blueprint_path}")
     return True
+
 
 def compile_all_blueprints(search_path="/Game"):
     """编译指定路径下的所有蓝图"""
@@ -281,9 +297,11 @@ def compile_all_blueprints(search_path="/Game"):
 
     unreal.log(f"已编译 {compiled}/{len(bps)} 个蓝图")
 
+
 # ─────────────────────────────────────────────────────────
 # 7. 实用示例：创建游戏框架蓝图集
 # ─────────────────────────────────────────────────────────
+
 
 def create_game_framework():
     """创建一套基本的游戏框架蓝图"""
@@ -304,6 +322,7 @@ def create_game_framework():
     ]
 
     return create_blueprint_set(definitions, "/Game/Framework")
+
 
 # ─────────────────────────────────────────────────────────
 # 使用示例（取消注释来运行）

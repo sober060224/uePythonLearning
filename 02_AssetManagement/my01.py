@@ -76,7 +76,9 @@ def inspect_asset(asset_path):
     # 获取标签
     # 【易错点】get_tag_values 在 EditorAssetSubsystem 上，EditorAssetLibrary 没有这个方法。
     #   返回类型是 Map[Name, str]，即字典。
-    tag_values = unreal.get_editor_subsystem(unreal.EditorAssetSubsystem).get_tag_values(asset_path)
+    tag_values = unreal.get_editor_subsystem(
+        unreal.EditorAssetSubsystem
+    ).get_tag_values(asset_path)
     if tag_values:
         unreal.log(f"标签数量: {len(tag_values)}")
         for tag_name, tag_value in tag_values.items():
@@ -209,7 +211,10 @@ def search_mesh(material):
             continue
 
         mesh = unreal.EditorAssetLibrary.load_asset(asset_path)
-        static_materials = mesh.get_editor_property("static_materials")
+        if not isinstance(mesh, unreal.StaticMesh):
+            continue
+
+        static_materials = mesh.static_materials
         for sm in static_materials:
             mat_name = sm.material_interface.get_name()
             if mat_name == material:

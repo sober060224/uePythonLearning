@@ -44,6 +44,7 @@ import unreal
 # 1. 查看蓝图中的变量
 # ─────────────────────────────────────────────────────────
 
+
 def list_blueprint_variables(blueprint_path):
     """列出蓝图中所有用户定义的变量"""
     bp = unreal.EditorAssetLibrary.load_asset(blueprint_path)
@@ -73,6 +74,7 @@ def list_blueprint_variables(blueprint_path):
         unreal.log(f"  变量: {var_name}")
 
     return variables
+
 
 # ─────────────────────────────────────────────────────────
 # 2. 蓝图变量的类型系统
@@ -108,6 +110,7 @@ def list_blueprint_variables(blueprint_path):
 # 3. 修改蓝图属性的通用方法
 # ─────────────────────────────────────────────────────────
 
+
 def modify_blueprint_defaults(blueprint_path, property_updates):
     """
     修改蓝图的默认属性值
@@ -127,7 +130,7 @@ def modify_blueprint_defaults(blueprint_path, property_updates):
         )
     """
     bp = unreal.EditorAssetLibrary.load_asset(blueprint_path)
-    if not bp:
+    if not bp or not isinstance(bp, unreal.Blueprint):
         unreal.log_error(f"无法加载蓝图: {blueprint_path}")
         return False
 
@@ -168,14 +171,16 @@ def modify_blueprint_defaults(blueprint_path, property_updates):
     unreal.log(f"已更新蓝图默认值: {blueprint_path}")
     return True
 
+
 # ─────────────────────────────────────────────────────────
 # 4. 通过蓝图反射检查属性
 # ─────────────────────────────────────────────────────────
 
+
 def inspect_blueprint_properties(blueprint_path):
     """检查蓝图类的所有可用属性"""
     bp = unreal.EditorAssetLibrary.load_asset(blueprint_path)
-    if not bp:
+    if not bp or not isinstance(bp, unreal.Blueprint):
         return
 
     generated_class = bp.generated_class()
@@ -193,7 +198,7 @@ def inspect_blueprint_properties(blueprint_path):
 
     # dir() 返回对象的所有属性和方法名列表
     # 过滤掉以 _ 开头的 Python 内部属性
-    attrs = [a for a in dir(cdo) if not a.startswith('_')]
+    attrs = [a for a in dir(cdo) if not a.startswith("_")]
     unreal.log(f"  可用属性/方法数: {len(attrs)}")
 
     # 尝试读取前 30 个属性的值（跳过方法和会导致错误的属性）
@@ -203,13 +208,16 @@ def inspect_blueprint_properties(blueprint_path):
             # callable() 判断是否是方法/函数，只显示属性值
             if not callable(val):
                 unreal.log(f"  .{attr} = {val}")
-        except:
+        except Exception as e:
+            unreal.log_error(e)
             # 有些属性读取时会抛异常（如需要特定上下文），静默跳过
             pass
+
 
 # ─────────────────────────────────────────────────────────
 # 5. 蓝图资产引用操作
 # ─────────────────────────────────────────────────────────
+
 
 def get_package_dependencies(asset_path):
     """查询一个资产依赖（引用）了哪些包 —— 返回包名列表。
@@ -234,8 +242,8 @@ def get_package_dependencies(asset_path):
     # include_hard_package_references: 硬引用（直接使用，缺失会导致加载失败）
     # include_soft_package_references: 软引用（SoftObjectPath，按需加载）
     options = unreal.AssetRegistryDependencyOptions()
-    options.include_hard_package_references = True   # 硬引用：不用就跑不起来的
-    options.include_soft_package_references = True   # 软引用：SoftObjectPath 那种
+    options.include_hard_package_references = True  # 硬引用：不用就跑不起来的
+    options.include_soft_package_references = True  # 软引用：SoftObjectPath 那种
 
     # get_dependencies 返回被当前资产引用的包名列表
     # 查不到时返回 None（不是空列表），统一转换为空列表方便后续处理
@@ -253,6 +261,7 @@ def find_blueprint_dependencies(blueprint_path):
 
     return dependencies
 
+
 def find_what_references_blueprint(blueprint_path):
     """查找哪些资产引用了指定蓝图"""
     # find_package_referencers_for_asset 是"被引用"方向的查询
@@ -267,9 +276,11 @@ def find_what_references_blueprint(blueprint_path):
 
     return referencers
 
+
 # ─────────────────────────────────────────────────────────
 # 6. 蓝图文档和注释
 # ─────────────────────────────────────────────────────────
+
 
 def set_blueprint_description(blueprint_path, description):
     """设置蓝图的描述信息"""
@@ -284,10 +295,11 @@ def set_blueprint_description(blueprint_path, description):
         except Exception as e:
             unreal.log_warning(f"设置描述失败: {e}")
 
+
 def set_blueprint_category(blueprint_path, category):
     """设置蓝图的分类（影响在内容浏览器中的分类）"""
     bp = unreal.EditorAssetLibrary.load_asset(blueprint_path)
-    if bp and hasattr(bp, 'set_editor_property'):
+    if bp and hasattr(bp, "set_editor_property"):
         # 【易错点】分类属性名是 blueprint_category，不是 category_name
         try:
             bp.set_editor_property("blueprint_category", category)
@@ -296,9 +308,11 @@ def set_blueprint_category(blueprint_path, category):
         except Exception as e:
             unreal.log_warning(f"设置分类失败: {e}")
 
+
 # ─────────────────────────────────────────────────────────
 # 7. 实用工具：蓝图审计
 # ─────────────────────────────────────────────────────────
+
 
 def audit_blueprints(search_path="/Game"):
     """
@@ -310,12 +324,7 @@ def audit_blueprints(search_path="/Game"):
     """
     all_assets = unreal.EditorAssetLibrary.list_assets(search_path, recursive=True)
 
-    results = {
-        "total": 0,
-        "no_prefix": 0,
-        "high_dependency": 0,
-        "issues": []
-    }
+    results = {"total": 0, "no_prefix": 0, "high_dependency": 0, "issues": []}
 
     # 批量操作时显示进度条，让编辑器不会"假死"
     task = unreal.ScopedSlowTask(len(all_assets), "审计蓝图...")
@@ -351,9 +360,7 @@ def audit_blueprints(search_path="/Game"):
         refs = get_package_dependencies(asset_path)
         if len(refs) > 20:
             results["high_dependency"] += 1
-            results["issues"].append(
-                f"依赖过多 ({len(refs)}): {name}"
-            )
+            results["issues"].append(f"依赖过多 ({len(refs)}): {name}")
 
     # 输出审计报告
     unreal.log(f"\n{'=' * 50}")
@@ -369,6 +376,7 @@ def audit_blueprints(search_path="/Game"):
             unreal.log(f"    ⚠️ {issue}")
 
     return results
+
 
 # ─────────────────────────────────────────────────────────
 # 使用示例

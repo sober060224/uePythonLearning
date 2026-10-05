@@ -47,6 +47,7 @@ import unreal
 # 1. 创建蓝图并指定父类
 # ─────────────────────────────────────────────────────────
 
+
 def create_blueprint(name, parent_class, destination="/Game/Blueprints"):
     """
     创建蓝图资产
@@ -71,12 +72,7 @@ def create_blueprint(name, parent_class, destination="/Game/Blueprints"):
     factory.set_editor_property("parent_class", parent_class)
 
     # create_asset 创建新蓝图，返回蓝图 UObject 或 None（失败时）
-    new_bp = asset_tools.create_asset(
-        name,
-        destination,
-        unreal.Blueprint,
-        factory
-    )
+    new_bp = asset_tools.create_asset(name, destination, unreal.Blueprint, factory)
 
     if not new_bp:
         unreal.log_error(f"创建蓝图失败: {name}")
@@ -92,9 +88,11 @@ def create_blueprint(name, parent_class, destination="/Game/Blueprints"):
     unreal.log(f"已创建蓝图: {full_path} 父类={parent_class.get_name()}")
     return new_bp
 
+
 # ─────────────────────────────────────────────────────────
 # 2. 查询蓝图信息
 # ─────────────────────────────────────────────────────────
+
 
 def inspect_blueprint(blueprint_path):
     """读取蓝图的名称、类型和父类"""
@@ -119,9 +117,11 @@ def inspect_blueprint(blueprint_path):
 
     return bp
 
+
 # ─────────────────────────────────────────────────────────
 # 3. 修改蓝图父类
 # ─────────────────────────────────────────────────────────
+
 
 def reparent_blueprint(blueprint_path, new_parent_class):
     """把蓝图重新挂到一个新的父类下"""
@@ -149,9 +149,11 @@ def reparent_blueprint(blueprint_path, new_parent_class):
     )
     return True
 
+
 # ─────────────────────────────────────────────────────────
 # 4. 批量创建不同父类的蓝图
 # ─────────────────────────────────────────────────────────
+
 
 def create_blueprint_set(blueprint_defs, destination="/Game/Blueprints"):
     """
@@ -186,9 +188,11 @@ def create_blueprint_set(blueprint_defs, destination="/Game/Blueprints"):
     unreal.log(f"成功创建 {len(created)}/{len(blueprint_defs)} 个蓝图")
     return created
 
+
 # ─────────────────────────────────────────────────────────
 # 5. 编译蓝图
 # ─────────────────────────────────────────────────────────
+
 
 def compile_blueprint(blueprint_path):
     """编译单个蓝图"""
@@ -202,6 +206,7 @@ def compile_blueprint(blueprint_path):
     unreal.BlueprintEditorLibrary.compile_blueprint(bp)
     unreal.log(f"已编译蓝图: {blueprint_path}")
     return True
+
 
 # ─────────────────────────────────────────────────────────
 # 使用示例
