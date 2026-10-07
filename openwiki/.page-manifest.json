@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "pages": {
+    "/openwiki/architecture/repository-layout.md": {
+      "gitHead": "d0840c1a545a45c94a90e81172aa27d749f24bd5",
+      "sourceFingerprint": "sha256:198a877e8d5fcd10fe9809f97261ac72af5562a615e3390d56041dbfb09d8a43",
+      "pageVersion": "sha256:7b4335a1d073b407c97164773c6ca9392a8f6bf364f1770feb1b5116d998feea",
+      "completedBy": "pi",
+      "completedRunId": "0ece0d54-b6be-43c6-93c8-48fdbf4f7809"
+    },
+    "/openwiki/architecture/script-conventions.md": {
+      "gitHead": "d0840c1a545a45c94a90e81172aa27d749f24bd5",
+      "sourceFingerprint": "sha256:198a877e8d5fcd10fe9809f97261ac72af5562a615e3390d56041dbfb09d8a43",
+      "pageVersion": "sha256:eefbddad79c431491d0536bdd227764efa4c40b1deeb91cc241166fd0f49aeee",
+      "completedBy": "pi",
+      "completedRunId": "0ece0d54-b6be-43c6-93c8-48fdbf4f7809"
+    },
+    "/openwiki/concepts/nonexistent-and-deprecated-apis.md": {
+      "gitHead": "d0840c1a545a45c94a90e81172aa27d749f24bd5",
+      "sourceFingerprint": "sha256:198a877e8d5fcd10fe9809f97261ac72af5562a615e3390d56041dbfb09d8a43",
+      "pageVersion": "sha256:a07406a4178c6dd8b7ed8555e7f67aad60567d5cad44a75dfce3b90207c426cb",
+      "completedBy": "pi",
+      "completedRunId": "0ece0d54-b6be-43c6-93c8-48fdbf4f7809"
+    },
+    "/openwiki/operations/running-and-verifying-scripts.md": {
+      "gitHead": "d0840c1a545a45c94a90e81172aa27d749f24bd5",
+      "sourceFingerprint": "sha256:198a877e8d5fcd10fe9809f97261ac72af5562a615e3390d56041dbfb09d8a43",
+      "pageVersion": "sha256:2d0dfb5b5344b8e89d15339bae3ad261ae0f9c6175ef8dba41450b64e1750b77",
+      "completedBy": "pi",
+      "completedRunId": "0ece0d54-b6be-43c6-93c8-48fdbf4f7809"
+    },
+    "/openwiki/reference/utils-helpers.md": {
+      "gitHead": "d0840c1a545a45c94a90e81172aa27d749f24bd5",
+      "sourceFingerprint": "sha256:198a877e8d5fcd10fe9809f97261ac72af5562a615e3390d56041dbfb09d8a43",
+      "pageVersion": "sha256:189592b2c383a23d399d99d192221993b0b9a3de3b3d0bf7043d6b8c1e72c72e",
+      "completedBy": "pi",
+      "completedRunId": "0ece0d54-b6be-43c6-93c8-48fdbf4f7809"
+    },
+    "/openwiki/reference/utils-ui-helpers.md": {
+      "gitHead": "d0840c1a545a45c94a90e81172aa27d749f24bd5",
+      "sourceFingerprint": "sha256:198a877e8d5fcd10fe9809f97261ac72af5562a615e3390d56041dbfb09d8a43",
+      "pageVersion": "sha256:7491b8479831447f061f230489efa723bf8af3b7822ce1ee653118d9a0e26eff",
+      "completedBy": "pi",
+      "completedRunId": "0ece0d54-b6be-43c6-93c8-48fdbf4f7809"
+    },
+    "/openwiki/testing/automation-testing.md": {
+      "gitHead": "d0840c1a545a45c94a90e81172aa27d749f24bd5",
+      "sourceFingerprint": "sha256:198a877e8d5fcd10fe9809f97261ac72af5562a615e3390d56041dbfb09d8a43",
+      "pageVersion": "sha256:bb11a469c21bcd33a443bf1dc65d90c107cd17c62d4e00a6f129b5786034b82e",
+      "completedBy": "pi",
+      "completedRunId": "0ece0d54-b6be-43c6-93c8-48fdbf4f7809"
+    },
+    "/openwiki/workflows/asset-management.md": {
+      "gitHead": "d0840c1a545a45c94a90e81172aa27d749f24bd5",
+      "sourceFingerprint": "sha256:198a877e8d5fcd10fe9809f97261ac72af5562a615e3390d56041dbfb09d8a43",
+      "pageVersion": "sha256:656e577a0c834b604fea1577c2b59b2c17bc632451a803fa5afcd52b106eab4f",
+      "completedBy": "pi",
+      "completedRunId": "0ece0d54-b6be-43c6-93c8-48fdbf4f7809"
+    },
+    "/openwiki/workflows/batch-and-external-data.md": {
+      "gitHead": "d0840c1a545a45c94a90e81172aa27d749f24bd5",
+      "sourceFingerprint": "sha256:198a877e8d5fcd10fe9809f97261ac72af5562a615e3390d56041dbfb09d8a43",
+      "pageVersion": "sha256:175882ea1e17c0ff45ac34f465c07e5886e2a5899fdd593b6aa3524636cf9c5b",
+      "completedBy": "pi",
+      "completedRunId": "0ece0d54-b6be-43c6-93c8-48fdbf4f7809"
+    },
+    "/openwiki/workflows/blueprint-automation.md": {
+      "gitHead": "d0840c1a545a45c94a90e81172aa27d749f24bd5",
+      "sourceFingerprint": "sha256:198a877e8d5fcd10fe9809f97261ac72af5562a615e3390d56041dbfb09d8a43",
+      "pageVersion": "sha256:1d8be75e05d8bf0acbe73e2323843240a050704ccaeed43b21c0e826e18d6fe0",
+      "completedBy": "pi",
+      "completedRunId": "0ece0d54-b6be-43c6-93c8-48fdbf4f7809"
+    },
+    "/openwiki/workflows/editor-scripting-tools.md": {
+      "pageVersion": "sha256:4c77c2bf402732566368f05438c2168e897488c7f9ba5bb17cc722591d0f301d",
+      "completedBy": "pi",
+      "completedRunId": "0ece0d54-b6be-43c6-93c8-48fdbf4f7809",
+      "gitHead": "d0840c1a545a45c94a90e81172aa27d749f24bd5",
+      "sourceFingerprint": "sha256:198a877e8d5fcd10fe9809f97261ac72af5562a615e3390d56041dbfb09d8a43"
+    }
+  }
+}

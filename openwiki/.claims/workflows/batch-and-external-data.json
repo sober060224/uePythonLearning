@@ -1,0 +1,374 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:175882ea1e17c0ff45ac34f465c07e5886e2a5899fdd593b6aa3524636cf9c5b",
+  "claims": [
+    {
+      "id": "claim_9dbec10388e94401a0e56d4ea40961e4",
+      "statement": "第 08 章两课的加载都不会执行任何实际操作：01_batch_operations.py 载入后只定义 BatchProcessor/ProjectCleaner/AssetOrganizer/ProjectHealthReport 四个类并打一行“高级主题第1课完成！”（:497），六个示例调用（:481-495）全部处于注释状态；02_external_data.py 同理，末尾只有 :542 的完成日志。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L1-L30",
+          "version": "repo-lines-v1:sha256:fdcf359adae63ebb44dfd76619c6f3a01e09ab014eeabd200595a79ab10d4bcb:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3NWQ0NTg5ZTkxY2M4Y2I5NzQ4ODlkYWIwMWRlMTVkYjE1NzRjYTEwZWVjNzI5MGExMDliZjU4OGM5NGUwMWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzMGNmOTQ4Zjc3NzUyM2I5Y2QyNzVmMzJjYWFiNWExNTM5MGE3NWM5OGZjZDRlMDAzYWFkYTQ0YzQ3ZmZkMGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJlZWZjMjc1ZThmZTcwZmE1NzA4YjQyM2IyMGJlNWYyYWNkMmMyOTU1ZjIxMjc4ZDliNmRhMGJjYTY4ZGYyYzcifQ"
+        },
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L497-L497",
+          "version": "repo-lines-v1:sha256:5257c72ecdf0b9e6f39ac15243dcacedc3c96d7574a86b8f9d3c4cca9d9d57a0:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTI1N2M3MmVjZGYwYjllNmYzOWFjMTUyNDNkY2FjZWRjM2M5NmQ3NTc0YTg2YjhmOWQzYzRjY2E5ZDlkNTdhMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTI1N2M3MmVjZGYwYjllNmYzOWFjMTUyNDNkY2FjZWRjM2M5NmQ3NTc0YTg2YjhmOWQzYzRjY2E5ZDlkNTdhMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2EwOWYzYzU2MDQxMGI1MDNjMWM4MDIzZTY1N2I5MjgyNTAwOGE5Y2I5Y2FhN2JiZjAxN2U2MDE0MWQ2NTI0OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjExNDUxZjZkMTQ1ZjZiY2Q3ZmJmNDkxOGY1NDg4MzEwOGVlMmZkZDA3ZjlhMDYzMzI3ODY1OWY0MzA0MGIwNyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3ad209aca5884d53a8be45295b37dd10",
+      "statement": "BatchProcessor 是全仓唯一被设计成复用的类，三个成员分别是 __init__(operation_name)（:39，初始化 self.results = {\"success\": 0, \"failed\": 0, \"skipped\": 0, \"errors\": []} 与 start_time）、process(items, process_func, description)（:52）与 _print_summary()（:117）。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L52-L115",
+          "version": "repo-lines-v1:sha256:9cdd52cb0941ced4dd74adac68b928c5f932c914a68ff16da6c8286e4675ae33:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1NWY1NjQ1NWQxZDk2NjFkOTQ4M2U3NzhlZmQ5YzgxMjc4MWZjOWE4YzA0NzRjNzEzN2UwMzA2Y2NmMjg5ODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjZTJlOTE4MGFiZjc3MmI5ZTkzMzk5YWFiYTA3YjNjM2Y5NjIxY2E4YmRjMjhkNDU1OTU0ZTU0MzM5MGE3NzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNmZjkzNDVmMzc5ZjgxZWQ3MTEwYWMwZDZiZDMyMDZiMDgxZDFiNTQwZjBhYzViODExMTczYzA3YjkwOTgzMDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZjN2M3MmIwOWUyZjY2NTUxZjI4NzJlNjJkNjdiOWM5NmUzYTRiZWYwZDliMGMwMzhlYzk3N2ZlYmM2ZGY3MWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ac063e52d2ce460f966e398d5168dad2",
+      "statement": "process 的处理函数返回值是三态协议：result 为 True 计成功、为 False 计失败、其它任何值（含 None）计跳过；判等用的是身份比较 result is True / result is False 而不是 == True，因此返回 1 或非空字符串会被计成“跳过”而不是成功，这是未写入注释的隐含契约。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L93-L100",
+          "version": "repo-lines-v1:sha256:40c28a4c997908f4fbe62b69362a28635473bcf98550e59a2a990e0e09e36f3b:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzJkYTk2YmM0MzY3YmU4NWJmOTNiODRiMGJmN2ZmOTY4MTJhZTZkNjUyODg1NDcwZDRmY2EwOGQwYmIxNTZjOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2M2NzRlMTZhZWNjYmFiNWE3YmUzNjdkNTcwMWQ4YmI5NTAzNDllZjNlYmEyYzM5ODJmYzg4MGE0MGQwZmM0ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGMzMjY5ZWNkZWEzOTUwZmYzYzY5YTA4Mjc3MDY5YzJkYTFiNGYyYmYwNThhMjhjYWQ2OTUzMjExMzY1MGI5ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDdhMjg1MjQwOWUyZTc4NmUyMjgzMzFlYjM1OGQzYWM3OGQ0NTQ2ZmMwNjBkYmUxY2ExNjAxODRjMmY2NjI1MiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_a0f1cd634ac24516b4993f8bd27e89ac",
+      "statement": "process 用 except Exception 把单个项目的异常降级为一条 failed 记录与 self.results[\"errors\"].append({\"item\": str(item), \"error\": str(e)})，并用 log_warning 而不是 log_error（注释理由：“因为这是预期中的错误”），从而做到单个项目失败不中断其余项目；这与 testing/automation-testing 用 log_error 报失败是两种不同姿态。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L101-L111",
+          "version": "repo-lines-v1:sha256:1d4997d6e6438e52038cedb1df7bd3f510e26e166f59f9a8ece5cae2d29a8689:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkYzNiN2YyZmM1NjY0MGYzMDU3ZmZhZDhlODUxODIyMGI5YjU5YjhhZDkwMjRmMTJlNzA3ZjYwNGNjYjBkNTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM2ZTk5ODhiNDMzMTNhNGNhYTRjNGRjYTdhMDk2OTE0MThlOGVkZWNmYTdkMzc1OTFhZDZiNjgxMWFiZTQ1N2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwMDAxOWNiZGIzMmEzMTJhMGY4NDY2MmMzNTJkZmU1Y2YzZGRiYTA2ZWM5NjVkOWM1ODJiMTljNWY4OGM0ZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllNWI0NjZhNDk5ODI0NjZmYjI2NGFlMjA4ODA1YWVlZDlmYjliZjkyMDA0OTAzYzgwYzIzYzFmYjM2ZmEyNjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e56d503f456a4aeda66743bb14d52657",
+      "statement": "BatchProcessor.process 不返回统计：函数最后一行是 self._print_summary()（:115）而没有 return，因此 _print_summary 里 :138 的 return self.results 被直接丢弃，process 隐式返回 None，调用方拿不到 success/failed/skipped/errors 任何数据，只能用读日志的方式获取结果。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L115-L138",
+          "version": "repo-lines-v1:sha256:e8d9c5d2bf305e1dc29ee56534f4fd0316531ddca7da9fbd118a89876afecc4f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjZTJlOTE4MGFiZjc3MmI5ZTkzMzk5YWFiYTA3YjNjM2Y5NjIxY2E4YmRjMjhkNDU1OTU0ZTU0MzM5MGE3NzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjNWUwYTk4YzRiYzNjZWQyN2I1NGY4OWQxODFmMGRmYWQ0Y2RmZDFiNTlmZDYxYTk0NmUxMGFiNWY4NzU5OTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjllNWI0NjZhNDk5ODI0NjZmYjI2NGFlMjA4ODA1YWVlZDlmYjliZjkyMDA0OTAzYzgwYzIzYzFmYjM2ZmEyNjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVjMjNhNjJjNTE4NWJlZjgxODczMWU3OWJmNDdkZTE3YjlkYWZkMmVmMDYyZDY1Y2RiYzJmN2MxMWE1ZjljZjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b9d54d064c2d4d498c9ffb84c263b67c",
+      "statement": "BatchProcessor 还有两个未暴露的缺陷：self.results 不在 process 开头重置，同一实例连续调两次 process 会让 success/failed/skipped/errors 累加（start_time 会重置而计数不会，当前三个工具都只调一次所以未暴露）；用户点取消时直接 break，剩余项目既不算 skipped 也不算 failed，摘要仍打“处理完成！”，看不出这次是被中断的。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L52-L61",
+          "version": "repo-lines-v1:sha256:61583db504cf7aa82365bf0cd2fb552e14fdb52630ce70bf107e9b3515e4b087:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1NWY1NjQ1NWQxZDk2NjFkOTQ4M2U3NzhlZmQ5YzgxMjc4MWZjOWE4YzA0NzRjNzEzN2UwMzA2Y2NmMjg5ODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4ZGNjM2FlMjI0ZWE2MzFhYjZmOTVkMWQ2ZWQ5YTdmNmFkOTVmNmM5OTg5NGZlMmU3OGMwMDMxZThjODU0MGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNmZjkzNDVmMzc5ZjgxZWQ3MTEwYWMwZDZiZDMyMDZiMDgxZDFiNTQwZjBhYzViODExMTczYzA3YjkwOTgzMDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhZDllZTg1YWI1MTM5ZGJkNGM4YmJiNTRhODMyNTY0NDRlOTYwOGI2ZGFiYTI5NTBlNjE3MmE3NmNhMmYwYjMifQ"
+        },
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L80-L87",
+          "version": "repo-lines-v1:sha256:35a10173cfde2588947f25e87c069605a7bc71366a302b5345b1abadea67b5ec:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDY0YmMxMDkyOTZlN2RjMTBmMDc0YzA0YWIwZDZhMTFhYmMxZTgzZDhmYzQ5Y2JmNzg4MzUwNWFjMzBiN2QzYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGVjMDVlYzUwMzYzNWM2MGMzNDc0NDZiMWY3N2UyZjU1OGVlMTdlMzJmOGRlOGRhMjkyODRkYzliYzM4YWRlMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGFmNmZhNTllNGMwZTFlZjNiY2QzNjRiMGU4MmNjYjlhODQyZjA2MTU4NzhjODQ5NmQ0ZDhkMGQ1NWM1MjdhNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjg1NWZjY2FhYzZjMTViNWM4OTVlYTdkNzg0MTFjNDNlMjg0NTE5NjgwOGZkZWZkMDU3NjI2ZWQxZDljYmNlYSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_2c418c19328b45e78fbce005296600da",
+      "statement": "进度反馈用 unreal.ScopedSlowTask(len(items), description) + task.make_dialog(True)（带取消按钮）+ task.should_cancel() 中断点 + task.enter_progress_frame(1.0, f\"[{i+1}/{len(items)}] {item_name}\")；描述文本带序号与项目名是为了让用户知道卡在哪一项，item_name 用 isinstance(item, str) 分支处理（说明 process 接受任意类型 items）。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L68-L91",
+          "version": "repo-lines-v1:sha256:2893225150561a915101731506663b65fa8b19854f324db4e13c29085a61675c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlYzEyMzVhYjZkZjIxMTY0ZGQ3MzQzMzk1ZDYxZGNjNjk2ZjAxMmZhOGU3N2U3OWI5NTI4ODUzYzA3ZTJiZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5MDkxYmNiMTFjNDI3NDk1Y2UxNmU2ZDJlOWNmZDAwNmQ5OGQzODgwNGUyZDg1MTJjOTE4ZGY5NDcwMWNkOWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUzOGU3NmQ4YmY0YjNlZGY1YTY3ZmRmYzAxYWRlY2I2YmYzN2MxZDM1NTYyM2Y4NjViNjQ1ZGM1Mjk4NjgzNTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNhNjA1MGRiNjU5NDQzNjcyM2UzYzI2NDJiNTRlYjk0OGI0MTA4ODc4OTA4NzBjYzhhYWQ5NjY0Mjk3NTI2NWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b676eaa3775d4b4f92c74bc75f332d37",
+      "statement": "ProjectCleaner.remove_unused_assets(search_path, dry_run=True) 的检查函数里，开头的 does_directory_exist(asset_path) 是死分支（list_assets 调的是 recursive=True 但没传 include_folder=True，返回的全是资产路径，这个 if 永远不会成立）——同一个文件在 fix_naming_conventions 的 :219-221 明确点出了这一点，却没有回头修 remove_unused_assets。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L160-L191",
+          "version": "repo-lines-v1:sha256:ab47b0fdfe1b0d0325e8905596d59beb14458f55b4b6d399ecbbe61cc6ca142c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhOWY4YzJiYzdhMTQxYTAyMmFmM2ZlYjhhYjUwMDhlYzI1NzU3ZWYyNGFjZDA0OWY1MDg5YTc0YjdjOWFlODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0ZTk0Yzc0OGU5NDIzNjc0MWFhMGJmODc2ODE3ZjExNjkwZDU3OWUxMmM0NmVlOTA1MjQwZWIyYmM5MmVhYjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYxMzM5MTdhNDg3ZjNjM2Y3MDZiZjkxZjk2NjBhODVkZjc3OTdhYmJlNzdmMmM3ZGU5YmM2YzYwNjVmZWE0OWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFhZThjYWQ5OWQ1NDY2NjlkMDEzZjkyNWMxNTVlZTUwMDE2MmZiOTc1ZjgyMWNiNzMxNjdkZGUyOTYyMTBkNmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cd60aa40e82347769d3fa8d5cb227638",
+      "statement": "remove_unused_assets 的删除路径调用的是引擎原生的 EditorAssetLibrary.delete_asset（该签名没有 force/confirm_force 参数，那套双重确认是 02_AssetManagement/03_asset_actions.py 自己包的包装函数），因此这条路径没有任何二次确认、只靠前面的 external_refs 检查兜底；并且 delete_asset 的返回值被丢弃，删除失败时仍然打“未使用”并按成功计数；在 dry_run=True 下同一个 return True 表示的是“会被删除”，而摘要里那一栏的标题固定写作“成功”，统计的是候选数而不是成功数。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L176-L186",
+          "version": "repo-lines-v1:sha256:49df94c04ab3dab50bfd08580e9d8ca04c5507e5149d01d1765c01731c185db5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkZjBiMzk3YWVjOTc5YjIzOWM1N2UzMDk1ZjAzNWQ1NzhmMDhjMmE3MmM5MjY5OWM0ODNmNGNjZWY4NjU0ZWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhODlmY2Y4Y2RiODYxNTJiNzc3MWIyZGI5YWUzYzZiMDY4NDY2MGQ5MDdlNDFhNWQ5MjY0OGFkNTY4YWQ2NzkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_16822ad4a514450798ce5c5f1a0610be",
+      "statement": "ProjectCleaner.fix_naming_conventions(search_path) 是全章唯一已经修好子串匹配问题的函数：先用 class_name = class_str.split(\".\")[-1]（:234）取出真正的类名再做精确比较（class_name == class_key），而 :223-231 的【易错点】注释把原因写透——class_str 形如 /Script/Engine.MaterialInstanceConstant，若用子串匹配，字典里排在前面的 “Material” 会抢先命中，于是 MI_Foo 被改成 M_MI_Foo。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L203-L239",
+          "version": "repo-lines-v1:sha256:e9035736c2b1f4a6c956a0d011221e07f8f9ea6340aede19e41eb7b808deab8a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjNzhkNDFjNzBjNzliZjI2NjkzMjAwYTY0N2ExZGUwNmYzMjA4ZDdmNmFhMDJiYWY1NGJkNDYyMTM2ZjFkZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxMmFlNjE2MDAxZTIxOGEwZWUyNDA0ZmI0ZjllOGIwNzM5ZTM3MzcwZWIxMzAzZTZmN2EyM2Y5M2FmNTkwNWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlhMGNjNWU3MDY5NzU0ZjYxNWEwZTA3NTliMjFlYzNlN2M4MDQ0ZmNlZTEwMGJiMGRkNWQ2MWUzY2M3OGQwZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI2MmExYjhlYzg4OWRlNGIzYWFmYmRkZmNhMzA1Y2M5MDU1MzhlZDMwMmZlMTlkMzAxYjUzZDIyNGQxNTcwYWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6cc5ac4a8ebc48b69ae0d51957943aea",
+      "statement": "fix_naming_conventions 的 prefix_map 只有 6 条（StaticMesh→SM_、Texture2D→T_、Material→M_、MaterialInstanceConstant→MI_、Blueprint→BP_、SoundWave→S_），它是仓库里的第三份前缀表，与 02_AssetManagement/03_asset_actions.py:129-145（14 条）和 08_AdvancedTopics/03_automation_testing.py:229-273（4 条）内容各不相等。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L205-L212",
+          "version": "repo-lines-v1:sha256:a4d7ed7912c9807253053bba28fcb0ba3ea65a35326572d84e901c136a4dbe1d:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzhmZjg1YmE0MGE2NDViNmUwYjFmN2NkNDgyZjBhMGFlMTMzNDI3YWFiOWFlODY2YTBkNTYxN2VhM2Y2NThkMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzIyMGIxOTQ2MDk3ZDRhZDUxN2U3YjU4ZTViYjhmMjFmYzJhNzZhNGI5MGFhYTU1YjlmNTFhOThlMDU4YWY4OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTFiNzk0YmI1Zjc2MjhiM2QxYWY5N2QxMzYxNjljMzkxZTRhNzZjN2EwNjU3NWExZDkzNTkzMzY2YWEwMDI5MCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f78428e98fce48c9a27f7a44ee1798bf",
+      "statement": "empty_folders_cleanup 是本章唯一逆序处理的地方：先用 include_folder=True 拿到全部分路径，用 key=lambda x: -len(x.split(\"/\")) 做深度降序排序，再对每个目录以 recursive=False + include_folder=True 列直接子项、为空即 delete_directory(folder)；排序的必要性写在 :259-266 注释里（删除必须先子后父，/Game/A/B/C 要先删 C，B 才会在本轮后续检查里变成空的）；这个函数没用 BatchProcessor，所以既无进度条也不受取消控制。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L254-L285",
+          "version": "repo-lines-v1:sha256:a2bac8e7f9faac3b41423c490d09b9b9e9f81697021191669673a6d77fdefebb:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5OTRhOTRjODgwYmVjYTE5MWFiMTY1Y2I1M2VlNDA5OGMyMjgzMmFhNGRkY2ZhMzlhODIwYmYzNjExNzU3MGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdjYWU1MzAxM2I5ODdkZWY1OTQ4NDkzN2MwMDJhYTkxZGRiNzk5Nzg5NjkxOTRiZTgxYzhhMTg2MDBhZTZkM2MiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzNjMyMTEwOWNhMTk3NDhhNjBjYzM0YmU1ZmY5NjVlMTI2NGM1ZmFkNjQ5YjE4NmZmNmUzYjgyOWI5NTY5YTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwZGJiZTliMjJiM2UxMDU3ODQyM2M1YzIxY2M5NjA5NmIyMTcwNDcwY2UyNjc2ZDE3OTJkNjU3ZmJkODUyZGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7b0e2f5e039e4fcea6f5287b433bc536",
+      "statement": "AssetOrganizer.organize_by_type 用 type_dirs 字典加子串匹配 if class_key in class_str + break（:336），也就是 fix_naming_conventions 刚刚修掉的那个错误，因此三个条目的目标目录永远走不到：MaterialInstanceConstant 被 “Material” 抢走只进 Materials（Materials/Instances 不可达）、WidgetBlueprint 被 “Blueprint” 抢走只进 Blueprints（UI 不可达）、AnimBlueprint 同样只进 Blueprints（Animation 不可达）；而 AnimSequence 仍可进 Animation，所以症状是“一半对一半错”。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L300-L339",
+          "version": "repo-lines-v1:sha256:69da41a2f088e0d0ace7f3165e1abd64e8ce00cc40ad852d31a66c4c385cfa0a:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzYTEyYTVlNDc3MTY3MGFmZmRhMmJiNWM5ZDMwMDc3ZGMxNDRjOTUyNTI0ZTk5YzUyZmIwOTExNzc1ZDljMDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFmOTk3ZjU0ZTMyYjhhYzU1MWJkMDRlNjMxZDFiNjcwOWIyODcxMzA5YjU0ODM5M2Q3ODA5NjFhNzM2NmYwNDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJlMTRhNjdjNWIyNGNkYjc3MTFlNGQ1MWY5NzdkMzRkNjFmOGQ3ZWE5NzdlMTMzMDVkZTJjNWJhNTJiYzI5YTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8f64fa06dbfe4546a8cf21c0f76cc123",
+      "statement": "organize_asset 在移动前做了两个安全动作（跳过路径含 _Organized 的资产避免重复处理，返回 None 计入 skipped；does_asset_exist(dest_path) 预检避免覆盖）；而同样做批量移动的 batch_redirect_assets 只建目录、不做 does_asset_exist 预检，且用纯字符串替换 asset_path.replace(old_base, \"\", 1) 拼相对路径，因此目标同名时 rename_asset 失败会被 BatchProcessor 记成一条 failed 而不中断也不提示冲突原因。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L317-L395",
+          "version": "repo-lines-v1:sha256:be1f5bbd05c5d2962a7775e67e66fd9400e6351da40139c144f1df0506cfa462:eyJzZWxlY3RlZExpbmVDb3VudCI6NzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdjYWU1MzAxM2I5ODdkZWY1OTQ4NDkzN2MwMDJhYTkxZGRiNzk5Nzg5NjkxOTRiZTgxYzhhMTg2MDBhZTZkM2MiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVjMTFmZTVjODE3ODc1ZGE0Yjk1MmEyZDNmNTU0MTNkMTQzMGYwYzg3M2QyYzg4M2RhZGQ5NDRkYWUxYmQxMjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY4MWNmZDdlZGMyZTc0ZThlOTJlNGRiMWUxMzgyMmRmOTA5ZmMxNTRkZDM4MzFiNzQ0ZDk0MDFiYTJkNzhkMjkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_65a58ee773294027839a021f1ed9a511",
+      "statement": "ProjectHealthReport.generate_full_report 产出三段：资产统计（总数 + 按类名计数降序取前 15）、命名规范（只检查名称含空格）、顶级目录（取 parts[2] 作目录名再逐个统计）；落盘文件名是硬编码的 os.path.join(unreal.Paths.project_saved_dir(), \"ProjectHealthReport.txt\")（:468-471），每次运行覆盖上一次，与 automation-testing 用时间戳文件名保留历史形成对比。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L401-L495",
+          "version": "repo-lines-v1:sha256:cfb71abe82bec139b83fcc56eb1a463a7f126fcab616a1999fceff129a138326:eyJzZWxlY3RlZExpbmVDb3VudCI6OTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzMjFjNWU3M2I5Y2U5ZWUyMGVkMGEzNzZlMjg2OTExMzQ1ZjQwODNlZjEzZGQ2NWZhOTFlZDJkODRiYTVhNTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkOGE3NjNkYTNlNGFmMTYzMjI3MGZlMWUzYjJjZTllMmRlYzM2NmVjMDA2MGI0MzdiZGNkZGYwYjU5YzEzNzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYwMWUwYzgwMGJkYmQ3YjY5ZDdiMGY4MzI0YzUyZmQ1NGM4NWZjYzA3YTlhMzY3ODFhMmU5NjI3MWZjOWFjNjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1ZWE0N2ZkZmNkMzU2MTJjYTE2MzMyNjM5NmFhMzhmZWZkOGUyMGYyMDAwMzFkYWVhMTczYjQzNDUwYzRlMWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_81254c930fc04898a66451d6182c7a88",
+      "statement": "健康报告的顶级目录统计是 O(目录数 × 资产数) 的嵌套扫描（count = len([p for p in all_assets if f\"/{d}/\" in p]) 在遍历每个顶级目录时都重新扫一遍全表），且 f\"/{d}/\" in p 是子串匹配——如果任意子目录与某个顶级目录同名（如 /Game/A/B/A/x），该资产会同时算进 /Game/A 多计一次；单次遍历累加计数即可降到 O(资产数)。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L440-L465",
+          "version": "repo-lines-v1:sha256:fed688f70a49e501f14070b20cc3ea75e68f49e57cbe772888bc37576b873aa0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiNzYwZjQ5MThiMjhhNjUxZjkwMTcxYjk4NDEwMTgzZDIyYTExMzg0MzVjMzlkZDMyYzQwNjQzNmJkNjY5MWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzMGFlMzNmYzI4NjE3MzIzZmIzZDA3ZDc0YTg5NWQzNTI1ZmZiODgyMjA1NGMwMzA2ZDc1Njc0NjliNjY3ZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxYjhjMjIzMDU5NTdhYWQwYjkyNWQwNDc2NzQ4YzNiOTE1M2Y2MWVkZWY2NGU0YmM2YmNmZjExZTViM2EyNDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM4YmI5OTc5Y2IyZjIzZTNiM2M0ZTY0MjY3NDM0OWQ2ZmE4OTllZWM4NTBhMmVhZmNmYTM4N2FiNTRjZjhhNWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4dcbce5042044b99807856de502ae389",
+      "statement": "write_csv 按 data[0] 的类型分两条路：list of dict 用 csv.DictWriter（列名从第一个字典的键提取 + writeheader()），其它用 csv.writer（列名由调用方通过 fieldnames 给出）；文件里 :146-151 的注释保留了历史（原来只处理了 dict 列表，传 list of list 时会用 DictWriter 去写列表直接抛异常），:148 附近的 if not data 提前返回挡住了 data[0] 越界，写入统一用 open(..., 'w', newline='', encoding='utf-8')（newline='' 避免 Windows 上多出空行）。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L128-L166",
+          "version": "repo-lines-v1:sha256:cd273699ea0b024c733600c248c2550ba66c7611ec226224685bb4fa04f373a0:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhkMmUxOTc2NzdhN2UwMTkzMTg0YzJkZjkxZTA3YTRkYmJiODAyODhiMzU3YTk0NTdlZDczZmY5NTUwMTE2ZGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiNDU2MmE2NmFjM2E5Y2NmZmFiNzU2M2I5YTE2MzFlMWNlYWUwZGY2N2Y1ZjFmNzFhZGFjMGIwYjU2NDQzZGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJiNDQ4YTYxNzRiYzhlM2JlZWNlNTEzN2NlYzFlYmQ5MTA0ZjhmZmY2ZjZlYmU1ZTEzMDdlNzNhNmQzNTRmNWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVmYTViNWVmNDQ2YTFiZTM5ZjM0OTcwODM4YjFkZjZiOWNkMDQ0NmEyMTE1OGZjMGZiMmUzOTBiMjhjYjFhOTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d9f974948cd54b2093c4c56c91b497c7",
+      "statement": "write_json 与 write_csv 在目录创建上写法不一致：write_csv 用 parent = os.path.dirname(file_path) + if parent: 保护，而 write_json 直接 os.makedirs(os.path.dirname(file_path), exist_ok=True)（:87）；当 file_path 不带目录部分（如 \"data.json\"）时 os.path.dirname 返回空串、os.makedirs(\"\") 会抛 FileNotFoundError。当前调用方都传绝对路径所以未踩到。两个写入函数都用 encoding='utf-8'，write_json 还额外用 indent=2 与 ensure_ascii=False 让中文直接写入而不转成 \\uXXXX。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L135-L139",
+          "version": "repo-lines-v1:sha256:03a4b70cac85c533c1cb21bc0384586bf0dbde6a43dfb9d067a9350b00afd4b7:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGRlZTA0ZjE5MTk2NDBmMTIyMDlkMTlkM2M3ZjE3MjRjZmQ2MDA0NzgzODZiZWZhYjk0ZDZmYmFjMzUyZGRmNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTc1OGFkZjUxYTAyMTA5MmM5M2MzNWQxMGU4MjgxMjE2ZGIxZDEzZTAyMWJmNjM0Y2I5YjRlNjEzZWZlNDQyOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzNlMTJmMTMxNjdlYzA3MWIxZDEzZDZhZmQ5M2VlYmU3OTc2OTg1MWVhZGNlNWU0NWJlZTM3ODVkMzU3NGVlZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGRjMjQ0MWUzMWE0YjljZTliMzkxODc3YmI0ZWQzYzhiMzExNzk3NTFkZTRlNWMxZWJmNTY4NTVhMjQ1NjRjMCJ9"
+        },
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L83-L95",
+          "version": "repo-lines-v1:sha256:e2833fcd1d2366b9dc44e24a9e1172f8c6b0a3e8e7ee061e99c05c7637ba90c0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzZDRkOTIyYjU1YjdkNjZiODdhOTAwZGVhYjQ2MWFlMGVhNGNlMThhMWUyZGFmYmVjMWQ5MjhkZThiZjM5N2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUxYjA1MjkwNmIzNjA3ZjFlMTBlM2QxODk1OGRiMmMyYjgzYmJmMWQzMTY5YTMxMzQ2YzliZTRhMTNlMTIyODYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEwZGI4NzM5ZGQzNDI1YWNmYThkYTA1NTJiMmQ2ZmJjNjYwN2EzZGJmYTIzYjZkMWIxNjk1NzZjNGEwNzgzZmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQyNjI4ZjNjN2U0YTI2YjY4YzViMTRhYTkyNDllZjk3ZTA4YjA4ZTdiYWNlMTU5MjQ1YzhhYTVhNzNjMzgxNDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_891c2347a2c04fdc8ebf52ca4ecf0ada",
+      "statement": "read_json 与 read_csv 都以 os.path.exists 预检开头（否则 open 会抛 FileNotFoundError）并在失败时 log_error 后返回 None；read_json 用 type(data).__name__ 打日志让人一眼看出读到的是 dict 还是 list；read_csv 由 has_header 决定用 csv.DictReader（每行变字典、按列名访问）还是 csv.reader（每行是列表）。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L60-L125",
+          "version": "repo-lines-v1:sha256:3f89cfc7a58aee3f12552215df4735c33be648822b5a53c1f9f60e22be65730b:eyJzZWxlY3RlZExpbmVDb3VudCI6NjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiZWY5NWEzMzBhYzQ2ZGM0ZGQzMDI1N2E1ZDUwMGE0ZDlhNjc1NDI4ZDIyNDU4NWE2Y2RjNjc4OGRlYzllMjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmZTE0ZTg5ZDU1OTZmMTg5NjNhODMzZWU5NTc2OTUzOTQ2M2ZkZmE4M2ZiYzgxZjY3Y2FmOWZjOTY3YmI1ZWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg2YmUxNWNjYWE4NzQzZTk5NWM5NDkwYTRjZGY0MjhiMTAxZTc1NWY2N2NmMDRmYTFkZGYyNWQyNGUwOTEwNzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUxODRmYjEzODhjMGZmZjEyZTY1YjE2NzVhMjA0Njk2MTA2NDdkMjI2N2M0YWE5OGE1MjUwNTgzN2U5ZWQzMDQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6425143832de49be8fe2a6455dc00c87",
+      "statement": "create_datatable_from_json 的路线是 JSON → CSV → DataTable：它要求 JSON 必须是数组格式且每行是扁平字典，先把 JSON 写成同名 CSV（json_path.replace('.json', '.csv')）再调 import_csv_as_datatable；因为 write_csv 的列名直接来自第一个字典的键，所以 JSON 的键必须与 Row Structure 的属性名完全一致；副作用是会在 JSON 旁边留下一个 CSV 中间文件。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L169-L199",
+          "version": "repo-lines-v1:sha256:214cc9c36953721f3db426096427e1e6df5fb0afeb6b3daf2dcad0c2c8e85e2a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImViODNmM2M1YzFkZTg1MGU1YzZjZDAxMDEzODQ4MmZlNDNjZGViYTdkZWRlNTY3YWJiNmFkYTJmZWIxOTJkMzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmMTQyYjhjMmY3MzNiZTFjOWZiOGI4NTk3MTRkZWY1Y2JjOWY1ZWJjOGQ4NzUxYmIwZDhiOThmYzRiNjhiOWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVhNDcyMDY0MzVlMmQ2M2ViM2ZmNTJjZmE2ZjYzNjdiZWE0M2I5ZTY0ZmRlMjU5NGNhZmFkN2NlZjdkOTZkYzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzNjE4YTkyMWJiOTNkYzkzMGIyNDYxMzZkMGY4ZmI2NmM5NmE5ZDY3MmQ4NzE2YjFlOTQ0OTkzNGMxOGE2MTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ca84ef8b65ef49feb22b35d2258b3e5d",
+      "statement": "import_csv_as_datatable 用 unreal.AssetImportTask() 填 filename/destination_path/destination_name/replace_existing/automated/save，再挂 task.options = unreal.CSVImportSettings() 后交给 AssetToolsHelpers.get_asset_tools().import_asset_tasks([task])（注释解释了 AssetTools 是引擎内部单例、必须用辅助函数获取）；:229-231 那次 set_editor_property(\"import_row_struct\", None) 实际上重复了构造默认值（CSVImportSettings.__init__ 的 import_row_struct 默认就是 None、import_type 默认就是 CSVImportType.ECSV_DATA_TABLE）；返回值是 task.imported_object_paths（失败时是空列表而非 None），与同文件其它函数“失败返回 None”的约定不同。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L201-L247",
+          "version": "repo-lines-v1:sha256:94a06d980c1b029e838ff219e57416ad10cce4693d98a220ca5b6279579228ef:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzMDNiY2E2MDU5YjNlZDFjODU4MGJhNmVlYWIxM2VhMmI4MTM2ODdhZjdhNjExMTY2MzhjMWJhYzQ1N2FhNWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1ZTYxYmE1Y2YyZDY0MGVjOTA2ZjMyMWZjNTE0NDI1ZmQyOTc0ZTA4MTAxN2RkODljNDE2MGJiYjg3OWFjYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjYTBlMjQyZjIwMDE1OGJiMjQwM2Y0MmIzYTAzMmEzOTRjNTdiNDNjZjRmZjA4YmUzOGI1NTRmNjg4OGUxYTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlMjE4MmFkODI2Y2UzMmM1Mjc1YTAyYjU1OGVhMjM3MGU5N2M1YTFhNmE3MjFkOGYxZTlmN2NmZjBlMGUxZWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d9afc301145b4e41868676df391e5170",
+      "statement": "read_datatable 的 docstring 明确承认“没有按行名取整行数据的函数，只能按列取再按行拼”：实现是先 get_data_table_row_names 与 get_data_table_column_names，再逐列调 get_data_table_column_as_string 并用 zip(row_names, values) 转置成 {行名: {列名: 值}}；它能工作的前提是每列的值顺序与 row_names 一一对应，代价是所有值都被字符串化（该函数返回类型就是 Array[str]）。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L249-L287",
+          "version": "repo-lines-v1:sha256:0227f29e32dc21c9a4294d0d72ed821d7c0d929dc0d299d079048a09f737eb69:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxNzdlNWI2MjU2YTg0NjA5YWY5NmRmNDU3YTRiZTcxOTQzMDJiN2FmZjEyOTQ2MDczMWMyN2Y2NTk2YmYyNGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZmE3NGRlOGIyNWY5ODUyZDVjMTdiNDdjMzM4NDdiNzNiNjE0NjZkNzA5NzJhYzVmNjU3ZTU3NDc3OGI3ZTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3ZGQ3ZWZhY2MzNjA2NDcxODFhNjFjYzQ1YjQwZjI3Yzk1NGVlODVjYWE3MWQ3YzZlNGUwZDMyNmVmZWQ3ZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhmYzE2Y2VjYTU3YjhjMzE0NWIwZTBlMzdhMjdlMjZiN2MxMjkzYWI4ZmQ0Zjk5NjNiNzAyNDJiZmZlYzBlYmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1e5f8e4fff384ecea5d8048e7f7a1826",
+      "statement": "read_datatable 使用的最原始路线有更好的替代（仓库里都没用）：DataTable 实例方法上有 fill_from_csv_string、fill_from_json_string、fill_from_json_file，DataTableFunctionLibrary 上有 fill_data_table_from_csv_string/csv_file/json_string/json_file 与 export_data_table_to_json_string(data_table) -> Optional[str] / export_data_table_to_json_file(data_table, json_file_path) -> bool；读表可以用 export_data_table_to_json_string 加 json.loads 一次拿到保留 JSON 原生类型的整行数据，写表可以用 fill_from_json_file 免去临时文件。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L253-L287",
+          "version": "repo-lines-v1:sha256:16ba0e74afb86d1a112dd4d9e01b78b42797f88de5324ceca26b72a8e034522e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlY2M2ZmViMWJmOGY1NWU0ODk4NDJhYTVkYTJkNGZjYTE3YjAxODNjYjcwNWUwNzFhNDFkYjQwNWVkMjA4ZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZmE3NGRlOGIyNWY5ODUyZDVjMTdiNDdjMzM4NDdiNzNiNjE0NjZkNzA5NzJhYzVmNjU3ZTU3NDc3OGI3ZTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkzZjg0ZTQxZTVlOGJmYmYzM2IwNzEwY2RjNjhiNDk4NzcxNDg2ZThjN2FiNTQ2NjgxOGRiODg3M2MzYWFiMDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhmYzE2Y2VjYTU3YjhjMzE0NWIwZTBlMzdhMjdlMjZiN2MxMjkzYWI4ZmQ0Zjk5NjNiNzAyNDJiZmZlYzBlYmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_56721deb4c3447e58680b4194bd8f629",
+      "statement": "add_row_to_datatable 是一个刻意失败的函数：它 log_error 出“UE Python 没有 DataTable.add_row”并如实 return False，注释给出的理由（:299-305）是“与其 save_asset 一下就 return True 让调用方以为写成功了，不如如实返回 False”；但还有一处不对称没被注意到——DataTableFunctionLibrary.remove_data_table_row(data_table, row_name) -> None 是存在的，所以 Python 侧“不能加行、能删行”；函数的 row_data 参数在函数体里完全没用上。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L289-L322",
+          "version": "repo-lines-v1:sha256:62b5be1b77c49304ff73f5209f0facab11a3489b10dcb5a465a69c51a6779442:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5NDYwNjQ3NTQ4Yjg0ZjgxM2RkZDk3NTA3NDc2MzE1ZGZmOTY4Y2Y4MmQ4MjdjOWFiMGZiMzE5YzE2MjZlNzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1ZTYxYmE1Y2YyZDY0MGVjOTA2ZjMyMWZjNTE0NDI1ZmQyOTc0ZTA4MTAxN2RkODljNDE2MGJiYjg3OWFjYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVjZTk5MWVmNzZhODQ0ZWM3ZmQ0NDRhZmUwNWM2NDI4ZjZkNTk1NTYxOGUxZWVjMWRhMjA4MDI2MjFkNDQzMzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZmNjhiMzFiNGMzNzM5ZTcwNTUyYmM2MDE4YThiODFjMzE1N2I5ZGI0ODE5MDY1OGFhNzA3NGYyYmJlZGU0NjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f61fe71436e240a39ab5fac318afc1c9",
+      "statement": "export_asset_list_to_csv 默认输出 Saved/AssetList.csv，逐资产写 Path/Name/Type/ReferenceCount 四列；它有两处与第 02 章不一致：find_package_referencers_for_asset 没有传 load_assets_to_confirm=True（引用数会偏小，而第 02 章在判定未使用与删除前检查时都显式传了），且 len(refs) 没有过滤自引用（而第 02 章三处实现都写了 [r for r in refs if r != asset_path]），因此每行 ReferenceCount 至少多 1，用它判“有没有被引用”会全部判成有引用；Name 列必须写 str(asset_data.asset_name) 因为 asset_name 是 unreal.Name、csv 模块写不了它。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L324-L368",
+          "version": "repo-lines-v1:sha256:7c81f37f5b3c5316a8489360d5700bbfc128dec8bf7e8b5bdab2bc17ac712743:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyMDU2MDNiNGM2NWI5OTE0ZTg5ZGFlNjkzMWYxYmMyZDM2M2VmMzBkMGQ5ZGU1ODI2Mjc4ZThhNzMyMTBjM2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhZDcxMmFiYmY0NDZlNjM2MjdmN2I2MTQ0MWZhN2UzMjM4ZGI3NDAzNjA4MTMxZjU5MmRkMGViMzMzMjVmNWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYzM2E5NGQ1NmIyOThlYjFhNGJiZDU0N2I4Y2Y2YWQ3YTVkOWQ3ZGQwNzcyZTI1NjBiYmJkMzg4NDM4ZDY2YTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc4OTBlMmJmNDNjYTNlMGY0NGM2NTc2MDhiZTJjNjQ2Njk5YTJmMmNjYTM4OGFjMTI3NmE5MGQ1ODhmOTMyMWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_94d555b30f544a06880e5da41ee0add9",
+      "statement": "export_actor_data_to_json 默认输出 Saved/ActorData.json，每个 Actor 导出 label、class、location、rotation、scale、folder 与可选的 mesh 七个字段；它用 get_all_level_actors()（只返回当前打开的关卡而不是整个项目）并已迁移到 EditorActorSubsystem（:385-387 的注释“【UE5】EditorLevelLibrary 已废弃，统一用 EditorActorSubsystem”），是仓库里已彻底迁移的少数文件之一。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L371-L428",
+          "version": "repo-lines-v1:sha256:db9229d097b14de2dd2bd6bbede8b2f694e8c3bcf8549933af30b10993303b9c:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiMDk5YzUzMWI3Yjg2NmU0NDRjYzkxYzhiYzI4MzhiYzViZjk0MTIzNDk3ODg5NjJiMGMxMzU1YTFmOTE1ZTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1ZTYxYmE1Y2YyZDY0MGVjOTA2ZjMyMWZjNTE0NDI1ZmQyOTc0ZTA4MTAxN2RkODljNDE2MGJiYjg3OWFjYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2ZjFmYTFhNDFlNTlmNGIyNzRiMzAzNDczNzE4Nzk2N2FjYWQyZmM3NjI2NDVjYWI5YjZmZmQ3NDdlYWEyNTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcwZWQ5ZjJjYWE0NjE2OGJjZGRhNmM1ZDc4MmZjYmQ0NzM0MzcxMGY4ZGJmODEzYWFmNDkxOGNiMTM1Y2NkYjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9c0dbc3560aa4955bab06e1adf588a47",
+      "statement": "导出 Actor 时有两处细节：class 字段用 type(actor).__name__，拿到的是 Python 包装类名而不是资产类名，所以对蓝图子类（例如父类为 StaticMeshActor 的 BP_Barrel）仍会导出成 \"StaticMeshActor\"，用这个 JSON 无法还原出原来用的是哪个蓝图；folder 字段用 str(actor.get_folder_path()) 因为该方法返回 Name；mesh 走 get_component_by_class(unreal.StaticMeshComponent) 再 get_editor_property(\"static_mesh\") 再 get_path_name()，两层判空都是必需的（桩里 get_component_by_class 的返回类型写的是 ActorComponent 而非 Optional，但实际找不到时返回 None）。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L389-L418",
+          "version": "repo-lines-v1:sha256:f9645ccc634e924d23eb77a817f0121e45d5fe7adec493ec321fb61eec4f2b1f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlZDMwNTc0MGNmZmQ3NTRkZjZmNTgxNDcyMjJmYjk2YmQ3MDVjMjRmMDRlOGRkZDQ4NmQ1Y2NiNWVmNGZmNzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjMWVmNWE3NmExZGI3ZmM1NmNhMjM4YzU2Y2Y4M2Q1MGJiMzAzMTE3MzMwYWNmMzFjMjdhOGQ5NDQ2ZTliZmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5N2EwYmJhYjI1ZDM3MmNmNTllNmQxOTA3ODFhYTE5NWU2YzU2MDhhM2ZhZjExNGQzOGE5NDM5MmZmZTljODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzZjExNjBmMDcyM2RjN2IzMDE4Mjk2Njk0YjlkYjRiOThjZjBmOTQ0MWNkYzU3YWU1NDUyMjQzZTU0YTgxMWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a8c76897940f4b1f975ffff7aa4e0dea",
+      "statement": "spawn_actors_from_json 是本课的核心（策划在 Excel 排关卡、导出 JSON、脚本生成 Actor）；它的 class_map 只有 4 条（StaticMeshActor/PointLight/SpotLight/CineCameraActor），并且用 class_map.get(class_name, unreal.StaticMeshActor) 静默回退——JSON 里任何不在表里的类型都会变成一个没有网格体的 StaticMeshActor，既不报错也不警告，与同文件 add_row_to_datatable 刻意 log_error 的姿态正好相反。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L430-L540",
+          "version": "repo-lines-v1:sha256:780527e55c1ddb06fe8074339480a5c6878c3d955be4845a6ca114fcea91b72d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTExLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkMjZkYWUwZjNmZmU1ZDU0ZTI0Y2U3YjFmMjgyZDYzNWRkMDFkMGI0NDdmOWYzYjNjMWMzOGVjMzA2NGUyN2Q5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJkMDVlNDRhYmE4Zjc3NTI0ZmRhYjc5M2MwMjU0MjM5NTY3OWU2NzNjNGQzOTIxZWVjYjZlZTA2ZWUyZTFjNDRkIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI4NTkwZDdkMDI2ZWEyNjgyZWUyYjkzYzJmYmEzMWJkYjRkNWYxNmYzYzg4NWRlM2M4OWYzNDVhNjJiMTA3MDFiIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI2OTJlMTYwOGM5MGVkNDc2ZDRhOGYxYjc0ZWU5YjdjNmI3NDgyMTFlYTdkM2MyZGQ2NDcyOWMzMTU5MjA4YzljIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_041fa3c904b141d59d743943beb41c5f",
+      "statement": "spawn_actors_from_json 构造变换时 unreal.Vector 用位置参数（顺序正确）而 unreal.Rotator 用关键字参数并配了【易错点】注释——因为 Rotator 的位置参数顺序是 (roll, pitch, yaw) 而 JSON 里习惯按 pitch/yaw/roll 写，串位不会报错只会转错方向；生成用 EditorActorSubsystem.spawn_actor_from_class(actor_class, location, rotation) -> Actor 并判空；配置依次是 set_actor_label（无返回值、mark_dirty 默认 True）、set_actor_scale3d 与 comp.set_static_mesh(mesh) -> bool，后两者都在 JSON 有对应字段时才调用。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L477-L524",
+          "version": "repo-lines-v1:sha256:7da811c4767e3dfd3c252ed822c3c8c88ee420d859528610ac60da087a435df0:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0MDkzYTY0MWIzY2Y4ZGU4Njc3OGQ0NDRiYjU5MjdkZjM4OTIyZWU4ODljYWUxZWZlYTVlMWU4NTQ4ZmU5N2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiZjJiZmQ1YjNmODA0NTdiNWU5ZDA3YjkzZjM2MzQ4ZjYwMmZhMTM3NDU5ZjQ3MjA2ZmY5NjdlMDE1MmM0ZTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM0ZjZhMzlmMzUxMDAzOTE0MjU5N2FkODU2M2QwNDlmNmQ4ZWU1NWM4OGZmZTk5ZmRjYzM0ZGVlNTZmMGE3NjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc4NTJkNDNjNGRhMTlkNTdmNGI2MDhiMGMzOTdlNzAwZGI5NDhiYTIwMjVmOWE3MmQ4ZTQ5ODg4M2JlYmEwZjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bd7223d521d34547a5e8bcb185d77ab1",
+      "statement": "导出与导入成对看能得出往返丢失清单：label/location/rotation/scale/mesh 往返完整；class 只在 4 条映射内完整、其它类型静默退化为 StaticMeshActor；folder 是只导出不回填（导入侧没有任何 set_folder_path 调用）。因此“导出关卡 → 导入关卡”目前只能当静态网格体布局的搬运，不能当关卡备份。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L389-L418",
+          "version": "repo-lines-v1:sha256:f9645ccc634e924d23eb77a817f0121e45d5fe7adec493ec321fb61eec4f2b1f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlZDMwNTc0MGNmZmQ3NTRkZjZmNTgxNDcyMjJmYjk2YmQ3MDVjMjRmMDRlOGRkZDQ4NmQ1Y2NiNWVmNGZmNzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjMWVmNWE3NmExZGI3ZmM1NmNhMjM4YzU2Y2Y4M2Q1MGJiMzAzMTE3MzMwYWNmMzFjMjdhOGQ5NDQ2ZTliZmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5N2EwYmJhYjI1ZDM3MmNmNTllNmQxOTA3ODFhYTE5NWU2YzU2MDhhM2ZhZjExNGQzOGE5NDM5MmZmZTljODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzZjExNjBmMDcyM2RjN2IzMDE4Mjk2Njk0YjlkYjRiOThjZjBmOTQ0MWNkYzU3YWU1NDUyMjQzZTU0YTgxMWEifQ"
+        },
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L430-L540",
+          "version": "repo-lines-v1:sha256:780527e55c1ddb06fe8074339480a5c6878c3d955be4845a6ca114fcea91b72d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTExLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkMjZkYWUwZjNmZmU1ZDU0ZTI0Y2U3YjFmMjgyZDYzNWRkMDFkMGI0NDdmOWYzYjNjMWMzOGVjMzA2NGUyN2Q5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJkMDVlNDRhYmE4Zjc3NTI0ZmRhYjc5M2MwMjU0MjM5NTY3OWU2NzNjNGQzOTIxZWVjYjZlZTA2ZWUyZTFjNDRkIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI4NTkwZDdkMDI2ZWEyNjgyZWUyYjkzYzJmYmEzMWJkYjRkNWYxNmYzYzg4NWRlM2M4OWYzNDVhNjJiMTA3MDFiIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI2OTJlMTYwOGM5MGVkNDc2ZDRhOGYxYjc0ZWU5YjdjNmI3NDgyMTFlYTdkM2MyZGQ2NDcyOWMzMTU5MjA4YzljIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_b642dcf1e74642caa34bbb4b68b67435",
+      "statement": "02_external_data.py 的 editor_transaction 用 @contextlib.contextmanager + try/except BaseException(cancel_transaction(token) + raise)/else(end_transaction()) 三支写法，并 yield token 让 with … as 能拿到事务索引；这是仓库里 editor_transaction 的第 6 份实现（另 5 份逐字重复在 04_EditorScripting/01_editor_utility.py:34-50、04_EditorScripting/03_custom_tools.py:33-49、05_LevelAndActors/01_spawn_actors.py:32-48、05_LevelAndActors/02_modify_actors.py:36-52 与 utils/helpers.py:251-270），根源是“每个脚本都能独立运行”这条隐性契约。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L35-L51",
+          "version": "repo-lines-v1:sha256:68eaaaf0fd4346ee4cf7c17a47b0cd358e8b1a05a392a90e8a3555a519914991:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2YjA4ZDRiMGNlOWUxN2IwNjI0ZTNmMGZiYmQ0ZGUxMzljZTFjNWI4YWE4MGJkMjNjYjkxZmQzYjgyNWZmOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhM2E4Y2NjZjMyMzg4MTMwODkxNmJmMjUzZTAxZTY4NWEzN2FjNjcwYmZkYTNlYzFkMTI0Y2YzZWRhY2JkYmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNlZTg0ZGFiY2VhNWU1OTljYTMxNmI4OGQyOTk3YWE1ZThmNWQxOGEzMDQ0ODQxMzRhY2RmOWY4NzU3NGU4ZWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2NDY0NWZiNDc5YzFkNDM3ZWU0OTRjZTE4ZGZiZmFmMjBmOWQyM2E0ZDVmNDg4ZDM2MmFkZGQ5ODA1ZjE4NjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_33619b34e5de49448e3e14d3d0458dc2",
+      "statement": "editor_transaction 的参数名 context 存在命名错位：它被当作 primary_object 传给 begin_transaction（而 begin_transaction(context: str, description: Text, primary_object: Object) 的第一个参数才是上下文，这里硬编码为 \"Python脚本\"），在调用处最明显——world = get_editor_world() 然后 editor_transaction(\"从JSON生成Actor\", world)，即传进去的是撤销历史里的锚点对象而不是上下文。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L36-L44",
+          "version": "repo-lines-v1:sha256:6c2ab9621977df301abefca96758ed6bb877554b0f973520fae0559156325563:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTg4NDJlN2IyNjUyNmYzMDg0YjljODUyZGU4YzFkMjU3MGUxYjdhMDliZjczMzliMWYyMGYzMDIxNDVlYTU0MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGQ0YjNkYWU0ZWU1NWM3ZGIyZjIxODhmYjg3MGZjODk5NTA5OWNjYTQ5NTA1ZGQzMDZiYzk3M2QxY2EyOGQyZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWU5ODE3MmQ5YzU0OGM3MDczNTgyMWUzYWQ5NzAyMjU5Njk1ODkxZDllMmYzOGVhZTEwNDk4NDU1NjY0OTgwMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzBhMmQ1OTQxNmNkNzUxYWE5YmQ2OTVmYTFjMzlhNWIwNGVkNjIwNTVkNTJmMGFiZDdlN2RjMzJkMWNkZTI4YiJ9"
+        },
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L463-L467",
+          "version": "repo-lines-v1:sha256:4e02bf18dc6b1b07aad710bc31b7c1fd81501384bd5f23e90a4de3d61aff16c5:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ViNzAyNTc1OTNkYTA2ZjY4MmEzZGRkYTU0YTlkMjYwZDRmYzUxNGY2NDUyMzdmNWNhNzRiMDhmOGRhNjFhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjNhOGFiZjZkZTFkNjZiNDBkNTFkNDI2NWEwY2U1YTYwMzQ0NGNiNjNhNjNmYzk0MDRkZTA0OGIwMTI2NTMwNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjM1ZWI5MDYwMTEwMTY2YjUyZTc3MjgxYzcwYzZjYWY1NDhhYTM4NTdmODRmNTlmMDUzZjJmMzhkZWNhYTI2YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzNmYzc3MTg5NzA0Zjg4Y2E5Y2MyNGZkMmE5MWMwOGM2YmZlYzQ3NTgyYzkzZTE3MzM5MzA4YjkxMzNmNWExYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_188ffea7d05c4882879313762f27c6f8",
+      "statement": "spawn_actors_from_json 的事务位置是对的：with editor_transaction(...) 只包住生成循环，unreal.log(f\"从 JSON 生成了 {len(spawned)} 个 Actor\") 写在 with 之外，因此这条日志不会被算进撤销栈；world 取自 UnrealEditorSubsystem.get_editor_world() 作为 primary_object，注释说明理由（生成 Actor 的操作作用于关卡）。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L463-L538",
+          "version": "repo-lines-v1:sha256:ab96c26bfd8ed1ee97a7ed98d57b5e9560cc1fa042e3c2353e927cab1a68839e:eyJzZWxlY3RlZExpbmVDb3VudCI6NzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYzNWViOTA2MDExMDE2NmI1MmU3NzI4MWM3MGM2Y2FmNTQ4YWEzODU3Zjg0ZjU5ZjA1M2YyZjM4ZGVjYWEyNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5N2ZmYjc3MGUxNDk2MmQ1NjNkNDI5Yjg2ODgxM2NmMTQzZmNiM2U0NjljNzAxOTdjNGZmODU4NDc2MzcwZjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_792cb15a9f604c948811d4f339770f27",
+      "statement": "第 08 章两课都不导入 utils/helpers.py 与 utils/ui_helpers.py，各自实现了需要的日志、进度、事务（02 的任务上下文、01 的 ScopedSlowTask 进度与统计），这是与第 02 章、automation-testing 同一个取舍的第四次重复（utils 工具库在全仓零调用方）。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L1-L30",
+          "version": "repo-lines-v1:sha256:fdcf359adae63ebb44dfd76619c6f3a01e09ab014eeabd200595a79ab10d4bcb:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3NWQ0NTg5ZTkxY2M4Y2I5NzQ4ODlkYWIwMWRlMTVkYjE1NzRjYTEwZWVjNzI5MGExMDliZjU4OGM5NGUwMWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzMGNmOTQ4Zjc3NzUyM2I5Y2QyNzVmMzJjYWFiNWExNTM5MGE3NWM5OGZjZDRlMDAzYWFkYTQ0YzQ3ZmZkMGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJlZWZjMjc1ZThmZTcwZmE1NzA4YjQyM2IyMGJlNWYyYWNkMmMyOTU1ZjIxMjc4ZDliNmRhMGJjYTY4ZGYyYzcifQ"
+        },
+        {
+          "resource": "repo://utils/helpers.py#L251-L270",
+          "version": "repo-lines-v1:sha256:a35617584713ce6baad42a07fe3d81ef095c551657a0059533811ec3103d4f8d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZiZDQwZDBjMDk5NGE5MGU1YzU5MjIyNWE0OWQ0MDZhNmY1NjVkNWU2ZjY5ZDBlZmQxZjRhZDhhZWY5ZDE5OWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzYTY5ZTdmMzAyNDBhOGQxODE3MzI2YjVjZDFmOWFhYWVhYTFiYjAxYTU4ZWI5ZTllNWI5MmVhMGM4ZTdhZDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwYTVlMGFjNDhhNDRlZDhkYmFjYmUzZDg2NTQ5YWZmMjZiZTFmODc4ZTliMTYyNDJkZWQ3NzZhZDkwODc5NWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyMDhlNzU1ZTY2MzNkMzVlNDg0OWQwOWYxOTUwODQ5NjU1OTgxZmU1MmJkYzY4ZjY1YzU1YWU5ZTE5NjA4ZTQifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.1",
+    "at": "2026-10-07T08:34:04.254Z"
+  }
+}

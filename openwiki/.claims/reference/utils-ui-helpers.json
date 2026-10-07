@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:7491b8479831447f061f230489efa723bf8af3b7822ce1ee653118d9a0e26eff",
+  "claims": [
+    {
+      "id": "claim_68ff213e410a4033ae7a926f9a261071",
+      "statement": "utils/ui_helpers.py 共 282 行，只依赖 import unreal（无其他导入），负责屏幕消息、编辑器通知、对话框、进度条、选区校验与表格打印；它和 helpers.py 一样在仓库里没有任何调用方，唯一提到它的是 README.md 工具库表格里的一行。",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L89-L92",
+          "version": "repo-lines-v1:sha256:f1f5d88920b05138f84323702ca779da4007e0af5531db28a90ae8f981fb40cf:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzQ3NGU1NzBjYzJiYWQwM2U4MmNjMjkyOTFkNmI2NWZmMWRlMzQ0OTVlY2VmZjQ5YWE4ZWE4ODZkOWFkZjQ5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzRlODg2ZGVmYjY5ZDQ4Y2FjMWEwZjdlNjlhN2M1MTQ5NGIxZWE5MDFlOTk3ZDRkZWNkMjA2ZGYzODliYjZhNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmYxNThlNGU4MzRiZGFlMzEyYjdmNTVjZGQwMDIzMDE5NmNlYTFhZjU3NmQzMjhkMjYzZWEwZDU3MGFmOTIwOSJ9"
+        },
+        {
+          "resource": "repo://utils/ui_helpers.py#L1-L15",
+          "version": "repo-lines-v1:sha256:9122ff1e2bc0242571ba843481425421bc231221f6c9499e2271bb697d22b547:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzMDNlY2RkNGE0ZDEwZjE5YzczZmQ0MmZkMTI0MzdmZDMzNTRhODI2ODE2MDVkYTUyNTVhOTdhMzkwNjhkYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1ZTUwMmEyYWExMWIwMGQyZDExYjYzY2RjMTUzODMyNmUwNjQyZjI4ZWVmZmVjNzQwZjczN2RhMWFhMDkwMzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1YjkyM2JjZTIxNDBkMmEzMGJhYzc4Zjg1YzM3ZWFhMWUxNWM4OTNhNTQ1NjllYTM4NjE5Y2UyOTNkNmMxMmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_736911f62a1141429a25a6a59da44041",
+      "statement": "show_message 是模块核心：用 COLORS.get(color, COLORS[\"white\"]) 把颜色名映射成 4 元 RGBA，再从 UnrealEditorSubsystem 取编辑器 World，最后调 print_string 并显式传 print_to_screen=True/print_to_log=True/text_color=unreal.LinearColor(*c)/duration；未知颜色名静默回退白色。与 helpers.show_screen 的差异是它没有 world 为空的降级分支，且默认时长是 5.0 而不是 3.0。",
+      "evidence": [
+        {
+          "resource": "repo://utils/helpers.py#L50-L62",
+          "version": "repo-lines-v1:sha256:2ef8e99598742d24c50a8e0c5f0a9b5c8a2d562c3f1eeca8857594ad025318fc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyNDE2ZjJlOGNjMDNhNzg1Y2VhZjYzODIxNmRiMDI0NmI3ZTgzNDg4ODliN2NlNzUwNDQ5ZWUzY2ZiZDJiZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5ZTQyMzQ1YzI1NWVmNDRjMDk0MjZhMjMyODUzNmRjYjM5MzllOGRmMDgyYWYwNWEzYjRiOGZlNzY3ZDBiMzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlZjMzMTAyMWExNTVlN2UxODU2ZDdlZGVmZDk1ZDY1MThmYTZiOGJkMTI0NDA2OTVjYTgyZTkyODQ2YTRkOGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1YjkyM2JjZTIxNDBkMmEzMGJhYzc4Zjg1YzM3ZWFhMWUxNWM4OTNhNTQ1NjllYTM4NjE5Y2UyOTNkNmMxMmQifQ"
+        },
+        {
+          "resource": "repo://utils/ui_helpers.py#L23-L53",
+          "version": "repo-lines-v1:sha256:755f9147ffcbb623ec07ada62a748445641fad00a2f931e5293cbf398cae5851:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmYjY4YWVjNDE3ZTBmOTJmOTE1ZDFlMTU0YjNmMjdmMzU1ZTVjYWM2OWYzMDZjZjA2MDg0MzY5MDMwZWU3MTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjNDk4NjQxOGJmZDQyZWM5ZTJjZWFkMmZmNzI4ODhhOTY0ZGM5MTZhMTE3MzkxZDExZmNkMDgyNzQxMzZkM2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI3MmI4MWEyNGRkNGFhODFkODJkMGMxNDQzN2IyMDVlODYxNDE1MmM2MWQyMmQwZjJlMTlhMGFjNDJlOTYwMjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhjYzRhN2QxY2M3OTZhYmEzZTQ2NzIzMzI3ZjUxN2U5ZjgxMTk4MmQyNTBmMDcwMjk4NmU0YjU3NjRhZDk1ODkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d2bff10e3b204e669e1d5575548ab80a",
+      "statement": "show_message 上方的【修改前】/【问题分析】记录了两处修正：print_string 的 world context 传 None 会在编辑器里静默失败（不显示也不报错），必须传编辑器 World；颜色传 Python 列表在某些版本能自动转换，但显式构造 unreal.LinearColor 结构体最稳妥。",
+      "evidence": [
+        {
+          "resource": "repo://utils/ui_helpers.py#L35-L53",
+          "version": "repo-lines-v1:sha256:34f10d6e4003807d49d95de06cc552bbd2b0d96a90a279a5cbf9c22210ed9bcc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyMmViNjE0MDFiOGUyMTY3M2VhNjE1ZDlhZGJlZmY0OTEzNzJjNzdiZDBhMTEyOThmZjA2YmU5YzA0MDgyODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjNDk4NjQxOGJmZDQyZWM5ZTJjZWFkMmZmNzI4ODhhOTY0ZGM5MTZhMTE3MzkxZDExZmNkMDgyNzQxMzZkM2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5ZjkzMDgzYzE5NzEyMWI5ODI3MDBiYThhZmFiZDE3MjJjZjFkM2U3NDA0NTA5ZTgwZWZhMjcyNDdmNjJmMDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhjYzRhN2QxY2M3OTZhYmEzZTQ2NzIzMzI3ZjUxN2U5ZjgxMTk4MmQyNTBmMDcwMjk4NmU0YjU3NjRhZDk1ODkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0598ba64b1954aed9715b65c2714289d",
+      "statement": "四个语义化快捷函数都只转发 show_message：show_success 加 ✅/green/3.0 秒，show_warning 加 ⚠️/yellow/5.0 秒，show_error 加 ❌/red/5.0 秒，show_info 加 ℹ️/blue/3.0 秒；四者都没有 docstring。",
+      "evidence": [
+        {
+          "resource": "repo://utils/ui_helpers.py#L57-L70",
+          "version": "repo-lines-v1:sha256:c995ec75eb4277969217bb8245ff151acc47c941ebfdb1571eefc063f6326006:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyNjE4MTUzZWI5Yjc5OTU0ZTM3NTMwMWViODBmYTBjMThjMWZlYmFlZjhlMTZkN2JmZmViNmE0MmFlNWY3YmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2MjhmZmQ2NWRjZTQ5NTg5NmRiNDFlNGU1MDJhOThkMjE4ODhmNDRjMTFmYjI2ZTA4YTZlMTI2NDZlNTliM2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjYzRhN2QxY2M3OTZhYmEzZTQ2NzIzMzI3ZjUxN2U5ZjgxMTk4MmQyNTBmMDcwMjk4NmU0YjU3NjRhZDk1ODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1YjkyM2JjZTIxNDBkMmEzMGJhYzc4Zjg1YzM3ZWFhMWUxNWM4OTNhNTQ1NjllYTM4NjE5Y2UyOTNkNmMxMmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0b207e83da264b8ba9c31408e4473774",
+      "statement": "notify 的 docstring 复述了被删掉的死代码（构造 type_map 后用 hasattr 保护、之后再未使用的 unreal.NotificationType 映射），并给出两条理由：unreal.NotificationType 在肚文件里根本不存在（蓝图的通知走 Slate UI 框架，未暴露给 Python），而 hasattr 保护会让每个值变成 None 从而给人“NotificationType 存在”的错觉。替代实现是把 notification_type 映射为颜色名后调 show_message(text, color, 5.0) 并额外 unreal.log(text)；notification_type 拼错时静默落到白色。",
+      "evidence": [
+        {
+          "resource": "repo://utils/ui_helpers.py#L78-L110",
+          "version": "repo-lines-v1:sha256:be06def6bdc9f1abaffdc889797491195548bddf67c41cf871cbb1d8d463660b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxODc1OGJjZWZjMDI3YjY4MmU1YTAzZjNmNmI2NDE0NzA5OWJhNDBmNzMyNTNmMDE3MmQ1ZjY3NWVmN2ZjMGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQwZWYxODJlYWJiZDUxOWU2YTFjZjc0MTc4OTczNmMzMDFmZWJhNGQxY2UyNDJlMzgyOTMyNDc2YTJjOGE2NWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_934f39d79b04480b8b830cd914b480a0",
+      "statement": "show_message_dialog 把 msg_type 的 ok/yes_no/yes_no_cancel 映射到 AppMsgType.OK/YES_NO/YES_NO_CANCEL（未知值回退 OK），调 EditorDialog.show_message(title, message, app_msg_type) 并原样返回 AppReturnType 而不是布尔；它没有暴露后两个参数，所以弹窗一律用默认的 message_category=AppMsgCategory.WARNING（带警告图标）与 default_value=AppReturnType.NO（按 Esc 或关窗等于 NO）。",
+      "evidence": [
+        {
+          "resource": "repo://utils/ui_helpers.py#L117-L135",
+          "version": "repo-lines-v1:sha256:0546686162ca8793d79131e20ece2792dc410d673149db6a40a6c42e7bce80cf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhNmIxZGUwNDllNGYwNjE4NWE2MGYxOWQ0YjE2NjQ1Zjg0ZjdjMzdkODI0NmZiNTg0MDhmNDY2MzZmYjJhZDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhMTFjMDU2N2QwYTVmOWU5YjEzNWY2NWNkMjUzNzJkZmQ2Mjg3NzVmN2MxZWQyNTNmOGJhZDQyZGQyZDY2NjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNiYmUyNTQxYWI5NjVhYmM5NjNlZjVlMzAzNmQyMjZlYWQ2YTc1ZWM5YTIyMjg4ZWEyY2Y4ZjA0N2EyYmFkMzcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6915f1c809334a679aba949f0834b5fe",
+      "statement": "confirm_action 先弹 yes_no 对话框，再把返回值与 unreal.AppReturnType.YES 比较得到真正的布尔；因为底层默认值是 NO，用户关掉窗口等同于“否”。",
+      "evidence": [
+        {
+          "resource": "repo://utils/ui_helpers.py#L138-L141",
+          "version": "repo-lines-v1:sha256:171643379da8c366203f2118596cb57ceb64e9923916024cde92413b335d81b3:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2JhOWNlMmNmYTJjMDM0MWQ1OWVjYWMyYWQ4MjgxNTY1MDEzNTYxMzNhYTNjZjlkOTA3ZTViN2E1MzE5YzMzMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjJlMzcyYTE0MGJmNTI1NjI1ZTE1NzVkNjVmODI5MmNmZDlhMDc5NjMwNjFhYWFkM2MwYjFkM2NkMzYwOWU1MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDcyMjMxMDZmZDg3NDJiNzBlYTIzM2Y5ZGMzNTlmNGIwMmJiYjA2OWI3MjgzZWVmNzYyNDk5NTE2YmQ3YjljOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjdkZGIxZDI0NDU2YmU3YjYyYzNiZWUyYTdlZDZhMzUyNmUxN2MyZjg0MTc0N2M3Y2IzNjM4OWM1ZGM2ZmI0YyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b2999d6eeb83467db3a11abccf410a48",
+      "statement": "input_dialog 是占位实现而非真对话框：它只把 title/message/default_value 打日志，然后原样返回 default_value。docstring 与注释建议改用 Editor Utility Widget 自建输入界面，因为 UE Python 对输入对话框的支持有限。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/03_editor_basics.py#L227-L233",
+          "version": "repo-lines-v1:sha256:7e1d9e68fea99804a2e6c1f0053f12623f3f7b8d3ff13a3af93c4536140841a0:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2IxODc3MTcyZDc2OTEzZGViMjA3YThlYzhkZjBmNGQ4OTc4YTMxYjQzMTVjZjQyZDEwMjA0MzFmNzBhODc0ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjQyOWUyOWIxYTQzOGYyNTdkYjc4NjdmMThhNTcwMmJjZTA5OGQxNmZkZjQyZjBlYjc0MmRjMzBlNTMwZTQ5ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTAxMzE4NjEzYzJiMzgyN2I3NjRmNGI3YzdkODJiNzdmOWNiNjZjYjI4MWY5ZjYxMzk4OTBlZWExNDNjNTI3OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzU3YzgwY2ExYjdmNGVhYmIzYTNhMzM4ZTk0ZmQ0MjdmNzFkZjM2Yjg1NTc3NDc3Nzg3MDhhNjA5NjVkZTMzOSJ9"
+        },
+        {
+          "resource": "repo://utils/ui_helpers.py#L144-L154",
+          "version": "repo-lines-v1:sha256:45c37a3e5d29130d0b4e44d4b50b936e660bac1e6e1004e19f7aff5c87640870:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwYjY2YjVkY2RlY2U0N2U2MWIyZTgyZDk4ODkzZjY0MGU1NzBiMzMzMTI3YzNmMmM2NWFlYTQ5YTU0ZDBhYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2MmZiYzQ4MDdmNDg0MWMxMzRiYzMxMmZiZDA3YzNhZTI2YjZhODI3ZWEwOTBlZjYwNTliZDhhNjUzYWZjZTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVlMDhhMzY0ZjYxYmJhYjMyYTVlZGE1OGQwMDc2YWJiYmY5NjJlM2NkMmNjMTAwOTlmZmVjMTc0ZTFkMjU2NjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1YjkyM2JjZTIxNDBkMmEzMGJhYzc4Zjg1YzM3ZWFhMWUxNWM4OTNhNTQ1NjllYTM4NjE5Y2UyOTNkNmMxMmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_143584cfa2bc4698ab677bc3f71f28f7",
+      "statement": "ProgressBar 是组合式封装：__init__ 存 total/description 并置 task=None、current=0；__enter__ 造 ScopedSlowTask 并调 make_dialog(True)（参数含义是显示取消按钮）；update(amount, text) 转发 enter_progress_frame 并累加 current；should_cancel() 转发 task.should_cancel()，无 task 时返回 False。它相对课程里的直写用法（with unreal.ScopedSlowTask(n, desc) as task: task.make_dialog(True)）只多了一个 current 计数；而 make_dialog 必须在创建后显式调用，否则不会显示进度条。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/03_editor_basics.py#L189-L192",
+          "version": "repo-lines-v1:sha256:1e564e3e364008dc6f77a1eccc0a0f4092baef6a1b4d7123b75cbcdc0c291d58:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDg2OTc4NTE5MTA3MDlmYjE1NWIwMThmOTM1OTI1OWM0ZGE3MmQ5ZmQ0MjNjZjZkNjMyZWU5NTE2MGNhZDdhMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2M4ZWQ5YmYyYjM3MDY2ODE4ZjAwZDllOTVjMjhjNjBiYTk4NDViMTZmNjA2ZjRiYzIxMDcyNmE4NzJhZTM5NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjU2Yzc1Y2MyYzljNjM0ZjRlMmE2MjUyZGEyNmQ0YWRlZjg2ZjZjNWJiNDJhZDhmYmMxZWVjZWM5ODE3MjQxMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODEyMDIxNTNkZmZkY2ZmY2MzOGIyYjljY2EzMjgwYTgwMGY4MzY5ZjY5NWQ0MDlhMDEwNTcyMWFhNzMzMzE1OCJ9"
+        },
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L220-L233",
+          "version": "repo-lines-v1:sha256:6ffe2ef14c81d2ec43d441553674fc4cedf00cca35ed30fd27c050c618ebd3ab:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViZWMwMDIzY2I0N2UxNzlmYzc1YmQwZjg5YmYzZmFjNmZiOGY0OWE1Y2Q2M2Y0OGU2Yzk0MjM3NDg2NzU1MTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQwMTNhYzcxYzQ0ODA5MzFmZDVkMTNjZmJhNjllYjNiMGJmM2UyM2MxN2NlNWE5ZTQ4YmQ5N2Y5YTU3OTYxZmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRmMTY3MWVjZWQ3NTJhMTU0M2U0MzNiNGQyOTc0OTZjZjllMGE3ZWQ3OGRhMTM3ZjJiNTczOTUwMTc1OGUxMjAifQ"
+        },
+        {
+          "resource": "repo://utils/ui_helpers.py#L175-L199",
+          "version": "repo-lines-v1:sha256:8361717096fb0a0e927cef036fa6b7cb14f17df5aa05c0da713ebf5494b9043c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlZDRkOThlMDUzYjJlNjcwYTZhMjZiM2Q5NWI5MmFkNzNhZjgxYzhjMTFhOTI0MWY4MDM3YzMxMzY5ZjBkOTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5N2M3MTI0N2FmM2NkMWVkZjU1NWE3ZDEwNzU5MzE1N2Y2ZGMyYTIyYWYwZGU4MmU3Nzc0YWJmMTBmOGFkZTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhkZDZmY2IzY2E1ZDQ0MzA0ZDY2OWMxMjQ2YTNhODliOTNhZWVkNDk1ODY4M2JmM2M1YzVjNWQwN2JjMjk4N2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1YjkyM2JjZTIxNDBkMmEzMGJhYzc4Zjg1YzM3ZWFhMWUxNWM4OTNhNTQ1NjllYTM4NjE5Y2UyOTNkNmMxMmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_705402ce2e7645f4b0037b912f1487bb",
+      "statement": "ProgressBar.__exit__ 只把 self.task 置为 None，从不调用被包装的 ScopedSlowTask.__exit__（而 ScopedSlowTask 自身就是上下文管理器，__exit__ 的职责是结束该 slow task）；因此“离开作用域就结束任务”的语义在 ProgressBar 下不会被显式触发，只能依赖对象回收间接收尾，用直写 with unreal.ScopedSlowTask(...) 不会有这个问题。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L220-L222",
+          "version": "repo-lines-v1:sha256:6a00d91e90165a22903d8d94ae546c5aa7d9c79212d5d1e20ced5e9fd126f160:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWJlYzAwMjNjYjQ3ZTE3OWZjNzViZDBmODliZjNmYWM2ZmI4ZjQ5YTVjZDYzZjQ4ZTZjOTQyMzc0ODY3NTUxMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDAxM2FjNzFjNDQ4MDkzMWZkNWQxM2NmYmE2OWViM2IwYmYzZTIzYzE3Y2U1YTllNDhiZDk3ZjlhNTc5NjFmZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTk0NzQyMzMxNDY2MGE0ZmJjMDYwOTdhZTQxMzFiY2FiNWI0NzU4ZjIwZDE1NDY5M2YwN2MzYmQwZmIyMDRiOSJ9"
+        },
+        {
+          "resource": "repo://utils/ui_helpers.py#L186-L187",
+          "version": "repo-lines-v1:sha256:96989ee4462dea86c99a142e8443c3457fa346d62ddd4d0b3557693265f1d7c8:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTY0NWMyNjY0M2FlN2EzODEwZjAyZWI2MmI0YzE4NzZmYzgzZTRlZjA4NTk0Yzg3NTQ1NDk5NGZmMTM1ZWRjNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmEyNTZhYWNiNjMzYjAwNGQ4YzQ5ZWYxMmMwMGEzMWYxN2JlMzZjMTMxYzkxZWUyMDAwYmU0NWU1ZjdiMDVlYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjhmZWRkMjZjNDA3YWQ2OWI5NzJkYzg3NTU2NDViMDNmMDRjMzI1Nzc3Mjc2NDliYTRjZWM1OTg0YTFiZjY3YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTBiODg1ZDM4M2RhYzQxOGRjZjllMGU2YWMzYTY2ZTg2M2I0YzFkZDdlMzcxMmMyNzEzZGVlMWZiMTUyYTU1YSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e0816f2c044f413c9270329e57f181b7",
+      "statement": "两个选区校验函数都返回“列表或 None”而不是抛异常：require_selected_actors 走 EditorActorSubsystem.get_selected_level_actors()（注释记录了原先用已废弃的 EditorLevelLibrary 会报 DeprecationWarning 的修正），require_selected_assets 走 unreal.EditorUtilityLibrary.get_selected_asset_data() 且返回的是 AssetData 列表而非资产对象；两者不足计数时都用 show_warning 提示（默认提示语为 f\"请至少选中 {min_count} 个 Actor/资产\"）并返回 None。",
+      "evidence": [
+        {
+          "resource": "repo://utils/ui_helpers.py#L207-L237",
+          "version": "repo-lines-v1:sha256:d4654f3def3c11099e20ba1c575cc355be3ec2a4290657a1e82a8ab9b0c0c0d8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4OTE4Y2JmMDU5OGNkY2FlZWFkMDQzMjBhZWY4M2QwMjIwNDYwMjFkMTcyMTg3NDdhNzUzM2IyMmYxZGRiM2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM4NjZjMDRmNGViYzAxMjU3M2Y2MjQ0ODQyODg5N2M5M2QxOTg0Y2NlMDA5ZWYzMmIyZDNhOTQyMDUyNzVkMWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1YjkyM2JjZTIxNDBkMmEzMGJhYzc4Zjg1YzM3ZWFhMWUxNWM4OTNhNTQ1NjllYTM4NjE5Y2UyOTNkNmMxMmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d056d7d8e3ef4be6abad80a0bd9a6975",
+      "statement": "print_table 的实现流程是：title 非空时先 log_section，用 headers 长度初始化列宽并遍历 rows 取 len(str(cell)) 最大值，再用 \" | \".join(...ljust) 与 \"-+-\".join(\"-\" * w) 输出表头与隔线、逐行输出且每行前置两空格。两个边界行为：headers 的每项被假定为 str（直接 len(h) 未包 str()），列数不匹配时 zip 以最短者为准导致多余单元格被静默丢弃，且单元格内含换行会破坏对齐。选择文本表格而非 JSON 的理由是“屏幕上的可读性 > 程序里的可解析性”。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/my03.py#L262-L262",
+          "version": "repo-lines-v1:sha256:e9968317014b7e781bd56baed2763040d8f3075a5fb1a7c72496937bc6ca0462:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTk5NjgzMTcwMTRiN2U3ODFiZDU2YmFlZDI3NjMwNDBkOGYzMDc1YTVmYjFhN2M3MjQ5NjkzN2JjNmNhMDQ2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTk5NjgzMTcwMTRiN2U3ODFiZDU2YmFlZDI3NjMwNDBkOGYzMDc1YTVmYjFhN2M3MjQ5NjkzN2JjNmNhMDQ2MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGMzMmRiNjNkZDIzMTZjNTQ4ZDRmM2JiMTE2ZjMwZDM0OTM3YzMzMjUwOTNjMDc3MGY4MGI3YjY1YWZjZjE0NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDlhYzg3YmQwODIzYWExYTAxNTQ2OTJlZjJiMjJjMWNmODAzYzZhOTczYjc3YzhkYjE2ZGE1MTI1MzIzNjExOSJ9"
+        },
+        {
+          "resource": "repo://utils/ui_helpers.py#L245-L274",
+          "version": "repo-lines-v1:sha256:2af6b69d946e407ea7283b8e91cf167461711fdccb25e6e162249a0a0be2f348:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEyYTU1NTZjMWE4N2FmOTJlM2U2YjE0YmI5YzJmYTU0NGNkYzEzNDQwYjU1ZGU0YmNkZjliZDk0ZWM5NTdmMDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5Y2E4YWNhMTg5NDFlMzIzYzFmY2E2MTgxYTQyNmY4ZTBjNjE5MjA3ZjM0NTFiNjhmODk5NGExM2MwY2NkYmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQzY2E2MDBiY2E4MWY0NDM3YmY0M2QwOTg2MGMyZWI3ZmJkNjA4ZTVlN2Y0MTVmZDEzOWUxYmY4M2Y2YzFkZDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8c7adc1b49a340738dfb369892c100f4",
+      "statement": "print_table 在第 254 行调用 log_section，而 log_section 定义在文件末尾（第 277-281 行）；更关键的是 helpers.py 也定义了同名同义的 log_section，且两模块都没有 __all__：先 from utils.helpers import * 再 from utils.ui_helpers import * 会让后者静默覆盖前者。目前没有脚本同时导入两者，所以还只是隐患，但星号导入是 AGENTS.md 推荐的写法，因此很容易被激活。",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L26-L28",
+          "version": "repo-lines-v1:sha256:ad064957fffbb41bb588061f0167b64147f60229552b5f4ea2f2162e1cdea24b:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzY0OWY0NDlkZTBmMmFjYTBjMWU1NTVhOGU5YzdkMjAxMmM1ZmEwOTFhY2VlZDExZWI5ZGIxMjk3ZWE4ZmRhYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjkyMDBlNjg0OTFiNmE0NWQ4YzVkZDg1MWZhYjQzNjE5ODE2OWJhOGQ2MDQxNWM4ZmJmNjJjZDVmZDY4ZWU2MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjUxOWNkMWE0NGIxNzVhYmQ2OTA1MmE5NjFiOWVmZTQ3M2RiNGE3ZThkYmYzZjkzNTFkY2E1MmM5MDUyNmJmNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWY2NDJiYTM2NDFkMThiMGZiZDUyM2EzY2Q0ZGM5YTk3OTI2NjJiNTg3Y2E4NGM2YTczN2I0MGRmMTQ1MWVjNCJ9"
+        },
+        {
+          "resource": "repo://utils/helpers.py#L27-L32",
+          "version": "repo-lines-v1:sha256:fdc476121a996b6a5ab4b3152c7b26774c4178257b3af33ceb6e8accba8a487b:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTM3NmZiOWQ0MDllMDc0Mzc4YTljNmE0NjIwOGUwZGYxM2UxNzY1NGNlNDZmNzg3ZGVkNzZlOTE0ZTUxNzk1ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTRjMTMxNDBlNzI5ZjM0ZDMxOTA3NjA0NGFkMzFiYTlhZjBjMDY1ZjNjMjhiZDdjNzNiMzUyODJlY2RkNDE2MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmQ5MTdiNmViY2FmYWY0NWEyZWVhOWMxNjhhYTQ3YjFjNzgwY2M1NTdkZTQ1YzYzMGMwMTIyNjU0YzEyNmIxNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDE2M2ZlOTAwMmJhOWVjZTA4ZmM4Nzc3NDNkZDA2Nzk2ZjA4NDAzZmI1NGIyNGI4N2NmZDFmYWIyMjRmZmZhZSJ9"
+        },
+        {
+          "resource": "repo://utils/ui_helpers.py#L254-L255",
+          "version": "repo-lines-v1:sha256:cbe3f93c16fe6ed579fb9a9f68e4d8ffb4137cae130e6687c82cca218ca018aa:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODZmYzg3MGRkMmE2NDMyMWQ0NzNmNzA5MTgyZjhjZDY3YjI5OTA2MTc2M2FiZmVlZTA5NzY0OGY5ZGIyMGYyMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTNlYWYxODY2NzMzZGY5NzRjNTE5ZTBhOWY3ZjQ2N2NjZjQyZTc4YjkzNmU1MGNjZjA3ZWYxYTNiYTNmZDA3ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDE0NjIwNTliYzVkZTc1MmM5YjhiZDkwMmJlYmVlZDZkYTA1Yzk4ZTU1ZGZlZmMxNjUwYjA5ZGVmZGYwYWY2OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTkxZDU4NmMxNDkyZGUxMzk1NTcxZjhhNzViNzFlMTVhNGJlYjZlYjA0ZmVhN2MxYzVmODJlMjU4YTM3ZGU4NyJ9"
+        },
+        {
+          "resource": "repo://utils/ui_helpers.py#L277-L281",
+          "version": "repo-lines-v1:sha256:eee3a2aecd8862d543262a7515cf6baf13daffb675f8c55ef767fedb9da38cab:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTM3NmZiOWQ0MDllMDc0Mzc4YTljNmE0NjIwOGUwZGYxM2UxNzY1NGNlNDZmNzg3ZGVkNzZlOTE0ZTUxNzk1ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdhMmRlYzRmZGM1MDMwMzg0MTRkMGM3OGY0ZDEyN2I0Y2QyNmE3Y2QwZjA5YzhhYmFhZTAwNGUwMmY0MjI2NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTEzMmFjYWE3ODljZWQ3NGM4OTZhMTc2NTI4OTlhNjY3NWJhOTVmZGFjZTZiZDI5ZWQwZDY2MzY5YTM5ODMwNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTRjMTMxNDBlNzI5ZjM0ZDMxOTA3NjA0NGFkMzFiYTlhZjBjMDY1ZjNjMjhiZDdjNzNiMzUyODJlY2RkNDE2MyJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.1",
+    "at": "2026-10-07T08:34:04.254Z"
+  }
+}

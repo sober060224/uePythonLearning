@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:7b4335a1d073b407c97164773c6ca9392a8f6bf364f1770feb1b5116d998feea",
+  "claims": [
+    {
+      "id": "claim_74df624e15ea47be95bf07ae13790956",
+      "statement": "PythonLearning 是嵌套在 UE 5.8 项目 LyraStarterGame 内部的独立 git 仓库，脚本操作的是宿主项目的 /Game 资产，因此写代码前必须到 <project>\\Content\\ 核对资产路径。",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L15-L19",
+          "version": "repo-lines-v1:sha256:80f00da20d776c59cc10751a46686c0cad618473374847989ab3d7e09013d2e4:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjFkMDY2MjljZDQ3OGQwY2Y0M2UxMzhjZGE2NGU5MmVlODE2NzNmMDk3NGUwOTE3NDY0NThjZjhiNDNjMjI2OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2NiM2I0Mjk5NGJhMDg0YjZkNzNkMzJhOWYwYjE5NzFiZDA2YTQ3MTNhYTA5ZWExN2JiMDc0MGJmMjBjZDdmYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGZmZWZiN2NhMWQ5OWI0YjJkMDQyOTg3MTcwMWY1OWE2ZjE0MTVlOTM4YjBlMWU4MjAwYzlkNDE1MTk4YTk4NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjAzYWFjYzljMTAxNDdmMjViZTE3YzA0MzAwNWI5MjVhZDcyMzY5Njg4YzMxODkwZmQ3YWEyYTk3ZTNjMjM3NiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b6f4bea802cf4b269e96210adddca5ff",
+      "statement": "unreal 模块只在运行中的编辑器进程内存在，所以本仓库脚本不能用本地 python 解释器运行或导入，仓库内不存在测试/lint/CI 校验装置，脚本输出统一走 unreal.log() 而非 stdout。",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L5-L13",
+          "version": "repo-lines-v1:sha256:d0be1b07ac70e9093b17f29a5fcb60cc64746cdb80681f019d262f3085d0b043:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQ4YjhjZGEwMzIzNmY2MmRkYWVhY2Y3ZTFkMjQzNmUxNDAzMWJiMjc4YzEwYzc4YWRmZjczMzQ1YzMzYjkyYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2MyMWZkYmFhMzVhMDg0NmNlNTRkMmNmOTk3MDBiNzFjOTcwNDIwMDYwMzNhYzBkNmY4YWNkMmIyYjZkZTllYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzRkZTk4OWRlOTk5Mjk3ZThkMzJjNzJkMmE0YzA4YmZiYzNmNzVhNTE0MDIyM2Y2OTE0YmQ4Njg1ZmQ2YTc1ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjYyOGI0MzBjOGExZDZmMTg5N2JkZmI4ZWVlNzA1ZjFlNTEzYjUzZmUyMzBkODJjZjBjMDc4YjNkZDc5ZDlmYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_fa445915df0b441ba3cd6d9bd26539cd",
+      "statement": "仓库按 8 个课程目录（01_Basics 到 08_AdvancedTopics）加 utils/ 工具库组织，官方课共 23 个脚本且全部在 README.md 章节表中登记；07_SequenceAndCinematic 是唯一只有 2 个官方课的章节。",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L30-L91",
+          "version": "repo-lines-v1:sha256:c243d919bb70dcc5a218a04bd4491c12a2195a649adfa0ea3cd895cde3e78716:eyJzZWxlY3RlZExpbmVDb3VudCI6NjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlYTliMDllMDFlZTliMjRhYzlkZjdkZWNhOGUwYzU4M2U1NTI4MDFlMTU1MzQ1NTM0NzZlNWQ5NzYyOWI5NWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmMGQ5MmM0YTk3MjUyMmJlYjA5MDY0NGQzMmU3MGYxODg2MjM2NzlhZDYzMTlmMDE2ZTU3YzFiMGU4NDUxODIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAwMWYyZWMxNzU5M2MxMDU0ZWI0NjM2N2Q4NDUzZWYyNGExNzNjZTk2YjcxMTdkOTFmOWE2OGQ0NGZlZjhiMDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwMWYyZWMxNzU5M2MxMDU0ZWI0NjM2N2Q4NDUzZWYyNGExNzNjZTk2YjcxMTdkOTFmOWE2OGQ0NGZlZjhiMDEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_70fbdaca41e040099295faa27922ab2b",
+      "statement": "每个官方课都以顶部三段式 docstring（学习目标/前置要求/运行方式/本课可能用到的 API 签名清单）加模块级顺序执行加尾部『🎯 练习题』注释块构成，不使用入口守卫。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/01_hello_unreal.py#L1-L30",
+          "version": "repo-lines-v1:sha256:1f15128e69a7998d36cdc6cee2b8df0a979a45f962ef1c5a26c7ad1eefcf075d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzMDNlY2RkNGE0ZDEwZjE5YzczZmQ0MmZkMTI0MzdmZDMzNTRhODI2ODE2MDVkYTUyNTVhOTdhMzkwNjhkYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzMDNlY2RkNGE0ZDEwZjE5YzczZmQ0MmZkMTI0MzdmZDMzNTRhODI2ODE2MDVkYTUyNTVhOTdhMzkwNjhkYmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI5NTI1NTcwYTQxOTQ0YWFlMTU0Mzc2ZDVmYWI0YjA4ZjhhNjBiMzk4MTRhZjZlNWE5OTQwY2Y1MmNkNzZiZTUifQ"
+        },
+        {
+          "resource": "repo://01_Basics/01_hello_unreal.py#L131-L138",
+          "version": "repo-lines-v1:sha256:1fe5b732047b8dd2232661d4e9cc65c151d0628d25460c28f6660495da5dd07d:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjVkYmM2YmZmZjliOTdmZDMxNTUzOTI0NWIyNWE5ZGEzNjBkYWUwMmI0OTQzY2RhMWVkMTY5ODU4ZDQ3MmNkOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDYxNmZhMmUyZmYxZGExNTQ2MjVkZTIzYTU2YTVjNDNkZGMwOTg3MTZkYTZiZGI1NzM1Mzc5MjI2NWEzZjlhMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTNlYWM4MTFhOGU2OWEyYjliZjczMjU5ZWU3Y2E0MzM1NjliY2JiMjIzZjNiODhlZDIzNDg2OGMzOTZhYzgyOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_ba2348109cc046c6a77b2dc670d0b630",
+      "statement": "my*.py 练习稿只存在于 01_Basics、02_AssetManagement、03_BlueprintAutomation 三章，直接以 import 开头而不用官方课 docstring 模板；AGENTS.md 声明它们不是课程材料、不应作为规范范例，README.md 也不索引它们。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/my01.py#L1-L3",
+          "version": "repo-lines-v1:sha256:8f05777c836af07e9ba647ee4071d8c8b00ffc23baae58ec643a265054a84991:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTVlNTAyYTJhYTExYjAwZDJkMTFiNjNjZGMxNTM4MzI2ZTA2NDJmMjhlZWZmZWM3NDBmNzM3ZGExYWEwOTAzNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDlhNmE2MGFlZjIwYWJlNGVlMGMwMzZjOWUwMzkxNmJkY2ZiNTY4ZDYzMjBjMDZhZWI3NDkzNzE3ODA1N2JkOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGY3ODc1YWQ0NDBkYmIxMGVmNDIxZThkNWQzNDQyYjZmOGQ4NjllYTk5ODNmZDIwZDZhZDRjOTM5MzJkODA1MSJ9"
+        },
+        {
+          "resource": "repo://AGENTS.md#L23-L25",
+          "version": "repo-lines-v1:sha256:2519cd1a44b175abd69052a961b9efe473db4a7e8dbf3f9351dca52c90526bf5:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGNlN2U2ODhiOTJiOWE2OGQ1MDEyOTcyMTJlN2RjZTc3NTRkODYxOGE3YWVmZWM5Y2Q3YjljZjE5MDU3YWU3NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjg4OGNjMTA3MTkwYmFjMWNkNDMwOGNkOTVlMmZhMWZiZTY5NzQ2ZjRjNGMyOWZmODNiYjI2NTMwYTIxNzM1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjAzYWFjYzljMTAxNDdmMjViZTE3YzA0MzAwNWI5MjVhZDcyMzY5Njg4YzMxODkwZmQ3YWEyYTk3ZTNjMjM3NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWQwNjQ5NTdmZmZiYjQxYmI1ODgwNjFmMDE2N2I2NDE0N2Y2MDIyOTU1MmI1ZjRlYTJmMjE2MmUxY2RlYTI0YiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_ce24976b6d1c45c38767ab82be9e1ff8",
+      "statement": "全仓唯一带 main() 与 if __name__ == \"__main__\" 入口守卫的脚本是 03_BlueprintAutomation/my03.py，官方课一律为模块级顺序执行。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/my03.py#L530-L541",
+          "version": "repo-lines-v1:sha256:f3e9657b1a0d4cd65f5013755a7747605ed5f4ef450b6b0d7f226af28bbdc8fc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyZTMxMjU3ZGMwYWUxZDU5MzAzN2MyODBjOWFkNTA4MTliOGE2YzhjZjcyOGJlMDcxNmQwMGEzZWVjYzA0YmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY0ODZmZjVjZjkzNjNiNDQyOTMzNjgwM2IyYzk2MGU3M2RhOGM0N2ZhMGM2ZjY3NjU4ZDE0YjMyM2NkMjJkMzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5M2Q1OWUwNWNlODk5NTlhMzI2MDdlNjIzMjNhOWE5ZmZhOGEyYmJjMjAyMTIwMDY2MmM2ZDdiYjc0OGRkZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2ODMwODBhYjAxNGZmNzRiODNiZjk3YTBlNjM0NmQyYjVlMGE4MmYyMmQ5Mjk5YTdkZGRjMjFjOWNhMjZmMDUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5030e34372dd4d0597012b54cfe5e665",
+      "statement": "没有任何课程脚本真正 import utils 工具库：课程要求每个脚本能独立运行，06_MaterialAndTexture/02_material_instances.py 记录了 from utils.helpers import get_actors_by_label 会因 PythonLearning 不在 sys.path 上抛 ModuleNotFoundError，因此把该查询内联实现。",
+      "evidence": [
+        {
+          "resource": "repo://06_MaterialAndTexture/02_material_instances.py#L325-L330",
+          "version": "repo-lines-v1:sha256:08be0091c5bdf0e6bf6dc3808fb991998c976de5af4a2e102b85897dee8062da:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjBhZGYxYmE2NTM3OTRmMDdhOTAwMDc2ZGZlMzZiMWZiMTI4MjJjNjI1YzllOGU4NzAzNGQ2NGY2MDY4NThjYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDMzMGZjNjhkZmVlZDk5ZmE0OWI3NWY3YWEwZTNlYWYzOWU1OGQ0MGY5NjUxNjI5ZTY5OWE4MWE4NWYzNDU3ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTIwMTRmMDZmMDBhN2Y4YmExODBkMTFmOWZmNTRmMDMyZDRiNWM4MmYzNjQwNTQ4ZmEzMDk5OWJjNDE2ZWE1OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGU5NmRmZTEzMjFiMTZkMGNlMDdiODU0NzRlMzQ5NjI2MWI0MDI0YTEwOGQxZWE3MDdiMDc5NGY0NGMyOWUwMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_89f02332bb1442719cec6b2afde94fab",
+      "statement": "utils/helpers.py:27 与 utils/ui_helpers.py:277 各自定义了一个 log_section(title)，跨模块同名；两个模块都按 from utils.x import * 的用法文档化，因此后导入者会静默覆盖先导入的同名函数。",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L26-L28",
+          "version": "repo-lines-v1:sha256:ad064957fffbb41bb588061f0167b64147f60229552b5f4ea2f2162e1cdea24b:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzY0OWY0NDlkZTBmMmFjYTBjMWU1NTVhOGU5YzdkMjAxMmM1ZmEwOTFhY2VlZDExZWI5ZGIxMjk3ZWE4ZmRhYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjkyMDBlNjg0OTFiNmE0NWQ4YzVkZDg1MWZhYjQzNjE5ODE2OWJhOGQ2MDQxNWM4ZmJmNjJjZDVmZDY4ZWU2MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjUxOWNkMWE0NGIxNzVhYmQ2OTA1MmE5NjFiOWVmZTQ3M2RiNGE3ZThkYmYzZjkzNTFkY2E1MmM5MDUyNmJmNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWY2NDJiYTM2NDFkMThiMGZiZDUyM2EzY2Q0ZGM5YTk3OTI2NjJiNTg3Y2E4NGM2YTczN2I0MGRmMTQ1MWVjNCJ9"
+        },
+        {
+          "resource": "repo://utils/helpers.py#L27-L27",
+          "version": "repo-lines-v1:sha256:9376fb9d409e074378a9c6a46208e0df13e17654ce46f787ded76e914e51795f:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTM3NmZiOWQ0MDllMDc0Mzc4YTljNmE0NjIwOGUwZGYxM2UxNzY1NGNlNDZmNzg3ZGVkNzZlOTE0ZTUxNzk1ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTM3NmZiOWQ0MDllMDc0Mzc4YTljNmE0NjIwOGUwZGYxM2UxNzY1NGNlNDZmNzg3ZGVkNzZlOTE0ZTUxNzk1ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmQ5MTdiNmViY2FmYWY0NWEyZWVhOWMxNjhhYTQ3YjFjNzgwY2M1NTdkZTQ1YzYzMGMwMTIyNjU0YzEyNmIxNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzBhNDEyM2I5NDBjODBhZGU0NGYwYzAwODQwODEwODdlZWE0OTMwYTkwMDZiOTM2MGZlYmEwNmJlZWUzYjA1ZCJ9"
+        },
+        {
+          "resource": "repo://utils/ui_helpers.py#L277-L277",
+          "version": "repo-lines-v1:sha256:9376fb9d409e074378a9c6a46208e0df13e17654ce46f787ded76e914e51795f:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTM3NmZiOWQ0MDllMDc0Mzc4YTljNmE0NjIwOGUwZGYxM2UxNzY1NGNlNDZmNzg3ZGVkNzZlOTE0ZTUxNzk1ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTM3NmZiOWQ0MDllMDc0Mzc4YTljNmE0NjIwOGUwZGYxM2UxNzY1NGNlNDZmNzg3ZGVkNzZlOTE0ZTUxNzk1ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTEzMmFjYWE3ODljZWQ3NGM4OTZhMTc2NTI4OTlhNjY3NWJhOTVmZGFjZTZiZDI5ZWQwZDY2MzY5YTM5ODMwNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODdjZDMyYWNlZTVkY2ZkOTQxMTUzZDY4NWQ2MTgwNDU4ODcwZTllOWIwZGE4MmQ2NzlhZWI4MzJmMzMxNzQwMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_9a99b7821f4046848332735c5ab3791f",
+      "statement": "仓库没有 .gitignore，__pycache__ 下的 .pyc 编译产物被提交并持续跟踪，是仓库中唯一与源码无关的噪音。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/__pycache__/03_editor_basics.cpython-314.pyc",
+          "version": "repo-file-v1:sha256:19b018a8bc136110866a19e643a55747c7fe5739ffd81d8ecfbedf4737996693"
+        }
+      ]
+    },
+    {
+      "id": "claim_97350c74d45b470297efa49c88ad73b2",
+      "statement": ".github/workflows/openwiki-update.yml 每日 UTC 08:00 定时（并支持手动 workflow_dispatch）运行 openwiki code --update --print，再以 create-pull-request 提交 openwiki/update 分支的 PR；该流水线只更新文档，不编译、不运行、不校验任何脚本。",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/openwiki-update.yml#L1-L7",
+          "version": "repo-lines-v1:sha256:533327e82ae1c9258b71c57ca85cd442cb98a2a12deb28f080311f9f1e647b44:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDYwMjc4N2FmNmRjYzA4MzRkZTEyMWNiYjFjYjk1Zjk0NTliNzIxZWFiMDM0OWYxMDUwMWI5OTZjMWM3N2ZmZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGNjNGJiNzlmNmViYzg1NTU5NzVmODdjMWJiZmFkYjQ0ODFmNzBiMDNjMWE3YjBjOWNjYjRlZTNkYWM3N2Q2MSJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/openwiki-update.yml#L36-L36",
+          "version": "repo-lines-v1:sha256:941c60d83597c76cca696aac74dfb7ac5dc3362fe651f8cab5a3049963017d43:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTQxYzYwZDgzNTk3Yzc2Y2NhNjk2YWFjNzRkZmI3YWM1ZGMzMzYyZmU2NTFmOGNhYjVhMzA0OTk2MzAxN2Q0MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTQxYzYwZDgzNTk3Yzc2Y2NhNjk2YWFjNzRkZmI3YWM1ZGMzMzYyZmU2NTFmOGNhYjVhMzA0OTk2MzAxN2Q0MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGFiMDBkMGY3ZGQzOWJkNGQ0YWY4NTBlZjYwOTEzMjJiYWFmMzRkZGVlYTA5MjVhMWZiM2I4YzhlYTdkYzdlMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzkyNDc3MjE0NGE2Y2E1MWEyOWM2OWNiODQ5NThlZjUyZmM4ZDRhOGYzN2Y4YTE1OTllNWQ3NGY5OTk0ZjYwNSJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/openwiki-update.yml#L67-L67",
+          "version": "repo-lines-v1:sha256:09ba026d8d9a18f46b4f60a4c80f3f33a9a32bd338170e1eef19a0a1751c9d69:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDliYTAyNmQ4ZDlhMThmNDZiNGY2MGE0YzgwZjNmMzNhOWEzMmJkMzM4MTcwZTFlZWYxOWEwYTE3NTFjOWQ2OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDliYTAyNmQ4ZDlhMThmNDZiNGY2MGE0YzgwZjNmMzNhOWEzMmJkMzM4MTcwZTFlZWYxOWEwYTE3NTFjOWQ2OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2I4MjZmOGU2OTFkMDBlYzhmYTI2NWJjODBmNTViOGY1MzhmMzY4ODVhMjBhNmQ0MzI3YmZiMGNjNTA3ODM2MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWFmMDMwYmM5YzljMzg3MGQ2NTkwZTQ4NGIyMTM5ZmI3YzIxZDlmYjJjMTBkNjQxYTg2MTAzN2Q0NmRlYWJmMSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_ddb0a9ba735a48988d3dc92e241b862f",
+      "statement": "AGENTS.md 末尾 L85-L100 是 OpenWiki 生成的托管块（OPENWIKI:START 到 OPENWIKI:END），由工具链写入，不应手工编辑。",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L85-L100",
+          "version": "repo-lines-v1:sha256:8926524de63a1266e7592d9f1256ec367b67e9fa0583f343808e3e51f19d4990:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmMTgwZjljMTI2OTAzYmNjMzMxYWE5NTQ1NmU0OTQ0NGE3ZDRkMDExZThhMmE4M2Y1ZGM4NzAyMzkxODEyZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5Zjc4NzE0ODkzYWE3Nzk0MmNlYTFjNGEyZTAyMzFkYmI3ZmEyYTQxYTcwYzgxNDYwYTNjNjc1NjJkYTNhYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBmNjMxMmQ4NzAzMDgwMDQ5NmIwOGU3YzQyYWY5ZjIzYWEyODNlYjMwYzIyZGU4YWE0ZjUwMjYyMWJiOTg1ZDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_76b78ecbe4844d4d8829cb3fffd4e12e",
+      "statement": "ideas.md 是待办想法便签，仅记录了一条『可迭代导入资产的插件（输入文件夹路径与导出路径，一键导入全部资产并设好每项导入设置）』，仓库中没有任何对应实现。",
+      "evidence": [
+        {
+          "resource": "repo://ideas.md",
+          "version": "repo-file-v1:sha256:82805b9c23a39e3ba48487c0d667551ce591e14e1ad1b7fcd801f042c0ba20c9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.1",
+    "at": "2026-10-07T08:34:04.254Z"
+  }
+}

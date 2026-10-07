@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:a07406a4178c6dd8b7ed8555e7f67aad60567d5cad44a75dfce3b90207c426cb",
+  "claims": [
+    {
+      "id": "claim_512f60da2f0a431a8e8fbb45c9c116cb",
+      "statement": "仓库判定一个 API 是否废弃的依据是引擎肚文件 docstring 里的 deprecated: 行，而非记忆或文档；肚文件找不到名字就是不存在，找到但无 deprecated: 行就是仍可用。仓库还记录了一个反推名字的 dir() 自查技巧。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/03_editor_basics.py#L114-L125",
+          "version": "repo-lines-v1:sha256:4c77044b4724968b615601d16a86bdd28a85c9197373781ce7f31ce8043f57c8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2MzdiYTE2ODcwZTQ3MmQ1NGQ2NWM5YWE5MjQ0YjllYWYxMmY3Nzk0ODM3NjQwZGQ5YmY0MmUwZDBhMmMwMDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlNWQxZWIxYTFhYjA3Zjg0YmViZGZiZjYwYzJkMGNkMTNkNTY2OTA1YzA1OGY5YWE0OGMxMjkwYTk3MjAyOTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ0YjQxZjY4YWFkOTZjNGYxOTk0ZWFmNDdjOWVlZGVjNGJiMjNlMzZiMGQzNGQwNGRmNTgzOTczZWRiYjQwMWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2NDUyM2VlMTA1NTU5MTg3NGRhNmRmZjBhODAxMmFkZTZjY2I5MGQxOWViNDhjNjA3MTMzNWE0MTkyODBmN2IifQ"
+        },
+        {
+          "resource": "repo://utils/ui_helpers.py#L92-L95",
+          "version": "repo-lines-v1:sha256:fa6e163a11c86c785de5f3b7c84db5c3263427f9a9e2a35633683a7d8129af62:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2EzYzU2ZDdiZGI2ZjhiOWYzMjYyYzc0MDUyNTg0MjY0YjRjNzRhZjg3NDA1ODAxN2Y0MDU1ZGI1NDkxYTVkNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDQxOTlmYmRjNmQzN2ZjNTIwOGZkN2FjZmYxNGUwNzdhMGM5NGMyYTViN2RjZjBkYzk4NDU2MGM5NGJkOWFkNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzlmMzYxMWY0OTAzOGRlMWI2ZjU4NjI1YzMxY2I3ZjUzYzhhMzJjM2U0MGRjOWU5YzYyMjNhMTBlODg5NjJjNiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_fd8d635b81914cfeb8fa483e40a84b33",
+      "statement": "unreal.Transactions 是一个虚构类；事务接口在 SystemLibrary 上，签名是 begin_transaction(context: str, description, primary_object) -> int、end_transaction()、cancel_transaction(index: int)，其中 primary_object 是撤销历史锚点（无具体对象时传编辑器 world），cancel 必须回传 begin 的索引。",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L101-L112",
+          "version": "repo-lines-v1:sha256:41cb5ba58008657bcb57bce94ea9e00bff44aa55a17f67f3d3e9ee057d9454b1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmMzUyMTVjNGFjMDhkZDEzMzY2ZjVhYjRhZGYzNjc4ZTY1MGQ1YTBhYTk5NzhiNGExMzcyZTA4OWVjMDVhZDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2MTE1OTIyZjI0OGZhYTFjMzVjYjcxOGE1OGI3M2E5NDcwMzJmMDg1ZTVhZWU0MGVkNTYzMDQ3Y2JiNjJhMTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM4NDg5Zjc4YmE3ZmMwYjJkYjAxZTYzODdjZjM1ZWE4NTU1NTZiZTcwODE3NmNjMjkzZTc1ZjJiOTYzMmE5YzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBkZThjNDFjMWNhNzY5Mzg3NDE3N2ZjN2NmMGRiNGZjYThjZmUzYWEyMjk5MjBkNTY0NDYyZmY5YTEwNDBmNDkifQ"
+        },
+        {
+          "resource": "repo://05_LevelAndActors/02_modify_actors.py#L222-L232",
+          "version": "repo-lines-v1:sha256:1a52feeecf179e9377e28b997fb7d8c5071ffb3d0257ce9419f4030c7871cb89:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4M2YxY2FkMDk2M2ZmMGZlOTczMjc4NGJkMjI3Y2Q2N2U5ZmUyNWM3ZDc1OGFlMjA0OGFiYWM0ZDE4NmViZTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5YzcxNDk3Y2ZjODJlNmZlMGZmZmYwYjA2MjM2NWVmNDk3MTUzODhhNjU0N2I5N2ExMzAwZjdlZWEyOGYwMmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAyYjZjMWQ3MTljZGQ5YjYyNGE3ZmIzZDY2YTkwOGJjOTIxMDRiNGQwY2IwYmIyMDhjOTM0YzY4ZWM0YTM2MzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJlODVkMTAzNzViODJiNjhiNDU3ODVjYzA1ODY2M2E1YzY0NmVhYWE4MjRlMTIyMDQ2OWExMTUyYzM4ZDBhMDIifQ"
+        },
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L464-L469",
+          "version": "repo-lines-v1:sha256:e89aca0c4a4cbd9d2e8354a3e7d18dd78a4aff4156eef150920c44e3c76b183c:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTE3OWQ3YWFkMjQ2MTU2MGNjMDNmMGVhMzljZGJhYTE0YWIzZmZjNTdjM2EzMGY1MjE2MzliMzU4NDhlMzUyOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmI3MDljZjFiMDdkYmQxYjY1ZDk2MDc3Y2ViMzE3Mjg5NDA4YjY5NzExOWJhYmY4YTlmMWZhNDg5MDM1ODkxYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWU4N2IxNmYxMDZmNmVmNGE3NGE1ZWE4ODAzM2M3ZGM4ZmU4MjI0N2U1Njc0MTkyOGEwM2M5NTRmNzFkMDU0NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTQxMGNkZWVmOTFlYTM1YzA5OGEyNWZhNzY2YWQ0ZDMzYmVlYmVhOTJhMzlkZWYxNzM0NDc3ZTY0OWRjOGMzZiJ9"
+        },
+        {
+          "resource": "repo://utils/helpers.py#L213-L227",
+          "version": "repo-lines-v1:sha256:756982ac2f72e00d372c715a0c93713d87f470a419efd4c81e8e3899fd190ce7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmZmUyODhkMjgzMzRlMmVhZGVjMzVjNzliYjFjYWUwM2IwZGY0NjAzZDkzNDMzOTNiZGI1MGJhMzlmM2Y1NGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxNTYyNjEwYmM4ZTNjMjdhYjEyNTVlMzFjZTQyZWYzYTI3ZTMyYTIwMGM1NDg3ZjlmMmI1ODc4YTM4YmEwZjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ4Njg3ZTY4MWM0ZGFmM2FiYjAxNzA5ZjhkNTAwMmI0ODRkODQyOTgwMDllM2FhYjEwMzE2NTk5ZDg4YTMxOWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlYzE0ZmZmNDA0YWEyMjgwMTEwNjA4ZGY3YmY2YmMzNDg5MDUxNTEzYzljZmJiZTY0Yjg3YTY4ZTBhYTU3ZWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f658b90a6c4646f98695af82a4e406d3",
+      "statement": "Editor Scripting Utilities 插件已废弃，EditorLevelLibrary 的功能按职责拆入三类子系统：Actor 操作→EditorActorSubsystem、编辑器世界与视口相机→UnrealEditorSubsystem、关卡保存加载与模拟→LevelEditorSubsystem；子系统通过 get_editor_subsystem() 获取且应当复用同一实例。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/03_editor_basics.py#L64-L77",
+          "version": "repo-lines-v1:sha256:88778811101dcdb74dcd106721a5b9739038ab19377e1c3e6a506e342f454bdb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4NTE4ZTBhOWUyNjgwYzNkZGU3NDZmM2EwYTE2NWMxNmM4M2E1OWQzNGMzNTg2NWMyYTNlZGJkMDliNzJmZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2YmZkMTdhZDgzMGI1YzgzZmRiNWZhNjQ4OGFjYTcxMWJjODY1NDU5M2VlM2I2N2Q3N2MyYTdiNjYxZDBhMTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE2NDI2N2JiMDAzYjFmMmY4ZGFmNTEzYzFhOWJlZGY5MzU5MDQ1OTk4ZTQxZmVmMzhkZTNkYzNkODQyMzFhN2UifQ"
+        },
+        {
+          "resource": "repo://05_LevelAndActors/03_level_management.py#L71-L73",
+          "version": "repo-lines-v1:sha256:b7a32606900131318b40e8887ef98f1f3d0a66658e131135ed4ab68f6646cef3:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGE4MmEyMjc3ZTZlOGVmZjY0YWRiZTA5NDNiNmUwMjJkYmM5YzI2ZGMyZGE4NDMwOTU3YzNkMTdiNjk5MjUxZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTJmZTA0ZmE5MWIyNjM1NjNmOGYwZGYzZjdmYmUzODljYjhhNmE2MWI0ZGY1ZmJjYmFiOTU1ZWUzMDI3MzkxYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDc0NzU1ZTdiNDRhNzkzOGQ0ZWYzMWM1ZjFiN2M2MDBlZTIxYjI0ZGJiYmRmMWZkZmZiNmI4YjkyNTdlMTM1MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTUyMDhiYWVlMjdiZmEyNDY4MDY3NmJlZGE2ZmI5OGY2NDM0Yzc4ZWU0MmIwNmE0ZDQ3MjE2OWJmYmRhMWM0YyJ9"
+        },
+        {
+          "resource": "repo://utils/ui_helpers.py#L213-L217",
+          "version": "repo-lines-v1:sha256:8073f8ea5bda8f9692114dc6b2cdb36c95f125e8a3910f03f00f5f2a1fccccac:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTlhYTAxODY0NTY3ODcxMjBjYzM5MmMxMGE0NzhmZjNiMmUxODRjNTJiMjgzYmFlNTJjMTI1Y2Q4NTczZmY2ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWY5NmJlY2M2YjBiNmU0NjhjOTA4NmJjYzBkNzBhZjQxNGRmMTM3YTdmNGU2YTBkYTc1ZTQ0YzUwMDlhNzllNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGIzNjU5NzFmZDhkNGI0NjNjYzZjYTY4OWQxY2E1MjkwOGEwNTcwOGE5OWEwODRkODc2YWM5MjUzMTMwZWU3NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzRhMTU4NjU4MTQ4ZjljODRhZDRiYzMzODkzNDY5NjkwNzhmOGIxODdjYzQ5MTdkMTNkMWQwMGI0YjMzODkwNCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_ae260dfbc567409d86836d0906b49d29",
+      "statement": "EditorLevelLibrary 上没有 duplicate_actor 方法；复制 Actor 要走 EditorActorSubsystem.duplicate_actors(actors_to_duplicate, to_world, offset)，它收列表、返回列表，且 offset 参数本身就是复制体相对原位的偏移，不需要再手动 set_actor_location。",
+      "evidence": [
+        {
+          "resource": "repo://05_LevelAndActors/02_modify_actors.py#L318-L330",
+          "version": "repo-lines-v1:sha256:2b9cf6d631167237615dbb1fd09b2b5394de4a33fa5280b97f55763572253584:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiNGNlZWE3YTRjNGM4MzFiMjcxNmU5ZDA2ZWIzNDZiMzYwZjk5NDZiOWRlNzRjNTY5ZjYyMWViNmU5ZDcyNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzNTk5ZWQyYzExOWMyYjM3MDA4MGZlYjFjYTY3YzQyNGVkZjgzMzcyYTNmNmY3ZmJiOWI1OGU2ODcxMWFjOWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJiNmNlMmVlYzBjMWFmYzgyODYyOWZlYWZiZGY3ZjA4MGFiMTNiMzA3ZTM5MzE1YzNlZWNjZTYyZTRiNDFlYzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyYTZlMzQxYmYwNTYwNGU1MjQyZTY3ZjdjZDJiZTc1NjczODI4YWY3MGIzNjczMGE5NzY3Mjk0MTEwYWE0YTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c413e02689b648049d9213447fff125f",
+      "statement": "add_level_to_world 不在 EditorLevelLibrary 上而在 EditorLevelUtils 上，且原写法还漏传了第三个参数 level_streaming_class，它决定子关卡的流送方式（LevelStreamingAlwaysLoaded 常驻、LevelStreamingKismet 由蓝图或代码控制）。",
+      "evidence": [
+        {
+          "resource": "repo://05_LevelAndActors/03_level_management.py#L260-L278",
+          "version": "repo-lines-v1:sha256:4040b51a7d65b20814d7fce20385657d0edf7800b06ca581d44949c2773a3e54:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiNGNlZWE3YTRjNGM4MzFiMjcxNmU5ZDA2ZWIzNDZiMzYwZjk5NDZiOWRlNzRjNTY5ZjYyMWViNmU5ZDcyNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwYzFmMTg4ZjE0MmVkN2E4MjQ2ODBiMjA3MTcyYzU1MTliYzYxNGE0OGZkYTdjZjE2N2VkYjhkZGY3OTk1NmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY4NmJkZDg5OTZkYmE0NzdiMDgyNWZmNWE4ZTRkYWQzYzEwOGUzZThkNDE0ZmUxOTc4ZmM3YWUzNTExOTA3MTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0YmZhNmRmNTVkNmU5YTU5YzM1ZjMwOWI5ODJiODJjMzMzY2E4YzM5NWNhZjZlNDBkMjdjMTMwZTUwNmYzM2MifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f9c237df2e5c466081cf69f13ef70c85",
+      "statement": "UE Python API 里没有 DataTable.add_row；该仓库的替代方案是把数据写成 CSV 再用 DataTableFunctionLibrary.fill_data_table_from_csv_file(table, csv_path) 整体导入，且不能写行时函数应如实返回 False 并 log_error，而不是 save_asset 后返回 True 让调用方误以为写入成功。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L302-L315",
+          "version": "repo-lines-v1:sha256:f12236f7bcf09013ae5e5c2a9c9a5240542d5adea9b973726fd06f397fc26502:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzZTQwNTI2MjczZjg3NDVlYTBmM2ViZDU3NzQ2MDU4YWIyNzQ4M2U4ZTc4ZmFlOWY5ZTUzNGJhYWNkMzJhYjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2ZDc1NjA4YWJhZjc5NDk1MjIxYjE2OGQ1ZjFkOGZiNzIzYjk0NjFmODY2NzlkM2IwMzE3NjAxY2NmZGJmYzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU1YjBmNGNlMTNjZWU4YmE2ZTM4NGE1YzRmMTE0MjcxNjM4YjE1MGJhZjUxMGMyNGZkYjBlMzhkZjM3OWY2N2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZkMGVhNDIzYWZkMTUwNWMyNzZjZDkzMDc1YjE0MDA5YWFhOGE2NDA5ZDRkMDhmYTkxNTc0YWIxNDBiZGYzNmEifQ"
+        },
+        {
+          "resource": "repo://AGENTS.md#L62-L63",
+          "version": "repo-lines-v1:sha256:78f688b0e7f487281f9150bd7b9c9286ac9312a41e4b3a58dc50340b028b8f5c:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ViNzAyNTc1OTNkYTA2ZjY4MmEzZGRkYTU0YTlkMjYwZDRmYzUxNGY2NDUyMzdmNWNhNzRiMDhmOGRhNjFhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTExZjljYTM3NTkxOWY4NDQ3MmQxNGRkY2IyMGJlMmQxODE1ODg1ZGEyNmI3OGQ0Y2RmODNhOGQ3OGE3NjRjMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGM4NTI2NWFlODVmZDYxZTNlZGQyMDk2NTZmOWYxMGUwNmY3MTlhZDQxODdmOGE5ZTA0ZDYxYTQzNDM2Mjk1ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmYyMjRhMjc5MGUxMDk1YzZjYmEwNDI2ZTk4OTRmMTMxZjE1MTI3N2RiMzQ4MTkyOWE1NjllZmExYmZiMmYzZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5780a04eec12430b9194463e0acaee1d",
+      "statement": "EditorUtilityLibrary 没有 show_notification 方法，整个 unreal 模块也没有 NotificationInfo / NotificationManager（蓝图通知走纯 C++ 的 Slate FNotificationInfo，Python 绑定只导出 UObject 体系的 UFUNCTION）；UE5 Python 里通知用户只剩 EditorDialog.show_message（模态阻塞）与 SystemLibrary.print_string（非阻塞视口文字）两条路。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/03_editor_basics.py#L218-L235",
+          "version": "repo-lines-v1:sha256:08c3069af0d107ec0a7392c2f65be5d204ec5a07876da9f09c89a57a2f26b073:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkZjY4ZmUwNzNjMTMyMzM1ZDRjZjRiMTg1YTA1ODJiNzNhM2I0NGRmY2FiYmM2ZDRjMjY3ZDY3ZGMyN2I1N2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxNGYxNWI1ODM1NTA2YzkxMDQ2MWMyOWVmYTZkOTAzYjE5NTA5MDQ2OWUwYzFhYWIzMmJjOWM4Y2YxZDgyMzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFlMDMzOWZmYWJmOTA3OGQ4ZmUwZDllNGVhNDNkNmVhMGYwOWVjZjc1Mjc0YjE3MjQ1OWEzM2MxZTlmMTNmZGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYxYzZhNTM4MWMyNzU3ZDU0YWMwODUzYjhjYWNiMjE1OWI1YjlmYTgwODI5ZTk4MDgzZmZlZWY0YTdiZjUxZjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1aa91206eb324b12b30260fc43f84cbd",
+      "statement": "unreal.NotificationType 类不存在，因此 notify() 原先那个用 hasattr(unreal, \"NotificationType\") 保护的 type_map 属于构造完就扔的死代码，它让每个值都变成 None 并给人『NotificationType 存在』的错觉，最终被删除并降级为调用 print_string。",
+      "evidence": [
+        {
+          "resource": "repo://utils/ui_helpers.py#L86-L101",
+          "version": "repo-lines-v1:sha256:b6d445e4a9c6ce94e8057fc2493cf0781af9440030109cbddb7d1c7d83c05335:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUxZDJiOWIxM2RmYjBiZmY0OGZjNmEzMjUxZWQ2ODI3YzkzMjE0YTUxZjQ1YjRlZTUwODhmMDE1ZWUzYTUzZGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiMjA3NGU3YTRiMGYxMzk2N2Q3YjAzNzZlNzA0YzQ0Mjc1NGJjYWNiYWQyZThjNjRjNGQ1ZmQwYTVjMjY1YTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhYzIyNGVlZTlhMGJhMjEyMmUwYmFlN2NkOGU2NjUwNDk4MjY0M2YwOGE5NTNhN2E3ZDMyMmZjNDk5YmQ0NDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRjZjQ1ODAxMzJmMjg1YzFjYzhjYTc5ODk2YTM3NmVmODAyMGM0MDNiZjkxOTQ3ZWY5ZTY4MTZjZjA1ODE0NzkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b94d4fa7eba24a4d924a13656219f608",
+      "statement": "BlueprintEditorLibrary.get_blueprint_variables 与 EditorAssetLibrary.find_package_references 都是虚构 API；读取蓝图变量改用 BlueprintEditorLibrary.list_member_variable_names(blueprint, include_inherited_members=True) -> Array[str]，查询资产依赖则必须绕到 AssetRegistry 的 get_dependencies(package_name, dependency_options)。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/03_blueprint_variables.py#L222-L235",
+          "version": "repo-lines-v1:sha256:82422b44e498343c98dc29c23c5224ae624d0d2ddddedbcd7056ecc161da7671:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0YmZiYjYzODA0NzBiMzJmZDdiNjhmZDBkM2E2MDY3ZjI0YmExNDhlZmI1NzNkNTMyZDNkOTc2Y2NlOTk2MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzOTUyZDcwYWFlOWRlZDg4MjZjY2Y1NmZmYjM3MWZhYTk4YTBmYjM4Zjg5ZWYzNGM5YjA0NmUwNWM5MzU5NzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUxNzI0ZDNmNDg0ZjU2ZDM0NGZlYTllYTVhMzhjNWI0MzA4YWZiZDI5NDBmZWM0ZTYzN2EzMDZlYzI4MzVhZWEifQ"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/03_blueprint_variables.py#L356-L358",
+          "version": "repo-lines-v1:sha256:90ef5cf1e7d719b29b4f1b1a1cc2190a9e9508492dc565d23abf7db2c4079532:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzlkZTg4ZmEyYzI1MzcyYjE3YjZmMTk4OTFjZDA5YWMzYTBlZWY3ODJiNzAwN2MyZjg3OWNlYmM2NTIxYjA0YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDJlM2JiYjZhNjI0ZGM1NDA1ODA2YWQ3NTllMmUzZjQzNTA0YjA3M2JkZmE1YWJlMjliMDAzMTY1M2FlNzViYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTU0ZjM0YTllNDQ1YjJjNjc5YjY0MGYxYTJmOWRhYjlkMDc4YmEzNTQzM2Q3MWVjOGEyNzMzNzExODVkZDgyZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTEwNmZhMjkxMjE4NGQyZmJiMzE2YTMyM2MzMmUyNzljYzU4MmM5NTYzYmUzNzExMDNiYWViZmI5ODM2OTAzMCJ9"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/03_blueprint_variables.py#L58-L68",
+          "version": "repo-lines-v1:sha256:115af39ca30e81eb7cd3221821e9855f65d485663b4c10de99cd0fa1a3a3366f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiNGNlZWE3YTRjNGM4MzFiMjcxNmU5ZDA2ZWIzNDZiMzYwZjk5NDZiOWRlNzRjNTY5ZjYyMWViNmU5ZDcyNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEwMTE3NGE1NmQ3ZGJhMWNlZmQ0ZDA2NjJiMmFkNTg2YjY4YzdmYmU0YWUxNjEyZDdjNDM3ZTQ0ODFkYjE1MTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ1MmNiNzUzYTQzMGIzZjRmZWZjZjczN2U0MDk5YmM3NWU3MWYwMDBhMWYyNjUzZTMyNjA4YmE4MWFiMzY4MDEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5147065b7716468694c2fac38a4035c0",
+      "statement": "资产引用查询在两个方向上不对称：EditorAssetLibrary 只暴露『被谁引用』的 find_package_referencers_for_asset，『引用了谁』只能走 AssetRegistry，且 get_dependencies 的第二个参数必传 AssetRegistryDependencyOptions，需同时勾上软/硬引用才能数全。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/03_blueprint_variables.py#L222-L235",
+          "version": "repo-lines-v1:sha256:82422b44e498343c98dc29c23c5224ae624d0d2ddddedbcd7056ecc161da7671:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0YmZiYjYzODA0NzBiMzJmZDdiNjhmZDBkM2E2MDY3ZjI0YmExNDhlZmI1NzNkNTMyZDNkOTc2Y2NlOTk2MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzOTUyZDcwYWFlOWRlZDg4MjZjY2Y1NmZmYjM3MWZhYTk4YTBmYjM4Zjg5ZWYzNGM5YjA0NmUwNWM5MzU5NzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUxNzI0ZDNmNDg0ZjU2ZDM0NGZlYTllYTVhMzhjNWI0MzA4YWZiZDI5NDBmZWM0ZTYzN2EzMDZlYzI4MzVhZWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_025e537a68a24d348436dd94b2e3f027",
+      "statement": "CineCameraComponent 上没有 set_current_focal_length 方法，焦距与光圈是可直接赋值的属性（current_focal_length / current_aperture）；current_focus_distance 是只读属性，对焦必须通过 focus_settings 结构体（先把 focus_method 设为 MANUAL 再设 manual_focus_distance）。",
+      "evidence": [
+        {
+          "resource": "repo://07_SequenceAndCinematic/02_camera_animation.py#L97-L108",
+          "version": "repo-lines-v1:sha256:f45a3c7346a71d4f6ab7aa92b7fca1daa502b04d7c7b7832b86327adf42b7861:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmMzQ3MDdiMWY0NTllY2ZhMmU4Mzg4ZWRiZDc0MzY3Y2MwNjFhZDc3OWRiYTQxN2M1ZTc3NjFhZDM2MGNlMjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzYmIwZWU3ODQyYzU1NWFjNTUxMzk5YzY2ZjM1MjBmMzY4NzQyMjYyMThmMGMxZjNkZjY3MTJlMjZmZDcyNzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyZGRiM2JjYjRiOGY5NzQzYWE1ODZhM2M4ODBhOGJiNGRlM2FhMTY5NjVlZTUzOWE0MTZkNjcxN2Q4ODdmNGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBlNmIwNWY3OGY4NjE2Yjg3NDNjYzdiNTU1MDRhNDQwMTQwNWQ4MzY2ZmE2M2U0MWE1ODIwOGFkZDAxZGU2NTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_dcef583b7d2e436a9b90b35c580989f5",
+      "statement": "MaterialInstanceConstantFactoryNew 上没有任何父材质属性（没有 initial_parent），父材质只能在创建后通过 MaterialEditingLibrary.set_material_instance_parent 绑定。",
+      "evidence": [
+        {
+          "resource": "repo://06_MaterialAndTexture/02_material_instances.py#L69-L76",
+          "version": "repo-lines-v1:sha256:6adf9a8231215dc0c3d814643671d7371ac9107d8cbc1af39c10f1995a56ff64:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTVlMmVmOTY4M2YyOTljMDI5YmQzMjFhMzM0ZjZlNDllZDU2MzI2OGZiMWYxNWU3ZjJlMDUxYjQ4Y2RkOGZhNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWYyYjQwMjdiNGJjNzRhZjFkODU1NmM1OWJjNmM5NTcxMjA4NDY1M2I2NGRkN2M1N2NjYTNlNTQ5OWQ1MWFjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjA3MWI0NzQwNDZhNzBlNmMyOTRmYWYzOWQxODRkMTc1MTFjZGViYjFkYzM3NmIzNjczNDNmYmZkM2U0OGQzMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjhkZDQwMGJlNjA0NDQ0NjBhMGQzYzI5YzkyYjYyYmVkNmM0NTJlZGI0NGU0Y2MzOWI1M2JhZjA4MzIxMmNkOCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e8be277cea8543c5b4fe07e6b2ca62c6",
+      "statement": "unreal.Paths 上没有 normalize_path_name（C++ 是 FPaths::NormalizeFilename），正确名字是 normalize_filename(path) -> str，它会统一斜杠并折叠冗余部分。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/03_editor_basics.py#L114-L125",
+          "version": "repo-lines-v1:sha256:4c77044b4724968b615601d16a86bdd28a85c9197373781ce7f31ce8043f57c8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2MzdiYTE2ODcwZTQ3MmQ1NGQ2NWM5YWE5MjQ0YjllYWYxMmY3Nzk0ODM3NjQwZGQ5YmY0MmUwZDBhMmMwMDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlNWQxZWIxYTFhYjA3Zjg0YmViZGZiZjYwYzJkMGNkMTNkNTY2OTA1YzA1OGY5YWE0OGMxMjkwYTk3MjAyOTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ0YjQxZjY4YWFkOTZjNGYxOTk0ZWFmNDdjOWVlZGVjNGJiMjNlMzZiMGQzNGQwNGRmNTgzOTczZWRiYjQwMWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2NDUyM2VlMTA1NTU5MTg3NGRhNmRmZjBhODAxMmFkZTZjY2I5MGQxOWViNDhjNjA3MTMzNWE0MTkyODBmN2IifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ab4e4cf800d8400490de5903f5812dae",
+      "statement": "废弃 API 在本仓乐里存在三种形态：已彻底迁移到子系统、故意保留旧写法作教学对照（如 01_editor_utility.py 的 get_selected_actors），以及正文尚未迁移（多个关卡脚本与 03_automation_testing.py 仍用 EditorLevelLibrary），而部分课程 docstring 的 API 清单也尚未同步。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/03_editor_basics.py#L266-L272",
+          "version": "repo-lines-v1:sha256:6f36ada49a476433f3f07c2c3b3c72f45acc736249a11d95fff2f344f6a36da3:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTgyZmVlYzM2MTI1NTU3ZWViNjZlYmY2NjcyOTVmODRkMmE5YzgxZTc2ZDJmZDNlYzI0ZjRjZGIwNzZhMzhlZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODJhNjUwNWE2OTk1OWY3YmZmZGE4NTNjYzc0ZGNhZWE4ODAyN2E5YTkwNThmNGZkYzBiN2RmZjQxZTJlZjkwZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2FhZDc5OTlmYzNmYjZiYzU0ODgxMGMzOWUwZmRkM2E0OWRiNTY0OTBiNGI5NDEwZGMxMjEzYWUwMDdjN2Q3YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmY2NGE4YTQ3NTVjYzJmYzFmODI0MGIzZDJjNTI0YzdjMzc0Y2U5MWFjNDhmYzZhYzE0MDA2YjFjNDgwMTcxYiJ9"
+        },
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L183-L197",
+          "version": "repo-lines-v1:sha256:e2fda68fb3742ede44ea0ec2559281f3cb99a7ddf9c89fa145c830c4b40be80f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxNjAwZmE1MjFkOGE4MzY0ODljOTAwY2MzODhjMTcwZTRkMjJiYjk2MzVjMWVjMTBhM2MyZTMxNTI4NzgxNmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkMjU1Njg1YmM0MWQxOTJmMzYwYzYwNGVmMGM1YzgwZDk4OWIzM2NlNDhkN2VhNmViZDk1MGEwYmRkNzBlNDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMwOTIxMmJjNWNiMWIxNzg5YmMwYzUwNTU4NjdlNmZhNmIxNzYzMzNiZDNkYzdlZjM5ZmEyNmEwMDkwMmI4NTAifQ"
+        },
+        {
+          "resource": "repo://05_LevelAndActors/03_level_management.py#L12-L21",
+          "version": "repo-lines-v1:sha256:ec1bc1c11329863fa5f4a9c651fe756fe5df2925f2c5c6789093c04518078500:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlNzk0YjcwZWQ1M2E4NWEzMTI5MDUwMmZkNjcxZjA2ZWRkMzUwMTM3ZTViMTUyYjFjNjlkNDZhZTFjMGYzM2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzZGMwNmNkYWRiNzU0YmExNzFjMGY1NGYwZjRjMmE0YTY1ZTExZThjZWI5NDkzMWJhNGNjOWRiODRhYjhiNGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFiYzg0MmRiZWJiNWExNzg2NTBjNjkwMWRjYjEzZTQ4NzhlZmUwNjJlYjNiOGYxYTEwODQ2ZTQyZDFiZGQ4YjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBhMTc2YjY3MWIxNDM0MmM5YThjZWIzYmNhZmRiMjM5ZGJiYWJjYWY1YjI4MDc3ZWMzOTNmODMyZTViOTk2NGIifQ"
+        },
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L364-L380",
+          "version": "repo-lines-v1:sha256:326b7ae3b5f2612ee75eace3e94e3b56e7412fe2745e029e0424b3ae6d7ca1cf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhMThiMTQyNjQ2ZWNhOGZmZGJlZDAzYzZhMzg4MmJmMDg0NjkwYzVlMmE4OTg3NmQwYTQzYjFlMTA5MTViZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3NTJiZjgyNGM2OTk1NDk3YzM0ZTQ1ZjYxMDQ0NGIzZDJiY2I5NTVkNGNiYTZiZjIwZDMyOWVmZmUyMWFiMGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY5ODQ4OWYwYmYwZTI3MmMzNTlkY2QwY2FhZTU5MWFjOTEyNTJiODM4MjE0ZWE1NmI5MjQ2ODU0OGFiZWExZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEyMWZlNGZiOTJlMTk1NjBjMzdkZWU0NGM0ZTI2NjQzYjBmMzBjZjNjMDIyOTY4NmU4ZTNhY2JlNTU2NmI5NGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_148af41e4cb940a989daf61cda4bae22",
+      "statement": "有两处注释断言与肚文件不符：AssetData.asset_class 并未被移除，只是已标 deprecated 并建议改用 asset_class_path；EditorAssetLibrary.get_tag_values 在肚文件里确实存在且未标 deprecated，尽管三处注释声称它不存在并会抛 AttributeError。推荐写法（走 EditorAssetSubsystem）仍正确，但『不存在』的断言不成立。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/01_list_assets.py#L122-L126",
+          "version": "repo-lines-v1:sha256:15c6fef88a648e52112747d71ccc7f46f2a94c7e23c28d14fba46c9d87a0b5fc:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOThhM2Y1NjAyNzQxZjYzNzRjNzhlNmVmNTJkMzk5NDg3OGI0MzRmM2FlMGQwNjhkMzdkZDA3OTY4NTk1NTk5OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTU3ODUzMjQ3M2NmNDgxYmI1ZmVkZTAwMzMwMTMyY2E2Nzc2ZmY4NTY1ZTkwMjk4ZWY3ZWNmOTIxOTBmZjMwNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjdjM2FjNDVjODJlZWM2NDY2NTQyNTNiMWMwMzBiZWU0ZmM2NDZlZmE1NTk3Y2U4YjA3ZGZkZjUzZDRiMjc4OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2FlNzRkNjIzNjlmMGFmNzI4ZjY2NDQ4NWMyYjlkYjcxOTc4YjBjMDc4NjhkMTI1YmYxYzQyYzExOWJiMjUxYyJ9"
+        },
+        {
+          "resource": "repo://02_AssetManagement/01_list_assets.py#L20-L21",
+          "version": "repo-lines-v1:sha256:277c828fbc8a3ad183840efed136ab7f0b051efc1f45e3a21eec3c7d947be8e6:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmI0OTBjNjEwYzViY2ViODNhYWQ2MmFiNzhhMGY1ZTU5NzNjYTg1NTcyMGM3MDA0OTA5MTA5OTA3MDVmYjNjZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmVhODc4NjY0NzRhMmMwNDFjOWYyNzVlZTJkNmRkMTQ4YjVjN2E1OGUwZTk5NWZlYTIzMjM3Yjg0MjM2ODgzNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODRhM2VkMzk1YmNiNjc4Mjk2OWUzY2Y2YjZhMjU4Yjc4MDcwNGMxYmJjNWJkOTU5OGQyODlhOTllYWI1MzMzZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmVmM2M4ODVhNGI0ZDM5OGM4MDEyZjIxNjdmMzcxNDFhMzRkZDdlMzQzMjc2ZjQwYjIwMDQ1NGFkOGQzNjkxOSJ9"
+        },
+        {
+          "resource": "repo://02_AssetManagement/my01.py#L76-L77",
+          "version": "repo-lines-v1:sha256:e3010bb614c6295e60e25635d0bc2e8d25a3a54919e7fa3f2968edac82c7256c:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzVkOWRjYzFhMDE5OTRjM2M2ZDA1OGRlODNjZjU5ZTYxZGI0ODI2MDU3YzRlZjFmYWZiNmEwNTRiOTBmYzYzMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODNmOTZlMTA5ODJmMzQ0Yjc2MGNmYzA5ZjlkOTlhMDU5ZjRlMDI0ZTAzODM5ZDhlMTgxOGUyZmM3NmQ3NTY5ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmU4MjJiMTNmMzAwNTcwYTU4MjViYjNiOGU1ZTZjNGY0YjBkOTk5NDUwMzhlN2NmOTI0ODc4NmNkYzRjMjY5NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTY2MmMxMTI4ZDcwZjMyY2MyMzcwNTFjMzVlODkxYTBjODliM2NhZjIwMTliOTUwODY1OGI5MDE0ZWZiNDhjMyJ9"
+        },
+        {
+          "resource": "repo://AGENTS.md#L69-L72",
+          "version": "repo-lines-v1:sha256:1f50f0ea55557befa7dd4c3a430caaff20b27e98b412e0c87338e81f3cce8fdf:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzA2NjNhMTI3Y2MxOTY4NzkzNTVjOTc2YjBmNjYxOTIxN2ZlYmU1NjJkMmJkMmZiMzdiMzZlOWJiNDYzMWJlMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTkxODJjZDZkNzNjNTU0Mzc1ZjQwOTg0YTIxYjVmZWVjMGFmYzM5ZTE2MGViOTdmMjU3NjY0YWNiZWZiZWUyYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGJkMGM0YzlhNmVjMTM1NzNiMTdkMTk4NzgxYWVmNzg5NWY5Yjk3ZWVkY2EzN2I5OTAxOTVlYjQ4Mzg4NDA4MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzUyZjEyYTNhMDY2Y2VjYWVmMWZjZTg2Mzc0ZDkyZGIwMTEyNzU4N2I2NDZmMGVmMzI4NzJkMDAyYWYzYWE4NyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_471d01309c954552b58259089e58561a",
+      "statement": "EditorLevelLibrary.spawn_actor_from_class / spawn_actor_from_object 没有 deprecated: 说明，按肚文件判定并不废弃，但它们所属的插件整体已废弃，新家是 EditorActorSubsystem 上的同名方法——这类『方法未标废弃但宿主插件已废弃』的灰区需要靠插件归属而不是那一行 deprecated 来判断。",
+      "evidence": [
+        {
+          "resource": "repo://05_LevelAndActors/01_spawn_actors.py#L12-L21",
+          "version": "repo-lines-v1:sha256:e3d5ff91acc19b7ba9a2d675be8bfcc4c2326aaf12f553effe708862b739a69d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2OTgwYzlmMGQ2YjhhNTFmZWI3NjJiODgwOWQ1Y2Q5ZjlhZjBmZmE3YzZlZjVhYzhkZjhiZjgyMTdlMTg5YzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3ZDg2YjkxMzc0OGRlN2IzYTNlYzVjNWU1YWRiYWI5YzdkYjAyN2IxOGExMjEzMTg5MDA0OThlZGE1MDUwMzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJkYmE5ZmUxZmQyN2E0MTkxYmIzODM0ZDk4N2NiYTY4Njk2ZGM3MDQ5ZmZhMWU3ODRhYjk5MjJjMzI0MDQ5NzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRiYzc3MTUyY2YxZjhmODM5MjU3MWY1YmY3NzY4MmFkNTRjNDNiMDI5ZWQ3YmM0NWJhOTM4ODhlNDIzZmIyM2UifQ"
+        },
+        {
+          "resource": "repo://05_LevelAndActors/01_spawn_actors.py#L75-L75",
+          "version": "repo-lines-v1:sha256:a8ebbc5337c5358365316c0d56b7d879243d75ddd11837a6df17d2d5bc747ffe:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYThlYmJjNTMzN2M1MzU4MzY1MzE2YzBkNTZiN2Q4NzkyNDNkNzVkZGQxMTgzN2E2ZGYxN2QyZDViYzc0N2ZmZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYThlYmJjNTMzN2M1MzU4MzY1MzE2YzBkNTZiN2Q4NzkyNDNkNzVkZGQxMTgzN2E2ZGYxN2QyZDViYzc0N2ZmZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmVjYmE2MWQ3NWE3YjgzY2I2YzhhODU3NDlmNTU1ZDg2MjY5NjdhZTA4NmM0MmIwZjEwMzM2ZGJkMWRlOTEyNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTI5MDE0ZDljODA1ODBhZDRkYWM0ZjlkN2NkNmM0YTRkMmU2NGFhZTA0MzA4NjdjNTBkMTk5OWM5NmNlNmI5MiJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.1",
+    "at": "2026-10-07T08:34:04.254Z"
+  }
+}

@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:d61a3116dfc93afac1e888b155d50e50ec2d15e3364a67dc12ea436c8b5e67b5",
+  "claims": [
+    {
+      "id": "claim_1f01b06a74fb462abb02cf141c055d32",
+      "statement": "utils/helpers.py 是 313 行的通用工具库，依赖仅 unreal 与标准库 math/time/os；模块 docstring 能给定的导入方式是把仓库根 append 进 sys.path 后 from utils.helpers import *（因为 utils/ 下没有 __init__.py）。模块未定义 __all__，星号导入会同时带出 unreal/math/time/os 四个名字。",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L26-L28",
+          "version": "repo-lines-v1:sha256:ad064957fffbb41bb588061f0167b64147f60229552b5f4ea2f2162e1cdea24b:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzY0OWY0NDlkZTBmMmFjYTBjMWU1NTVhOGU5YzdkMjAxMmM1ZmEwOTFhY2VlZDExZWI5ZGIxMjk3ZWE4ZmRhYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjkyMDBlNjg0OTFiNmE0NWQ4YzVkZDg1MWZhYjQzNjE5ODE2OWJhOGQ2MDQxNWM4ZmJmNjJjZDVmZDY4ZWU2MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjUxOWNkMWE0NGIxNzVhYmQ2OTA1MmE5NjFiOWVmZTQ3M2RiNGE3ZThkYmYzZjkzNTFkY2E1MmM5MDUyNmJmNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWY2NDJiYTM2NDFkMThiMGZiZDUyM2EzY2Q0ZGM5YTk3OTI2NjJiNTg3Y2E4NGM2YTczN2I0MGRmMTQ1MWVjNCJ9"
+        },
+        {
+          "resource": "repo://utils/helpers.py#L1-L18",
+          "version": "repo-lines-v1:sha256:fde1584a1cf1104a3018ad42835de80bdb75f1367e2521832f2690db32f66a91:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzMDNlY2RkNGE0ZDEwZjE5YzczZmQ0MmZkMTI0MzdmZDMzNTRhODI2ODE2MDVkYTUyNTVhOTdhMzkwNjhkYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiMmRkYjhhMmU2NGM2MTY2ZmVlZGFmMzBlZTUwYWM2MjE2NWZlMTQ5ZmRkOGIwZDdiNzc3ZWJlZTIxY2EzNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjM2QxYWYzNDhhZTgyYjQzMjBhMmQ5NzcyZGNiYjI4OThiMzgzNjA4ZmMxOWE2OWYzNjNmZTQ5ZDlhMDA0NmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_585e017a25ae4421a60d28ec77140ffa",
+      "statement": "helpers.py 目前在仓库里没有任何调用方：全仓提到 utils/helpers.py 的只有三处，其中两处是注释；它提供的功能被课程脚本各自复制了一份等价实现（log_section/log_info/log_warn/log_err 在 01_Basics/02_logging.py:111-127 逐字重复，Actor 查询函数在 05_LevelAndActors/02_modify_actors.py:59-87 重复且走已废弃 API）。原因是仓库要求每个脚本都能独立运行。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/02_logging.py#L111-L135",
+          "version": "repo-lines-v1:sha256:32cc011b71153c4644c669fed275a9cdb46a3bb0ad8f7394afd81a2e76ff39e5:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3YmIzMmExOTJmY2ZmYWZlMTdhNjlkNGUzZmM4OWUzZjc1ZWRlZDk2MThhMzE4YmIyMmVjYzlkMjFlMTIzYjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MmVmOGY2OWJlMmM3ODk0YzM5YThlMmE1Y2IzNGZlZWRlMWRlYjE4MGU3N2U3OThhMjNkM2Q4OGQyOWU4NTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVmOWY4YWRjNjNmNTBmOTRjMmU4MDIyNTRmOTliNDYyNTQwNWM5MGViNzY5ZjM4NTJlNzgzYTQ4MWUwY2FiODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkMDI3ZDc4M2NiZWJiZTUxMjJjNDlkNmIxZDRhNGViZDc2NmQ3YTAwNzE0ODFlNWI0MDU0MGQwMGZiMTNkNDQifQ"
+        },
+        {
+          "resource": "repo://02_AssetManagement/my02.py#L211-L212",
+          "version": "repo-lines-v1:sha256:332b3dff6b16009eb4d5fc76f76d9255593b9548ae57c087d86c977851149acd:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWI3YzEyODY3NzI3YzA2YjhlMTQ3YzM2MmIxYzI3ZDJlMDI5ZGE3MGE5YTFkYWY5YjZhODlmOTU4MTNjODdiMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzZmYWQxMWY5OGM2ZWRlZWRhZmNmZjcxNWIxOTQyZjM4NDZmZTcyZDI2OTVlODU4ZTE5YzJjNTBmMTM1YjhhNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODlkMjQ5NjJjZjA2MDIxZmJiNThiN2Q0YzNhZmY4NDZjNzhmNjc1YTZkNmZjNzZmMDE5NGZkOThiOGE1MGYyMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTE4NzU3NWYxOGQ1ODdmYmE0MDM3MmU2NzJkNTUwMmI4OTVkYmRiZDg3ZjM0YzliYTljZDc4YTcyODJmMzQwNyJ9"
+        },
+        {
+          "resource": "repo://05_LevelAndActors/02_modify_actors.py#L59-L87",
+          "version": "repo-lines-v1:sha256:6d62ad565a20451d3890411bb4baf0de1dc53f8efa4eb59ff61132c81e70e653:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiZTg4MDc4YjIwYTIyY2M5YzcxNTk3YmE3YjcwNDViMTM3ZWE1MjRjZTVhNzhmMmQxMTljNzg5NzVmYTI2NGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTYwMGE3M2QyZTAyZjM1MmI5MGZlZjFkOGQ2MzgxMWJhNGE4ZWUwYzFiZWFhN2FlNDY1OGYzNmFhMmUxOTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE0NmJiOWQ3NGY0ZWVkNDRmNTIzOWJiYTA5ZDA3OGEyOThhZTEwYjYyMTJlZjA5ODBhM2FiNmZjNmQyYmEzNTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUxYWY0NzU5NTQwNTI5MDAwYmIzNDBlNjlhOGFkZmFjN2E5OTMwZmM5MDU1M2VjZjdmOWZjMjZjOTgzZmNlYjUifQ"
+        },
+        {
+          "resource": "repo://06_MaterialAndTexture/02_material_instances.py#L325-L337",
+          "version": "repo-lines-v1:sha256:37f6c02f48d17bd6d199c400c93ad733ebcf933a81aadf6c49e2f5d60769f6b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwYWRmMWJhNjUzNzk0ZjA3YTkwMDA3NmRmZTM2YjFmYjEyODIyYzYyNWM5ZThlODcwMzRkNjRmNjA2ODU4Y2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhZmYwODBhMzQ2NzU5NjVmYzZiODFkYmUzMmE3ODcwOTY1Yjc3M2Y1MGY2NjUzMzY1NjNlM2EwZGI0NzBkNzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUyMDE0ZjA2ZjAwYTdmOGJhMTgwZDExZjlmZjU0ZjAzMmQ0YjVjODJmMzY0MDU0OGZhMzA5OTliYzQxNmVhNTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1ZThiNjM5OTkyZDU2YzBiYjExYmY5Mzc4ZDE2YzdiMTZjYTk4MTQxOTliYzM1MGRjZThjOGJhZWM3NmQzNzcifQ"
+        },
+        {
+          "resource": "repo://utils/helpers.py#L11-L11",
+          "version": "repo-lines-v1:sha256:12440f8bcb5883e0759f2d09b500f886da2d44f11ce0cf6e62c6245cd0d06ad0:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTI0NDBmOGJjYjU4ODNlMDc1OWYyZDA5YjUwMGY4ODZkYTJkNDRmMTFjZTBjZjZlNjJjNjI0NWNkMGQwNmFkMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTI0NDBmOGJjYjU4ODNlMDc1OWYyZDA5YjUwMGY4ODZkYTJkNDRmMTFjZTBjZjZlNjJjNjI0NWNkMGQwNmFkMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGZmNTJhODBlYmE4MjZkOGIxNDg0MDhjN2YyNTgwMWEzMTBkNjgwOTJiN2I2Mzc2ODY1MTc4ZGI5MmEwODYwZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTIxMmM2ZWM2NDA2NWNhMDFkM2VmYjAxMzEyZWEyMzdmOGUxOWQ0MjZhN2RlYjczMDkyMTM1YTU3OWM4MmQ0YSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_274cd782f2784740a6ad971260eb42fa",
+      "statement": "同样的『编辑器事务上下文』在仓库里存在六份独立副本：helpers.py 的 TransactionContext 类一份，加上五个脚本里逐字重复的 @contextlib.contextmanager 生成器函数 editor_transaction(description, context)；课程版本的实现都是 try/yield/except BaseException 先 cancel_transaction(token) 再 raise、else 分支 end_transaction()。修改其中一处不会影响其余五处。",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L34-L50",
+          "version": "repo-lines-v1:sha256:a986b202df4690935e98cda88aa69dd9b14597d1c3e1cde88fb8d40f642e237a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmNzI5ZWU3MjczMDVjMTI1NjAzOWZkNWRlYjc4Zjc3ZTE5N2FiNGE0ODA2MTVmMWYwNmI3YjM3ZTVhNTQ1OWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjY2JiZWQzZWFmOTQxMTU5NjcxYTkxMWIwODJjMDMxYWFlOGZjOTIyYmI4NTE4OTM5YWQ4YTc0YmUxYWUxZTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1NDViOWI4MGM4Y2FlYTAyMzgwYjFjNTI1NjNiMzYyZWQ1NjFmZGYyYjdmODg1OWYwMGFkNWJjNWQxNGRiYjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIyYzMxZjcxOWM0MGY5ODc3YzQ0Y2JkMmU0M2QwODczMDM2YjExYTFmMjI3YzllY2I3ZThkNDBjNTc5MTU2MDMifQ"
+        },
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L33-L49",
+          "version": "repo-lines-v1:sha256:a986b202df4690935e98cda88aa69dd9b14597d1c3e1cde88fb8d40f642e237a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmNzI5ZWU3MjczMDVjMTI1NjAzOWZkNWRlYjc4Zjc3ZTE5N2FiNGE0ODA2MTVmMWYwNmI3YjM3ZTVhNTQ1OWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjY2JiZWQzZWFmOTQxMTU5NjcxYTkxMWIwODJjMDMxYWFlOGZjOTIyYmI4NTE4OTM5YWQ4YTc0YmUxYWUxZTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1NDViOWI4MGM4Y2FlYTAyMzgwYjFjNTI1NjNiMzYyZWQ1NjFmZGYyYjdmODg1OWYwMGFkNWJjNWQxNGRiYjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk1MWQwMmUzYTg3NWRhZTgwNjM1NjMzYjEzNzgxM2Y5M2NlNDk3ZTRmYTNjOTc1NjBlZDc3ZDBhYjlhYjZlYzMifQ"
+        },
+        {
+          "resource": "repo://05_LevelAndActors/01_spawn_actors.py#L32-L48",
+          "version": "repo-lines-v1:sha256:a986b202df4690935e98cda88aa69dd9b14597d1c3e1cde88fb8d40f642e237a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmNzI5ZWU3MjczMDVjMTI1NjAzOWZkNWRlYjc4Zjc3ZTE5N2FiNGE0ODA2MTVmMWYwNmI3YjM3ZTVhNTQ1OWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjY2JiZWQzZWFmOTQxMTU5NjcxYTkxMWIwODJjMDMxYWFlOGZjOTIyYmI4NTE4OTM5YWQ4YTc0YmUxYWUxZTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1NDViOWI4MGM4Y2FlYTAyMzgwYjFjNTI1NjNiMzYyZWQ1NjFmZGYyYjdmODg1OWYwMGFkNWJjNWQxNGRiYjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZhZDNlOTNhOGY3ZTY2ZjE5OTMyNTFhZmY2ZDZlMTY2YjU1MjczMDk1NTI1MzEyMzBkODUyNmRkMzE3NzE2MmMifQ"
+        },
+        {
+          "resource": "repo://05_LevelAndActors/02_modify_actors.py#L36-L52",
+          "version": "repo-lines-v1:sha256:a986b202df4690935e98cda88aa69dd9b14597d1c3e1cde88fb8d40f642e237a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmNzI5ZWU3MjczMDVjMTI1NjAzOWZkNWRlYjc4Zjc3ZTE5N2FiNGE0ODA2MTVmMWYwNmI3YjM3ZTVhNTQ1OWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjY2JiZWQzZWFmOTQxMTU5NjcxYTkxMWIwODJjMDMxYWFlOGZjOTIyYmI4NTE4OTM5YWQ4YTc0YmUxYWUxZTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1NDViOWI4MGM4Y2FlYTAyMzgwYjFjNTI1NjNiMzYyZWQ1NjFmZGYyYjdmODg1OWYwMGFkNWJjNWQxNGRiYjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkMmQwOWI0NDRjZDcxOTJmOTkyYjNhODIzMDI5YWVhNzkwNzdkYmI4MjIwMjk3NzQ4YWQ1M2VmYTYyYzQ2OTkifQ"
+        },
+        {
+          "resource": "repo://08_AdvancedTopics/02_external_data.py#L35-L51",
+          "version": "repo-lines-v1:sha256:68eaaaf0fd4346ee4cf7c17a47b0cd358e8b1a05a392a90e8a3555a519914991:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2YjA4ZDRiMGNlOWUxN2IwNjI0ZTNmMGZiYmQ0ZGUxMzljZTFjNWI4YWE4MGJkMjNjYjkxZmQzYjgyNWZmOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhM2E4Y2NjZjMyMzg4MTMwODkxNmJmMjUzZTAxZTY4NWEzN2FjNjcwYmZkYTNlYzFkMTI0Y2YzZWRhY2JkYmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNlZTg0ZGFiY2VhNWU1OTljYTMxNmI4OGQyOTk3YWE1ZThmNWQxOGEzMDQ0ODQxMzRhY2RmOWY4NzU3NGU4ZWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2NDY0NWZiNDc5YzFkNDM3ZWU0OTRjZTE4ZGZiZmFmMjBmOWQyM2E0ZDVmNDg4ZDM2MmFkZGQ5ODA1ZjE4NjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c63c30b6e50349c89733e079585a2678",
+      "statement": "show_screen 的固定流程是先从 UnrealEditorSubsystem 取编辑器 World 作 world_context，取到则调 print_string(world, message, True, True, color, duration)，取不到则降级为 unreal.log；理由是注释记录的 print_string 第一个参数传 None 在编辑器里不报错也无任何输出。color=None 时补白色 [1,1,1,1]，本函数不检查 subsystem 本身是否为空。",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L43-L61",
+          "version": "repo-lines-v1:sha256:edbafa2b55d2a9c2088be4065bb6b2e2fcac76159993e747182c13968552d96a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2NzgzMzhiZjkzMmQ3YzIxNjg0M2MzYmRlN2Y2NmUzZTZmNGRiNDE2OWQ1NTJlM2E2YTU5NmY4YThjZWM4YWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YmZmYjEwYTkwMmY1Y2VjN2Y3MmVlMzUxMGU2MTQ5YTJmOTA2MGMxZTg5ODE0ODNjNDRhY2QyYzA1Y2Y0YjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3MjA1OTJiMDk0NDc5NjQ2YjY4Yzc3ODExNDA2Nzg3MmU3YTlmNDE5Y2U0MmUzODI5MWM5NWFkZDg0OTQ1MjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFjMDU4MTg5Y2IwNzFhODE2Mzc3YTlmYTZjNDRkMTJlYmE0MGYzMWJhZTAwNjc2MjlhMTljYzJjNjE5ODY0NWUifQ"
+        },
+        {
+          "resource": "repo://utils/helpers.py#L50-L62",
+          "version": "repo-lines-v1:sha256:2ef8e99598742d24c50a8e0c5f0a9b5c8a2d562c3f1eeca8857594ad025318fc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyNDE2ZjJlOGNjMDNhNzg1Y2VhZjYzODIxNmRiMDI0NmI3ZTgzNDg4ODliN2NlNzUwNDQ5ZWUzY2ZiZDJiZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5ZTQyMzQ1YzI1NWVmNDRjMDk0MjZhMjMyODUzNmRjYjM5MzllOGRmMDgyYWYwNWEzYjRiOGZlNzY3ZDBiMzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlZjMzMTAyMWExNTVlN2UxODU2ZDdlZGVmZDk1ZDY1MThmYTZiOGJkMTI0NDA2OTVjYTgyZTkyODQ2YTRkOGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1YjkyM2JjZTIxNDBkMmEzMGJhYzc4Zjg1YzM3ZWFhMWUxNWM4OTNhNTQ1NjllYTM4NjE5Y2UyOTNkNmMxMmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_012a8711b3794dbb95cc3ea2fe31a949",
+      "statement": "资产查询四个函数都是薄封装：get_all_assets 转发 EditorAssetLibrary.list_assets（返回路径字符串列表）、asset_exists 转发 does_asset_exist、load_asset_safe 先 does_asset_exist 再 load_asset（不存在时 log_warn 并返回 None）；recursive/include_folder 都未被暴露，所以路径列表只能递归且不含文件夹条目。",
+      "evidence": [
+        {
+          "resource": "repo://utils/helpers.py#L70-L95",
+          "version": "repo-lines-v1:sha256:1e692388b0a9a88d7dc26503a2fd7a9626eab4429c0dcf7de5f197ff4706fed7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMjAzZGM5YWVhZDlhYjNhNzc2NjgyNGU4NzY3YzU3MzAyMjJmOTE2ZTE0MjJiODgyMWQzZDNlYmQxMzgwMWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MWIyYTY2Y2Q1OGU2NGRkN2E5ZjEyYTY3YjNiNDQ0YWY4Y2YzZjRmYTZhOWI4OTEzYWViOTFjOTY4MjFjOWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI0ZmUyMTY4NmIzZWFkMmIyNDJkZjM5ZjAzOTViOTNlZWRmZGVjODU0MWZjYzQxY2MzYjBlNDBiOGIxYmQ4YmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a74eec63fc6b410fbde7aa7524ba859d",
+      "statement": "get_assets_by_type 的匹配条件是 class_name.lower() in str(asset_data.asset_class_path).lower()，属子串匹配，因此 \"mesh\" 会同时命中 StaticMesh 与 SkeletalMesh；它也是本模块里唯一的 O(n) 全量扫描加每资产一次 find_asset_data 的实现，并返回 AssetData 而非资产对象。",
+      "evidence": [
+        {
+          "resource": "repo://utils/helpers.py#L75-L83",
+          "version": "repo-lines-v1:sha256:8f78430eb98db4093f582885d306e3785ba3159f5e596c5033cb128e75e62304:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGEzOTVhNDJiYzUwNDMxOTVkNDJmMmRlN2I0YjAxOTMxMzBiZDE5YjgwMDliMzIwNTRhYzg0YTU2MzBiM2U1YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTk0OGI2YjNiYmE4NmY1NzFmMTcxMTM4Yzk0MjlmM2RmZWE1MTZmOWNhOTAyODkwZmNlZTE2N2YxODg1MTlmNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzg1YjBlNWZiZGNhNjIxYzRlOGI1YWQ4MWRjYWVlOWZjY2EyZTFmYzQ2N2UxZjdlZWI2NzZiMDVlMGE5MzdjNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmY1ZDA3YWIyNzM2YmM3MjYxOTM4OWE1OTk5YTZiZjM2MDM5OTU1NmYzZjFlYTQyOGQyNGYyZGEwZTJmOWUyNCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_985d5933ec6d473e9540dcd6f1a5a856",
+      "statement": "四个 Actor 查询都内部调用 get_all_actors（因此每次都是一次完整关卡遍历），其中 get_all_actors/get_selected_actors 统一走 EditorActorSubsystem 的 get_all_level_actors()/get_selected_level_actors() 而非已废弃的 EditorLevelLibrary；get_actors_by_class 用 isinstance 过滤（传基类会匹配子类），find_actor 为精确标签匹配、未命中返回 None（课程里的副本叫 find_actor_by_label）。",
+      "evidence": [
+        {
+          "resource": "repo://utils/helpers.py#L104-L142",
+          "version": "repo-lines-v1:sha256:c2ce0bf3cafc8b288dee120d2148afb6c23b43dc6f9274f9375f0219cbb3f1c7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiZTg4MDc4YjIwYTIyY2M5YzcxNTk3YmE3YjcwNDViMTM3ZWE1MjRjZTVhNzhmMmQxMTljNzg5NzVmYTI2NGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTYwMGE3M2QyZTAyZjM1MmI5MGZlZjFkOGQ2MzgxMWJhNGE4ZWUwYzFiZWFhN2FlNDY1OGYzNmFhMmUxOTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1YjkyM2JjZTIxNDBkMmEzMGJhYzc4Zjg1YzM3ZWFhMWUxNWM4OTNhNTQ1NjllYTM4NjE5Y2UyOTNkNmMxMmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a049960d35574af1ad1e4d903f774f7d",
+      "statement": "get_actors_by_label 的注释断言 get_actor_label() 返回 unreal.Name、没有 .lower()，所以先 str() 转换再比较；而同一仓库的 05_LevelAndActors/02_modify_actors.py:82-84 对同类返回值直接调 .lower()。两种写法不可能同时必需，所以这处断言在动手前应用 AGENTS.md 的肚文件核验规则重新确认（若该方法已返回 str，则多余的 str() 只是无害冗余）。",
+      "evidence": [
+        {
+          "resource": "repo://05_LevelAndActors/02_modify_actors.py#L73-L84",
+          "version": "repo-lines-v1:sha256:3819a5cc5299a66dd041ccbf60cf95ea3749fac233915ae54033b4ad03375838:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1Mjg2ZTA5ZWQ1YjZmZWEyMWFlMGFjYzBjOWIwYWQzZjRhYWFmNjg3MzhlNGRiZDlmYTc4MTUyYjg1YzdlMzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5ODlkMzZmNWJhYzBjMzMwZDZmOTY3ODQ4MTE2NmRhOGY4MTU1MDdlOWQyN2EwMDIwM2ZhNDgzYzU2M2NmMTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM2OTliNjhlOWE1Y2U4YTdkNjNlM2Y3Mjg4MmZiYjUwODM0MDIzNjc3MTYzYjNhMTBmNzFiN2VkYzY4YzMyZDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQyZWQ1NmE2NmI0M2MzZmY1YmYwM2ZiYWFlYTExY2Y2ZWVjNmM4YjU1N2I5ODc5OWQ2NWYzNzQwM2VlYzM4MGUifQ"
+        },
+        {
+          "resource": "repo://utils/helpers.py#L120-L129",
+          "version": "repo-lines-v1:sha256:882e7813502940e0183c5d17eb41e5255848466716b7336a388c353f6193750c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1Mjg2ZTA5ZWQ1YjZmZWEyMWFlMGFjYzBjOWIwYWQzZjRhYWFmNjg3MzhlNGRiZDlmYTc4MTUyYjg1YzdlMzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkZDI0NDU4MmI2ZmIwM2QyM2I4NDE1YWJlY2QzNDZiMGM5ZjQ2NmI2Zjc1MmIwNjgxODljZTdlOWEyZGMzNTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0NjgxOTQxMDY2MTkxZmFkNmE0ZTRlYmM0NzVlMjQ4MmE0MjdjZjZlNDY3Y2M3NmNkNDBiYjczOTJlNTFhMDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcwYjFlMjY4MzM4ZjVhYmYwNzY3MmQ0YTE2YWQyYjczNDkzYzA1NGIxMDg4MDQwNzhjZmY2MjRhYWUzMzY4YmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7adfa671c7fc4e72b2429e7b9b6b2329",
+      "statement": "数学工具中 rotator_from_dict 改用关键字参数而不是位置参数，因为注释指出 Rotator 的位置参数顺序是 roll→pitch→yaw，写成习惯顺序会让三个角度整体串位且不报错；direction_to_rotation 算出 pitch 后取负；vector_from_dict/rotator_from_dict 均用 d.get(key, 0) 补缺键，配合外部数据读取场景。",
+      "evidence": [
+        {
+          "resource": "repo://utils/helpers.py#L150-L181",
+          "version": "repo-lines-v1:sha256:11c273fb338566261bc71bead569f15397e7f85fc83ac4bba4ba7c58a4fea27c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3YWY3MjYxMDA0MTUwMGQ2MWQwZWE3MjM0ZDA2NGUyZjE5NzMwYjNiMjJmZWE0YTU2YjY1ZTA4YzA4ZjhhOTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI0NWY2NGYwMjhjYjEzZGE3MjA0YTUyMzU1YTI5ZTFjNGU0ZjAyMDc5NTU0ZWVhNTFjMTRjMWNhNDM0YmViNzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1YjkyM2JjZTIxNDBkMmEzMGJhYzc4Zjg1YzM3ZWFhMWUxNWM4OTNhNTQ1NjllYTM4NjE5Y2UyOTNkNmMxMmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a9b04259a9594c8da527e8097bd5149b",
+      "statement": "distance_between 用两个 Actor 的 get_actor_location() 相减后取 .length() 算距离；lerp_vector 用 v1*(1-t)+v2*t 做线性插值，两个函数都接受 UE 的 Vector 值类型并返回新的 Vector。",
+      "evidence": [
+        {
+          "resource": "repo://utils/helpers.py#L164-L173",
+          "version": "repo-lines-v1:sha256:a247290f0005000047050df04913bef4b63e7f65238aa5e6a525e35b5b563db2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkYmYwZTRmMzVkOTlhODQxNzg3Y2Q4ZGE3MzIzYmUyZjNiNzk3NTAxOTU5ZWZmMDQ3ODMzZDJlYzQ5ZDk2OTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1NjE5ZGQ0MTdhMzNiOWRmNGU0ZTI2YTk4ZjgwZDZkMWM4MmY4NzViNDY0NWYxMGEwZTU2MDk0NDQ3N2I4ZmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjYzRhN2QxY2M3OTZhYmEzZTQ2NzIzMzI3ZjUxN2U5ZjgxMTk4MmQyNTBmMDcwMjk4NmU0YjU3NjRhZDk1ODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUxMjQ3MDA1YWFlNWM0MDBkZWRlZjJkNTM4NDk1ZThkMDBiNzM1MjNhNmIxNmVhOTM4ZWI1OGFiNDM5MTI4ZGQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_59ff57fff69f4c85a0e16fcfcca26c19",
+      "statement": "路径工具四个函数全是薄转发而非自造拼接：get_project_dir/get_saved_dir/get_content_dir 分别转发 unreal.Paths.project_dir/project_saved_dir/project_content_dir，make_project_path 则是 os.path.join(project_dir, relative_path)，不做存在性检查，也不处理 relative_path 已是绝对路径的情况。",
+      "evidence": [
+        {
+          "resource": "repo://utils/helpers.py#L189-L205",
+          "version": "repo-lines-v1:sha256:7d1976c773564a476c956bf6976234c431f6d095450074f95511d184b9499fd1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5YzcxNWQ2YWVjMzdlOTI4N2VjYmM4NTY3OWNlYWIzZGFkNGFhM2MxMGVmMzIzMjE3NmFkZGM4ZTg2MDY1NjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxYzcxNGUyNzdhMmFiOTgzNTU3YTdiNGMxZDkyZDRhZmNkN2Y4M2YwMGRmN2I2NDY4MjRmY2FlNDk4NDYxNTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU5OTJjOGQ5ZWE1Njc3ZTMyMmMyOGExMDBkNDdmYjc0Y2M0NjNiYzI2MTkyZmJkYzA4NjY4YThmOTc1MjY5NjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d90c32ebbf3e4a93959a1bd9e11740a7",
+      "statement": "事务三个函数修的是一个类名和参数个数都错的写法：unreal.Transactions 类不存在，真实方法在 SystemLibrary 上（begin_transaction(context: str, description: Text, primary_object: Object) -> int、end_transaction() -> int、cancel_transaction(index: int) -> None），而 cancel 必须回传 begin 返回的索引；helpers 版把 context 写死为 \"Python脚本\"，并在 primary_object 缺省时用编辑器 World 顶上，以免批量操作时一个 Actor 都没有。",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L65-L68",
+          "version": "repo-lines-v1:sha256:d091c51c725489edfa8d8c4498b03d229b9ec553bb9b25a164cccc3410a88cba:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjc3MjA3NmUyNmRmMDcxZTE0MmJmZjg0MzY5YTJhNTkyNDhiNjU3N2Y5OTY3MmNmMDJjYWVmNjVlYmZiMDY2ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzNjOWEwNjc1MWI0Y2E5NDk5ZjZhZDgxNGFmMTZlMWRlZjBlZDljMzhiNzhhYTE0NmU0YmRhY2QzZWJjMjY5MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWMwNTgxODljYjA3MWE4MTYzNzdhOWZhNmM0NGQxMmViYTQwZjMxYmFlMDA2NzYyOWExOWNjMmM2MTk4NjQ1ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzMzMjRkNzViMDJiZmQwYjczNmU1MmZiNGNjYWEwZmZjODkxOTA3MzZhZWVlY2E2OTU5MjgwMjkxZWI2ZDkzYyJ9"
+        },
+        {
+          "resource": "repo://utils/helpers.py#L209-L248",
+          "version": "repo-lines-v1:sha256:002539952b062a69bc028b2fd4f28de0a15d5fdc02243a6911072e70de313dfd:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1ZGJjNmJmZmY5Yjk3ZmQzMTU1MzkyNDViMjVhOWRhMzYwZGFlMDJiNDk0M2NkYTFlZDE2OTg1OGQ0NzJjZDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmZjZkYjA3ZWI2YTMyZmM1NTkxMjg1ZThmM2MyOTllMTZhMjZhYTFjMWI0MDgwNDgxOWFjM2NhMWM1YmU5OTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU5OTJjOGQ5ZWE1Njc3ZTMyMmMyOGExMDBkNDdmYjc0Y2M0NjNiYzI2MTkyZmJkYzA4NjY4YThmOTc1MjY5NjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFlYWU1M2M4ZTVmMTI3NjBkYjk1ZGY3NDY3ODFkMzA5NWYyNjQ2ZjYyNjIxYmRlODM4ZTQxMzRjZDhlYmZmMjIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_52e84447023346e2b8f107ff1f15edcc",
+      "statement": "TransactionContext 的 __enter__ 调 begin_transaction 并把索引存入 self.token、返回 self 而非索引（所以 as 变量拿到对象，要用索引需读 tx.token）；__exit__ 在异常时 cancel_transaction(self.token) 并 log_err，否则 end_transaction() 并 log_info，最后 return False 不抑制异常。课程里的生成器版本直接 yield token，两者行为等价但接口不同。",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L35-L50",
+          "version": "repo-lines-v1:sha256:f1f44e8a95f936ec6db13d74066c457a6adecbfa7cb5e9334d4bd1d0afd5ca4e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5NzI0N2Q3MTBiZDA2YTY0MWI5MDViMjMyOGExM2MxOTIzNTZiMWIwNWIyODc3NTAxZGUwYzU3YTZkNzVmYzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjY2JiZWQzZWFmOTQxMTU5NjcxYTkxMWIwODJjMDMxYWFlOGZjOTIyYmI4NTE4OTM5YWQ4YTc0YmUxYWUxZTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFjODA3YWI5OThkODZjYjMwOGRiZGI1ZjQ2OTU0MmFmNzVlZDlhOWJjYThkMzFhY2Y1NzQ1MDYyNWYyOTEyNGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIyYzMxZjcxOWM0MGY5ODc3YzQ0Y2JkMmU0M2QwODczMDM2YjExYTFmMjI3YzllY2I3ZThkNDBjNTc5MTU2MDMifQ"
+        },
+        {
+          "resource": "repo://utils/helpers.py#L251-L276",
+          "version": "repo-lines-v1:sha256:0825c079e91dac9d9659911b2c5c8918be903b32b47d1b2b6ccbb31db36d720f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZiZDQwZDBjMDk5NGE5MGU1YzU5MjIyNWE0OWQ0MDZhNmY1NjVkNWU2ZjY5ZDBlZmQxZjRhZDhhZWY5ZDE5OWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmYzJlYzRmNTc0ZjYwOWMzZjUzZDg5YTM0ODEzNzU2NjMxZjM3OGUyNzkyYWQ5ZGMwYmQxM2EzMDVkNTAzYjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwYTVlMGFjNDhhNDRlZDhkYmFjYmUzZDg2NTQ5YWZmMjZiZTFmODc4ZTliMTYyNDJkZWQ3NzZhZDkwODc5NWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1YjkyM2JjZTIxNDBkMmEzMGJhYzc4Zjg1YzM3ZWFhMWUxNWM4OTNhNTQ1NjllYTM4NjE5Y2UyOTNkNmMxMmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_331295d6afe248c6bfda4d8488df0287",
+      "statement": "Timer 基于 time.time()（非 perf_counter）：start() 记起点，stop() 算出 elapsed 并 log_info 后返回该值，未 start 过则返回 0.0 且不打日志；__enter__ 调 start 并返回 self，__exit__(*args) 调 stop()，所以异常时会先打耗时日志再上抛异常；stop() 不重置 start_time，因此重复使用不安全。",
+      "evidence": [
+        {
+          "resource": "repo://utils/helpers.py#L284-L313",
+          "version": "repo-lines-v1:sha256:c46d49bf0965b183f8bf27a05c10717469774c05e9eb780c8b28a42bb86c8fd2:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmNTY3MWNlNDhkMzVkZDNhMmE3NTQ4ZDYwNzZiYTkwMDc0NDQxNTViOWYwNGU0NGUzNmJmZWRjOWE4ZTI3MTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3NTNmMjU3MmNkNGMyZTI1NzliZGM4MjM5ZDQ3ODE1NDc1MGNlODc2ZGEzN2VmZTg4NzAzMTdlZTg3ODdlMDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_190e7e33cd9d46b8af63005eb501004a",
+      "statement": "helpers.py 与 ui_helpers.py 互相不导入，但都定义了同名的 log_section（两模块都没有 __all__）；先 from utils.helpers import * 再 from utils.ui_helpers import * 会让后者静默覆盖前者，目前没有脚本同时导入两者，所以还只是隐患。show_screen 与 ui_helpers.show_message 也封装了同一层 print_string 能力，前者是原始版，后者多了颜色名映射与 5 秒默认时长。",
+      "evidence": [
+        {
+          "resource": "repo://utils/helpers.py#L27-L32",
+          "version": "repo-lines-v1:sha256:fdc476121a996b6a5ab4b3152c7b26774c4178257b3af33ceb6e8accba8a487b:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTM3NmZiOWQ0MDllMDc0Mzc4YTljNmE0NjIwOGUwZGYxM2UxNzY1NGNlNDZmNzg3ZGVkNzZlOTE0ZTUxNzk1ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTRjMTMxNDBlNzI5ZjM0ZDMxOTA3NjA0NGFkMzFiYTlhZjBjMDY1ZjNjMjhiZDdjNzNiMzUyODJlY2RkNDE2MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmQ5MTdiNmViY2FmYWY0NWEyZWVhOWMxNjhhYTQ3YjFjNzgwY2M1NTdkZTQ1YzYzMGMwMTIyNjU0YzEyNmIxNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDE2M2ZlOTAwMmJhOWVjZTA4ZmM4Nzc3NDNkZDA2Nzk2ZjA4NDAzZmI1NGIyNGI4N2NmZDFmYWIyMjRmZmZhZSJ9"
+        },
+        {
+          "resource": "repo://utils/helpers.py#L50-L62",
+          "version": "repo-lines-v1:sha256:2ef8e99598742d24c50a8e0c5f0a9b5c8a2d562c3f1eeca8857594ad025318fc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyNDE2ZjJlOGNjMDNhNzg1Y2VhZjYzODIxNmRiMDI0NmI3ZTgzNDg4ODliN2NlNzUwNDQ5ZWUzY2ZiZDJiZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5ZTQyMzQ1YzI1NWVmNDRjMDk0MjZhMjMyODUzNmRjYjM5MzllOGRmMDgyYWYwNWEzYjRiOGZlNzY3ZDBiMzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlZjMzMTAyMWExNTVlN2UxODU2ZDdlZGVmZDk1ZDY1MThmYTZiOGJkMTI0NDA2OTVjYTgyZTkyODQ2YTRkOGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1YjkyM2JjZTIxNDBkMmEzMGJhYzc4Zjg1YzM3ZWFhMWUxNWM4OTNhNTQ1NjllYTM4NjE5Y2UyOTNkNmMxMmQifQ"
+        },
+        {
+          "resource": "repo://utils/ui_helpers.py#L277-L277",
+          "version": "repo-lines-v1:sha256:9376fb9d409e074378a9c6a46208e0df13e17654ce46f787ded76e914e51795f:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTM3NmZiOWQ0MDllMDc0Mzc4YTljNmE0NjIwOGUwZGYxM2UxNzY1NGNlNDZmNzg3ZGVkNzZlOTE0ZTUxNzk1ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTM3NmZiOWQ0MDllMDc0Mzc4YTljNmE0NjIwOGUwZGYxM2UxNzY1NGNlNDZmNzg3ZGVkNzZlOTE0ZTUxNzk1ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTEzMmFjYWE3ODljZWQ3NGM4OTZhMTc2NTI4OTlhNjY3NWJhOTVmZGFjZTZiZDI5ZWQwZDY2MzY5YTM5ODMwNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODdjZDMyYWNlZTVkY2ZkOTQxMTUzZDY4NWQ2MTgwNDU4ODcwZTllOWIwZGE4MmQ2NzlhZWI4MzJmMzMxNzQwMiJ9"
+        },
+        {
+          "resource": "repo://utils/ui_helpers.py#L35-L55",
+          "version": "repo-lines-v1:sha256:2560846249af495ed9625c747fae86cf0d6fdea731fb332d66928fce2b7c097a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyMmViNjE0MDFiOGUyMTY3M2VhNjE1ZDlhZGJlZmY0OTEzNzJjNzdiZDBhMTEyOThmZjA2YmU5YzA0MDgyODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5ZjkzMDgzYzE5NzEyMWI5ODI3MDBiYThhZmFiZDE3MjJjZjFkM2U3NDA0NTA5ZTgwZWZhMjcyNDdmNjJmMDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3YzM1MTExMzE4M2Y5NjIwNGYzYzRlOGMzZmMyY2E4YzAxNWY5MTllZjczOTQyZmFmNmI0YjA1YzJmYTRkZmMifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.1",
+    "at": "2026-10-07T08:34:04.254Z"
+  }
+}

@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:bb11a469c21bcd33a443bf1dc65d90c107cd17c62d4e00a6f129b5786034b82e",
+  "claims": [
+    {
+      "id": "claim_22194eacc8724d8c92c3627927000ed9",
+      "statement": "08_AdvancedTopics/03_automation_testing.py 共 486 行，用 exec(open(...).read()) 载入时只会定义 TestResult/TestSuite/AssetValidationTests/LevelValidationTests/run_all_tests 并打一条“高级主题第3课完成！”日志，七个测试一个都不会跑，Saved/TestResults/ 也不会被创建；要真跑测试只有“Python Console 手动调 run_all_tests()”与“取消 :469 行的注释”两条路。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L418-L478",
+          "version": "repo-lines-v1:sha256:e45aeb5c8346ccf4b24cb04bd582e442d3c47c1631d9ec5d8f89c6d449d34ff1:eyJzZWxlY3RlZExpbmVDb3VudCI6NjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkMDQ3YWM5ZTU1YWVlNDYwZTkyZGExZDI5ODA3MTAxMmRjMzc5ZWNlZDY0ZmU4MDUzN2E3N2I5MzZhOTkzMGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1ZDQ1NmYyZGY5MDMzYjYyNTY3NmFhYzc3NmIzNDAzNDk1NTI5ZWEyOTgwOTQxZmQ5MTM0ZTk2MjA4Mjg2OWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1OTg4MWZlMmViYzI1YmQ4ZWI5ZjJmNzI5YWZlN2EzYjA2ZDg4ZmM3ZmI4ZDliNTA0Yzc3ODBiZDI1ZThiMTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZlMzJjZWM0YTAxMjE1NDAxNzQwYTVjZmQ4MTYyMThiZjY3MzhiZDUxMDE5N2M5NDQwNzJjMDZjZWViNTk2OTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_21733f9bab984ba98fb88aee46446b44",
+      "statement": "TestResult 是纯数据对象，持有 test_name/passed/message/details/duration 五个字段，duration 初值 0.0 且不在测试内计时，而是由调用方回填，使得测试函数只需关心断言。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L38-L50",
+          "version": "repo-lines-v1:sha256:848fcd2d092163abbd0c207cfbaf9ad6db05829be64c8c9c984559e0599ce00b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhN2VhYTQwYjc1MzUzYzQ3OGZmNjBlMzM0MjdiM2E0ZTdjMjE1M2JkMGFjMzdlYzQzMDA1YzdkZWI0OGM5ZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxZWQzZmUwZDc1ODFjYjkyY2E4MGUzNzQ1YWI2NjhjYWI2ZTNjMWVmMTkwYzc1NzM5OTQ2NjI3MmJjYzQ5ZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0NjVhOTUwZmJjNzFkYjY5NTkzZTEyYzMwYjVmZGQ4MDU2YjRkZjc5OWRhNzhkZGFiODFmNzQ4OGY3MzRkNmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVmMDRkNGM0ZjEwYTQ4ZDZhZTMyOGRkYmIyM2QzMTgxZjU0ODhiODkyOTMwOGQzM2Y0OTkzYzllNjNkZDk1MzkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_55d08c7e0b864dff8c4b32c2bf0904e4",
+      "statement": "TestSuite.add_test 把测试函数的返回值当协议解读：返回 TestResult 则直接采用并回填 duration；返回 True 则记为通过且消息固定为“通过”；返回其它任何值则记为失败并以 str(返回值) 作消息；抛异常则记为失败且消息为 f\"异常: {e}\"、details 为 str(e)。判通过用的是 result is True 身份比较而非 == True，所以返回 1 或非空字符串会被判失败。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L65-L107",
+          "version": "repo-lines-v1:sha256:67f58fa2dfdd92f17d2197c42cbe8895124f6f4d60a9f23834500ba5701503fd:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE5ZDlkZjljN2QzZmJlMzc5NTNmZTg5NTcwZTBmYTkyY2E4NTdjYzk0YjQzMDMwYjIyYTdkODU1ZWZiOGMxNTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxYzQ2NmY1ODEyZDE4YTEzM2E4ZGFjMTI5NzM1YWVjNjEzZTIyMjg4YWI3MTUwZTM2MDEyYzczMjA4NzRlNjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM0YzI3ZDlkZTZkMDI3NThkZTUzMWM5MzYwNmY3Yjk2YTAyODQ1ZTNiZjMzYjViOWU0MzQ0NWVkOWQwODNkYTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE0MTFmNzlmNDdmNGQzYjAwMzFmMjEwZmM2MmFmYTcxOTEwZmE3YjUzNWIxNzgzYTIwZmZhZTg0Mzg2MTFlMTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c4fa5e117fe6419985501576f009dd3f",
+      "statement": "add_test 的 except Exception 会整体吞掉异常并把真 bug（如空对象导致的 AttributeError）降级成一条“异常”失败记录，而不是中断运行让开发者看到堆栈；好处是一个测试抛错不影响其余测试继续执行。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L96-L107",
+          "version": "repo-lines-v1:sha256:e283ecc4b7d5a6e6102015c2f640b37d3c271c44f0b604694bb3403ace0504e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2OTlhNWQ1MmQ1NjljZWFiMmEwMWEyY2YyZWU2MDcwYmYzNDI5MDEwZjhjNjUwMzhlMzkyYTEwMmNhMjNhNjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxYzQ2NmY1ODEyZDE4YTEzM2E4ZGFjMTI5NzM1YWVjNjEzZTIyMjg4YWI3MTUwZTM2MDEyYzczMjA4NzRlNjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIyYjdjYTU5ODM4NjAzNWNhNjBlYjAxNDgwMTM2MzQ3ZmMxYWFlMjY4YTNmY2Y4NDIzZGFlYzY4YmU0YTIwOGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE0MTFmNzlmNDdmNGQzYjAwMzFmMjEwZmM2MmFmYTcxOTEwZmE3YjUzNWIxNzgzYTIwZmZhZTg0Mzg2MTFlMTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8d9c6f7111d8467eaadc6082a560f565",
+      "statement": "add_test 的 test_name 参数只在创建新 TestResult 的（通过/失败/异常）三个分支里生效，一旦测试自己返回 TestResult 就直接 append、name 被丢弃。这就是为什么 run_all_tests 里每个元组的第二个元素（如 \"无重叠Actor\"）与测试内部硬编码的名字（如 \"无重叠 Actor\"）不一致——日志与 JSON 报告里出现的是内部那份。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L426-L439",
+          "version": "repo-lines-v1:sha256:63805992675e70c7e9a4a99377b8442a148ff261b14c67215228f366c8709bdc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJjNGQzYzM0ZTNhYTk1ZWJmZTdmOTFhNGJhNDJiNWQ2ODc5YzA5MTk3ZWY1YWI2YzMwNWZlYmY3MDg3NDY1NDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBlNmM3NmQ0NDNhYTk3NGY4NDEyYTRlYmE3MjVlOWU1YzU0MTI0MGQ5MDIwY2MxY2I2NGI5YzA2N2UxNjY0MjUifQ"
+        },
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L65-L97",
+          "version": "repo-lines-v1:sha256:5ee8c2e551b3266990e9d8d0947af357e100cb86db679b98617052ba7a6dcbcc:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE5ZDlkZjljN2QzZmJlMzc5NTNmZTg5NTcwZTBmYTkyY2E4NTdjYzk0YjQzMDMwYjIyYTdkODU1ZWZiOGMxNTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5Y2U4NDUxMzIxZjk4MjZmNWQ2OTczZTQ1OTA4ZTc2ZDczNjk0N2M1MTU5NTc0ZGMwMmIyZjZmMTdmNTUyMjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM0YzI3ZDlkZTZkMDI3NThkZTUzMWM5MzYwNmY3Yjk2YTAyODQ1ZTNiZjMzYjViOWU0MzQ0NWVkOWQwODNkYTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEwYjk5NDJhYmJkNzIyYjRmNWFmZDU1MzNiMjJjYzFiYjVhMzlhOWYwODc2ZGVmMmM1ODc1MTdjZjIyNTllOGYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_466108dbd80d4bd19a7ae40ca7bb08c1",
+      "statement": "_print_results 先统计通过/失败、打结果与耗时行、逐个打 [OK]/[FAIL] 行（只有失败的多打一行 -> 消息），然后无条件调 _save_results()，最后 return failed == 0。_save_results 构造的 JSON 只含 suite/timestamp/total/passed/failed/tests[{name,passed,message,duration}] 四个测试氕键，因此 TestResult.details 既不上屏也不落盘，是死的字段。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L130-L153",
+          "version": "repo-lines-v1:sha256:4e30b206b213eac20c39b112ddc1acd9929a271dc60a64c9e2f5630a7000ee73:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2Y2RhZmFhMjEyY2Q4M2YyM2RjNzdlMDljYjNkODI0MjcyMWIwNDE5NGJiZDUyZTRiNjc4NWZiMGIyMTczNDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhYzQ3NjI3YjE0ZTRlNWJlNDVlNDYyNTViZmU5MDI3MWZiOGM1NTZmYmYyNzcyOWIzYjYxYWZhYTM3NjViZjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmNmJmZjhkNDRjZjQ1NmRkMDRhZDY1YThiYTVmNjQwYzVmNzFiM2ZlMzVlMjk4YTQ5ZWFhYjc3MGRkNmRlMjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQxODk5ZjNmZGEyYzYxMTFhZTgyZDcxM2NhMWY1MGUxMTdlYmUyMTA4YWZkZjc1YWM1M2U3ZDQyZTVkOThjOGIifQ"
+        },
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L155-L189",
+          "version": "repo-lines-v1:sha256:f91ed304a8943caa4fb34cd5cdb8b2d27d51843f3746eb40ef1b15220ae1403b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY0MTFhMWQ5YzM0YjQxZDFjODUyZWM2OTIzOWE1MTM1NmVjZGU1NzE2ZTc3NThmNGQ5OGUxZjU5ZmY5ZTY4M2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzZDliOGVkNWJjNWEwOGMxMzczYWRmNmIxYWFlZGYwNjRhYWI2ZGJjODA3ODJlM2Y0MTEyZWYwMjM1MWU5MDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY2N2M1NTIzOGIyYjc2YzJlYzdmMDEzYTkyYWRlOTEwYTY1YWJlMjllYzJhMzM2M2JjNjBhZjcyODc5ZTk4NmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1YjAyODg5ZjFmNzBlNDg5ZmU5MDYyN2NmMmMzODhiOWZkN2JhNWNlNmY3ZWQ1MGMwODU2Zjg5ZWE3Yjc1ODcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_df75e5c41cd9444ebe163b287db14b64",
+      "statement": "报告落盘路径是 os.path.join(unreal.Paths.project_saved_dir(), \"TestResults\", f\"{suite_name}_{时间戳}.json\")：文件名带时间戳所以历史结果不会被覆盖可逐次对比，而 os.makedirs(..., exist_ok=True) 保证首次运行不需手工建目录；写入时显式 encoding='utf-8' + ensure_ascii=False 以免中文消息被转成 \\uXXXX。套件名会直接进文件名。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L155-L189",
+          "version": "repo-lines-v1:sha256:f91ed304a8943caa4fb34cd5cdb8b2d27d51843f3746eb40ef1b15220ae1403b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY0MTFhMWQ5YzM0YjQxZDFjODUyZWM2OTIzOWE1MTM1NmVjZGU1NzE2ZTc3NThmNGQ5OGUxZjU5ZmY5ZTY4M2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzZDliOGVkNWJjNWEwOGMxMzczYWRmNmIxYWFlZGYwNjRhYWI2ZGJjODA3ODJlM2Y0MTEyZWYwMjM1MWU5MDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY2N2M1NTIzOGIyYjc2YzJlYzdmMDEzYTkyYWRlOTEwYTY1YWJlMjllYzJhMzM2M2JjNjBhZjcyODc5ZTk4NmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1YjAyODg5ZjFmNzBlNDg5ZmU5MDYyN2NmMmMzODhiOWZkN2JhNWNlNmY3ZWQ1MGMwODU2Zjg5ZWE3Yjc1ODcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_435c3d48dbf7415cb864bb2742a5ca2b",
+      "statement": "test_no_empty_folders 依赖 list_assets 的 include_folder=True（默认只返回资产路径，不加这个参数一个文件夹都遍历不到）拿到文件夹路径，再用 does_directory_exist 过滤，并对每个文件夹以 recursive=False 再列一次直接子项，无子项即空文件夹。代价是对 N 个文件夹发起 N 次 list_assets 查询。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L200-L227",
+          "version": "repo-lines-v1:sha256:70cba29518c91b5339f43ac93e81b4824dd68afcd5ccf95cccdfaf0b1e06f46c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyMzExYmRkOTVlMGY4NjFmMTFmZGExNTNjNDU4YjIyNmQ4OWM2OGE5ZjNmMDU4MzE1MDU3MzkxOGMwNjRhNWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY5MGUyMzI0MjNiYjQ2NDY0Y2JmYTAxMWYzODZlOTgyZjVjY2VhZjFhMTE2YzVjYWViNzA3NmJmYzg5MWFiNTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI0MGM0Y2FjYTI0MThmMzUwZGQwNDA5ZWEzZjcwZTNiZWUwMzJlYzA3YTUwNGNmMDgzZGFjYzJiNzNlODE1OWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ce31192161fb4d4583c0e6d6c299c2d8",
+      "statement": "test_naming_conventions 用四对前缀映射（StaticMesh→SM_、Texture2D→T_、Material→M_、Blueprint→BP_，命中即 break 只报一次）检查名称不能含空格以及必须以对应前缀开头；类名读取用 str(asset_data.asset_class_path)（UE5 里 asset_class 已废弃），资产短名必须先 str(asset_data.asset_name) 因为 asset_name 是 unreal.Name 没有 startswith。前缀判定是子串匹配，所以 Material 会命中 MaterialInstanceConstant（其前缀惯例通常是 MI_）、Texture2D 会命中 Texture2DArray。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L229-L273",
+          "version": "repo-lines-v1:sha256:f9ff016bd0bdc48e9c20e47bc7a8cf87c63e720e6aeeaccf63ef6e428a03d53e:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwOWU5MTc3YzMxMzlhMzIxNjNkNzY1ZmYyOGRmZjMyZTg5ZjM1N2YyY2U0MWZlMjExZWQwZmM0YzVmOThlN2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzOTExOGUwZDczMWNmY2Q0NGFhNWE3ZTIwY2QxNTE4MGI4NGZiNWM5MjYwMThjMmY3N2UzNmZhNGI5NTg5ODIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQwZGRiNTAyN2JmY2MyN2U4NzRjNTNmNGEzMmYyYzc1NmY3NDQ0NTBlZTNkNWFlNmI2ODQxMTBlOGE1ZDczMWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1OGYwMzZkOWE1ZmYwZDM1NWJiMjJiYmU5ZTU0MDgyOGNhMzEyMDExMWM0MDQ1MTRmNzBhMGVjZGNlNzNjZjIifQ"
+        },
+        {
+          "resource": "repo://AGENTS.md#L69-L72",
+          "version": "repo-lines-v1:sha256:1f50f0ea55557befa7dd4c3a430caaff20b27e98b412e0c87338e81f3cce8fdf:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzA2NjNhMTI3Y2MxOTY4NzkzNTVjOTc2YjBmNjYxOTIxN2ZlYmU1NjJkMmJkMmZiMzdiMzZlOWJiNDYzMWJlMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTkxODJjZDZkNzNjNTU0Mzc1ZjQwOTg0YTIxYjVmZWVjMGFmYzM5ZTE2MGViOTdmMjU3NjY0YWNiZWZiZWUyYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGJkMGM0YzlhNmVjMTM1NzNiMTdkMTk4NzgxYWVmNzg5NWY5Yjk3ZWVkY2EzN2I5OTAxOTVlYjQ4Mzg4NDA4MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzUyZjEyYTNhMDY2Y2VjYWVmMWZjZTg2Mzc0ZDkyZGIwMTEyNzU4N2I2NDZmMGVmMzI4NzJkMDAyYWYzYWE4NyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_017834c0a0ff45f09e2248d542fce0c7",
+      "statement": "test_no_orphan_assets 用 find_package_referencers_for_asset(asset_path, load_assets_to_confirm=True) 查引用（load_assets_to_confirm=True 是以“把需要加载才能确认的资产也读进来”换准确度、代价是全库遍历加全部加载），过滤掉自带的自引用（r != asset_path）后无外部引用即孤立资产；但它多处返回的 TestResult 的 passed 恒为 True（注释写明孤立资产不一定是错误，可能是预留资产），所以它永远不会失败、对 run_all_tests() 的返回值毫无影响，是一份报告而不是门禁。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L276-L308",
+          "version": "repo-lines-v1:sha256:cbce92204bc8ee6b1c508dca3939e87c0390c36a56221b925353470eb63de91f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkZmY0ZThmMjZiNmNlMmE3MzkxODQ3NTA1MzYzZGM4ZjFhY2U5MjEwNDllMTYyMDEwNmNhYjcwMzE3MDU4NTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkMTcyZWE0NzA2ZGU2YWY2ZDY5MTc1MDIyMWYzNmMxNDY5NjFlZjVhMTg4MjAyZTgyNmY5NWNiZTYyY2QxZjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1YTNiMmVhMWZkMjkzNWRlMjE4ZGZiNDBlZTc0MDY0NDQ1NzAwZTU3NGM4MDA5MGM4MDRlMGIzMTNlY2NiNzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwYjAwYjM2ZGExOTcwYmY0ZWFkODJkZTE0OTdhZTE0MGUxMzJjNGYxOTA3ZDU3Y2EwMzc2OWY3MDMwMDBhNWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2f38be5f893648ef80fa52f0f7ea40c9",
+      "statement": "test_texture_resolution 先用 find_asset_data 过滤出类路径含 Texture2D 的资产，再 load_asset 加载并用 isinstance(texture, unreal.Texture2D) 双保险，然后读 blueprint_get_size_x/y 用位运算 n & (n-1) == 0 判 2 的幂。它是全套里唯一需要真正加载资产的测试，所以最慢、内存占用最高；位运算技巧对 0 也成立（0 & -1 == 0），所以尺寸为 0 的纹理会被误判为通过。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L311-L346",
+          "version": "repo-lines-v1:sha256:1f7643b530b1c4db2f5b4f39271e1f050791ab569fa0d7b0d3fbbae18d3766e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3NzRlZjhhODAzNjhmN2I4MWQ1YzIyZDNmNjY0NGJiNGVhMjZmOTgxNDM3YTE1YmY1MWVlYTAyOWQxYTMwYTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5YjA0ZmViZjFjZmU4NjAxN2RiNTlmNzYyNGUxOGRiNDg2MDFjYmMzMDYwZWZhMDIwMzFiMGQ3ODc4ZGYwZWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ2OGFhNjNhMDA5MmY5YTg3OTYyMDNiZTdmZTgxZjE5MTllNGY0ZDMxOThmMjI1ODhkOTYxNDU4MzM5YWVkOTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3MjBjZTg0ZmNjYTZkNTE0ODAyODliZjI1YmVhZGVhNjlkN2FiNmQwZDcyN2U4ZmQ0MGYwYmQyMjgxNzU1MjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_05c7723bf21345fdb13352b019e27ef4",
+      "statement": "LevelValidationTests 的两个测试仍用已废弃 API：:364 与 :379 调 unreal.EditorLevelLibrary.get_all_level_actors()，而本文件顶部 docstring（:21）在“习题可能用到的 API”里推荐的正是新写法 unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_all_level_actors()；utils/helpers.py 与 utils/ui_helpers.py 都已迁移完毕且注释里记录了 DeprecationWarning，这个文件是漏网的。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L17-L27",
+          "version": "repo-lines-v1:sha256:933314375f6b32c61123f6572dfb74296f49983401841bc625c9701f536bfa1e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyZDcwYjI1OWJkNjc4NjY4NWNjMjRlODA4NzE1MWVmOWQwMDgxM2JmYTgwMzIzYTQ1N2QzMDE5ZDE3MDMyNzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3NWQ0NTg5ZTkxY2M4Y2I5NzQ4ODlkYWIwMWRlMTVkYjE1NzRjYTEwZWVjNzI5MGExMDliZjU4OGM5NGUwMWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRkNzVmNjRhMWQ5NmIyOWZhODJkNTBhMTA4MWZjNGJlZWM2NGQ3YWYwOGRjZjUxOWFlNGE0MjRiNTdiYjgzODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJhNTMyNWYxOWIyZmRmMWYwYmQ5Y2NlZWNmOWEzMzA0Zjg3YWMyYmU1MTRhZThhMGZhODZiZTdkNDk5N2IxYWIifQ"
+        },
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L361-L374",
+          "version": "repo-lines-v1:sha256:35eb123cdf545d58441e14b5b1bf87ec3693bf44d699119c4c2486f15b1fb022:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyNjYyODA2MTk1YmFkYWI3NDgxMDViMDU4YThhODA3NmIxNGM2MmViNWVlYTlhYjRiZTM1NGQ1Mjc4ZTRmMmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlMzY1OTA0MzMyYWJiZmIwMWNmNmFlNGRkNjI4NDdiZWI1NDk5YWUxNzY1YzFmMDhhZGQxZWVkMGM3Y2RhZTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY5MGUyMzI0MjNiYjQ2NDY0Y2JmYTAxMWYzODZlOTgyZjVjY2VhZjFhMTE2YzVjYWViNzA3NmJmYzg5MWFiNTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNlNGIyMWZhYjQ0YzM2YzZhOWQ1ZDBlMDliZDUwOWZjM2Y4MjI4YmNhZmE5Y2ZiYmQ3ODNkZmFmNDgzY2EzMTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6b63226f5ddb419dbeaea1a7fb9b2e6a",
+      "statement": "关卡验证测试作用于当前打开关卡的实时 Actor 列表而不是磁盘上的关卡资产，所以它不适合无人值守 CI（-nullrhi -unattended 启动的编辑器不会自动加载某个特定关卡）。test_level_has_player_start 用 any(isinstance(a, unreal.PlayerStart) for a in actors)；test_no_overlapping_actors 用 (round(loc.x,0), round(loc.y,0), round(loc.z,0)) 做位置键（相当于 ±0.5 单位的容差，避免浮点误差误判），只用中心点判重叠所以肉眼看得到的穿插不会被发现，且每个位置只存第一个 Actor 导致三个叠在一起只产生两条记录。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L352-L405",
+          "version": "repo-lines-v1:sha256:8c29d34f7b4cb3e90641c5a2bd8339287dca4888ace49c8db6a8196b8c0a636e:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkNTFkNThjMWI3NTFlM2MxODE1YWZhODRmZmU0YzBhNjBlY2M4MmE1NDVhODQ2ODNkOGQ2YzAwMzcxZjBmMWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0NGMyMGU5ZTE3OGU3ZDAwZDI4NzgxODc1YTBmYWY0ZGJiYTlmM2E0NTg2NDhiNDA3YWZiMDA2MTE0MDdmYTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyM2Y5NTBhN2NlYTM3OWViMGM2YjhkMjI3YmQyMjM0ODc2NmE5OTM0ZWQwM2EwOTJjNzE1NzkzYTcxMjc5OWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhZTQ0ZTk3NDY0ZWIyNTk4Y2NlYjYwZDk2NzIwM2YwM2NjMWQ0YjY3NTFmMDgzMDlkZDcyNWUzODg2MDQxOWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b3314c6da93f44049660e105d30cdfde",
+      "statement": "test_lighting_built 是占位实现：函数体只有 return TestResult(\"光照已构建\", True, \"通过 (需要手动验证)\")，恒返回通过、没有任何断言能力，注释坦白说光照状态检测取决于引擎版本与项目配置（实际可检查 WorldSettings 的 LightingNeedsRestart 等属性）；它仍被注册进套件列表。连同 test_no_orphan_assets，七个测试里有两条永远不会失败。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L408-L412",
+          "version": "repo-lines-v1:sha256:2ecd01ad872da7001dada99dbe27e5797f2c4af62d14f370eac8a62157187531:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzdmMjg3ODUwNjUxOTFlNzg0MGU2NmU3OWNhNmQwNGJlNTU3YzA2ZGRmMGZhZDU5Y2RhNmRhZGYzNzM4ZDJmOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGVkNWEyY2ZlNjk2ZGRiNmZlM2RhZDE0MGM3ODcxZWI4NzY1ZWVmMDI3YzUxMmFhY2QwYTljZWM4ZmM4ZjlmYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWFhNDYxYWMwYWI2YWQ2N2VjNzI5NzVmY2M2YzIxNWU4ZDQ1ZGJhZThjYjc5M2VlZmMwMDExOTg4ODUyMTc4MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDdiY2U2YzQ4NDVlZjg5OWQwMzU5N2U5OGQ5MTM4YWFhNTM3NzM2OTIzZmMxNGMyMGI4YzczMWJmZTlkNmVhYyJ9"
+        },
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L438-L438",
+          "version": "repo-lines-v1:sha256:729d452998aea6a62cc1108882797cef6a5a1b7cea0366eeef5917a3d07a2c9d:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzI5ZDQ1Mjk5OGFlYTZhNjJjYzExMDg4ODI3OTdjZWY2YTVhMWI3Y2VhMDM2NmVlZWY1OTE3YTNkMDdhMmM5ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzI5ZDQ1Mjk5OGFlYTZhNjJjYzExMDg4ODI3OTdjZWY2YTVhMWI3Y2VhMDM2NmVlZWY1OTE3YTNkMDdhMmM5ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjJmNWM3OTFlMzk5YjEzY2IyNjAwN2M5MjBjZWJhNzkzMGIzYjg2ODZjYjcxYzNmOGE3Y2U3NWYyMjVmOGMzNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTkwZDM3NzE1NjQyODNjNWM1ZTNhOTMzNjA3YmYzOTRjZTJkZjY2ZjJkMzA0ZDg3YTIxZTU5NmQ1ZGRkOTlkOCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e58adb27189f4805bc9423e9d3e5146a",
+      "statement": "run_all_tests() 必须返回 bool（:439-441 的【易错点】指出不 return 出去调用方永远拿到 None 等于永远成功），但仓库里没有任何代码消费这个布尔值：调用的命令行是 -ExecutePythonScript（只执行脚本、不把 Python 返回值变成进程退出码），也没有包装脚本或 CI 步骤去读 Saved/TestResults/*.json 判红绿；唯一的 workflow 只跑 openwiki code --update --print 更新文档。所以这套测试的实际输出是人读日志加一份 JSON 报告，自动化门禁只停留在注释里。",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/openwiki-update.yml",
+          "version": "repo-file-v1:sha256:bb97ae74933353bc8cb7293ccf61e9685819bd0a25cb3f5e281ae3aa0bcc9bdc"
+        },
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L439-L442",
+          "version": "repo-lines-v1:sha256:24ef21fc6d2b6843fadb7f67b05a44334d5ecdd54c3d73d174c45781232ca827:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ViNzAyNTc1OTNkYTA2ZjY4MmEzZGRkYTU0YTlkMjYwZDRmYzUxNGY2NDUyMzdmNWNhNzRiMDhmOGRhNjFhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2NiMzE3ZjUxYjk2MWY2YjM5YmE3YzliYjRmMDFmZDQwYzc2NWFkZWNiMWMwMDIzOTFmODNmZTBlMmM2ZWYyNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWYyMzYyY2JlYTU0MjNiNGJmMGY4OTMzNjhjM2JiZDgyNGRkNzVjNTk4ODM0OWUyNjFiYmQwYWRkOTNhMjg3MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWFjZWU1YTcwZjMwZDgyYzIwYjA3ZTgyOTgxZmViNzkwZDZkOGFmZTg0ZDkxMzdjOTRiMWVmYTk4ZGY5MTVkMSJ9"
+        },
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L444-L462",
+          "version": "repo-lines-v1:sha256:2ee83cc3bcf7916a64703147add9fe86cc2740859d668601a569f8d0bc9bb553:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1ZTYxYmE1Y2YyZDY0MGVjOTA2ZjMyMWZjNTE0NDI1ZmQyOTc0ZTA4MTAxN2RkODljNDE2MGJiYjg3OWFjYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0MzlmYjNiYjViZjI0MTQwMDhjZTQ1YWRhY2ViMzBkNTNhYzVkOTk4OGYzYzZiZGRiZDE5Y2NlZDU2ZDZjMjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxMjU2M2ZmNjVmOTI5Y2VkMjExYzg2NmIzZTIwZDcxZjExYjZjYzdmMDFkZmQzOTE4NDc5NzQzMjNlZWFkNDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRiYzllZTUzZDJiYmYwZjM3ZjlmOGIxNzk1MjhjZWI0OGQxNmU2Njk0NGY2OGZmOGYxNmJmNjQ4OTE2ZGU4YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b44e82ae79f442159d9cc8ac4e9cde83",
+      "statement": "这个文件在仓库里几乎孤立：README.md:85 的课程表格是唯一的外部提及，调用的 CI 命令行（:451）与示例调用（:469、:472）全部处于注释状态，且它没有导入 utils/helpers.py 而是直接用 unreal.log；AGENTS.md 明确声明本仓库没有 test/lint/CI。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L464-L475",
+          "version": "repo-lines-v1:sha256:8a49950a8b7b69af9de02420edb6be14803dfcabe5afd1301dd41c6a64e6fcca:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1ZTYxYmE1Y2YyZDY0MGVjOTA2ZjMyMWZjNTE0NDI1ZmQyOTc0ZTA4MTAxN2RkODljNDE2MGJiYjg3OWFjYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNkNzE1YWM4NDU3MWVmZTY2NGMzNDcwY2ExZjQ2M2IxOWQ1ZmE1OGU0NmJjZmQzNWFlYmNhMjFmODViMDY1ZWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg0ZDlhNzQ5NTFmNDQ3M2NhMjJlYjkzMzMxNTc2MjQwN2VlOTViNDZmMWQ5NGUxYWRkZDg3NzRjYmM5ZGU0MjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1N2M2MjAzNGZlM2I2NzRmZDQ4Y2YzYzNjN2VlMTgzMWRjMDY2MDk2YzIwZjk3ZDFlOWY1MDhmNGE5Zjg5NTEifQ"
+        },
+        {
+          "resource": "repo://AGENTS.md#L17-L24",
+          "version": "repo-lines-v1:sha256:d30fd349dc7eadd5d893d4201f5481be76d5784199ae16c03baa6cb673fca663:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDIzYWI1ZTI4YmJiODJlMzI3MjU3MTY5NGQ3NDI2Yzc5YzFiOTY4YmUxZGM0NWFmOTA1ODBiOWQzMDIzMTkyNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmM5NjRmMjc1Y2JlOGZmZGNiMDRmYWIwMWRlZDg2OTI5NTk3NmJjMTY0NDc1ZjA3MTJlMjc4OGQ1ODA5MDYyMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjYyOGI0MzBjOGExZDZmMTg5N2JkZmI4ZWVlNzA1ZjFlNTEzYjUzZmUyMzBkODJjZjBjMDc4YjNkZDc5ZDlmYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTg4NTEzZGY4NzMwYWNhZjEwYzljZGYwODBiZTVmNDE2NjI4YTdhMWQ1OTA5Zjk0YmIzYmZkOTJhZTc2YTRmNyJ9"
+        },
+        {
+          "resource": "repo://README.md#L84-L86",
+          "version": "repo-lines-v1:sha256:2863089b63afccce079875ec020f6518f32839ea9a64378d971dbc058530bac2:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGQ4NGRmMTA5MjE0OTQzNzlmNjVkODU2NzdmZTgwMzUyNjE4ZWNmNTk5YTQ2YzNhNmE3YTQ5MjhjZTRmYzA4YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmYxMzNiZGY0Y2Y0MTAwMWE1MzViMzg2N2FkMTJkZTA2NmMyYjc1YTZhMmZmOTcyNTlkNzNkMTI4MDg2MmE0YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTgwYjY2ZDU1OTI1MzA0MmQ5NTAwY2MzNjFmODIwODIxOGIwOWJlM2M5ZTIxMjc2NDJlNGE0NTE0ZGRmYzdlNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_7c9f7480abc14383802a2606821d279b",
+      "statement": "AssetValidationTests 的四个测试各自独立地重查一遍 list_assets(\"/Game\", recursive=True)（该调用出现在三个测试里），没有任何共享的遍历工具，所以跑完整套会重复遍历全库多次；这是为“每个测试都能被单独复制出去运行”付出的代价，与 utils/helpers.py 零调用方是同一个取舍。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L191-L346",
+          "version": "repo-lines-v1:sha256:1475f17453877cb3b74297d8f8ac8478798477d10f49dc90dbb5f16ee0007bea:eyJzZWxlY3RlZExpbmVDb3VudCI6MTU2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIzNjU0MmNjNjdmY2FlZDM2Y2ViZWM5NzJmYWIwNTRhNTRhOWQyYmNlM2ExMWYzMWVkZGVhOWRjYzlmYzFhOWM0IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJkOWIwNGZlYmYxY2ZlODYwMTdkYjU5Zjc2MjRlMThkYjQ4NjAxY2JjMzA2MGVmYTAyMDMxYjBkNzg3OGRmMGVlIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI2OTk3OWU5NTllYTZmZWYxZmFmZWZhNmYwMDlhOTRkM2UwN2ZkNmEwOTQyZWQ3OGIxNGVjN2Q1MmZmNGJiYzg2IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIzNzIwY2U4NGZjY2E2ZDUxNDgwMjg5YmYyNWJlYWRlYTY5ZDdhYjZkMGQ3MjdlOGZkNDBmMGJkMjI4MTc1NTI4In0"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.1",
+    "at": "2026-10-07T08:34:04.254Z"
+  }
+}

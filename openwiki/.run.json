@@ -1,0 +1,341 @@
+{
+  "schemaVersion": 1,
+  "runId": "0ece0d54-b6be-43c6-93c8-48fdbf4f7809",
+  "mode": "init",
+  "phase": "generating",
+  "startedAt": "2026-10-07T08:34:04.254Z",
+  "language": "zh-CN",
+  "languageChanged": true,
+  "requiredRewritePages": [],
+  "initialPages": [],
+  "sourceFingerprint": "sha256:198a877e8d5fcd10fe9809f97261ac72af5562a615e3390d56041dbfb09d8a43",
+  "targetGitHead": "d0840c1a545a45c94a90e81172aa27d749f24bd5",
+  "actor": {
+    "producerActor": "pi",
+    "metadataModel": "host-agent/pi"
+  },
+  "previousLastUpdate": null,
+  "beforeContentSnapshot": "ffa63583dfa6706b87d284b86b0d693a161e4840aad2c5cf6b5d27c3b9621f7d",
+  "preparedWiki": {
+    "generatedProvenance": []
+  },
+  "plan": {
+    "pages": [
+      {
+        "id": "bf188670-832b-489d-9524-753c9c4bbc3e",
+        "path": "/openwiki/architecture/repository-layout.md",
+        "title": "仓库布局与课程结构",
+        "purpose": "说明 11154 行 Python 如何组织成 8 个课程目录、每目录的官方课/个人练习稿/工具库三层结构，以及仓库与宿主 UE 项目 LyraStarterGame 的关系。",
+        "seedPaths": [
+          "01_Basics/01_hello_unreal.py",
+          "AGENTS.md",
+          "README.md",
+          "utils/helpers.py"
+        ],
+        "relatedPages": [
+          "/openwiki/architecture/script-conventions.md",
+          "/openwiki/quickstart.md",
+          "/openwiki/reference/utils-helpers.md"
+        ],
+        "instructions": [],
+        "status": "complete",
+        "completedBy": "pi"
+      },
+      {
+        "id": "13b068d0-1a9a-4251-8bc6-a53aa065e5ee",
+        "path": "/openwiki/architecture/script-conventions.md",
+        "title": "脚本写作约定与验证规则",
+        "purpose": "记录贯穿全仓的写作约定：中文密集注释、docstring 里的 API 签名清单、unreal.log 而非 stdout、PythonStub/unreal.py 强制校验、my*.py 练习稿的非范例地位。",
+        "seedPaths": [
+          "01_Basics/01_hello_unreal.py",
+          "03_BlueprintAutomation/02_blueprint_components.py",
+          "06_MaterialAndTexture/03_texture_management.py",
+          "08_AdvancedTopics/02_external_data.py",
+          "AGENTS.md"
+        ],
+        "relatedPages": [
+          "/openwiki/architecture/repository-layout.md",
+          "/openwiki/concepts/nonexistent-and-deprecated-apis.md",
+          "/openwiki/operations/running-and-verifying-scripts.md"
+        ],
+        "instructions": [],
+        "status": "complete",
+        "completedBy": "pi"
+      },
+      {
+        "id": "617c0028-e9b0-48f0-bb23-3aaa6ccb020b",
+        "path": "/openwiki/concepts/nonexistent-and-deprecated-apis.md",
+        "title": "不存在的 API 与废弃 API 迁移",
+        "purpose": "集中记录全仓踩过的坑：unreal.Transactions 不存在（应走 SystemLibrary）、AssetData 无 disk_size/asset_class、无 DataTable.add_row、无 NotificationType、无输入对话框，以及 EditorLevelLibrary 到子系统 API 的迁移对照。",
+        "seedPaths": [
+          "04_EditorScripting/01_editor_utility.py",
+          "05_LevelAndActors/02_modify_actors.py",
+          "08_AdvancedTopics/02_external_data.py",
+          "AGENTS.md",
+          "utils/helpers.py",
+          "utils/ui_helpers.py"
+        ],
+        "relatedPages": [
+          "/openwiki/architecture/script-conventions.md",
+          "/openwiki/reference/utils-helpers.md",
+          "/openwiki/reference/utils-ui-helpers.md",
+          "/openwiki/workflows/level-and-actors.md"
+        ],
+        "instructions": [],
+        "status": "complete",
+        "completedBy": "pi"
+      },
+      {
+        "id": "3c2c8275-9c6a-4796-91aa-ebaf36439126",
+        "path": "/openwiki/operations/running-and-verifying-scripts.md",
+        "title": "在编辑器中运行与自查脚本",
+        "purpose": "汇总四种运行方式（Python Console/命令行 -ExecutePythonScript/编辑器菜单/exec(open())）、日志与屏幕输出渠道、以及为什么本仓库没有 CI、正确性只能靠 PythonStub 校验与编辑器内自查。",
+        "seedPaths": [
+          "AGENTS.md",
+          "README.md",
+          "utils/helpers.py",
+          "utils/ui_helpers.py"
+        ],
+        "relatedPages": [
+          "/openwiki/architecture/script-conventions.md",
+          "/openwiki/quickstart.md",
+          "/openwiki/testing/automation-testing.md"
+        ],
+        "instructions": [],
+        "status": "complete",
+        "completedBy": "pi"
+      },
+      {
+        "id": "b74b65db-7ec4-4ab2-aad3-91f337c91991",
+        "path": "/openwiki/reference/utils-helpers.md",
+        "title": "utils/helpers.py API 参考",
+        "purpose": "逐组说明日志、资产、Actor、数学、路径、事务与计时工具的签名与语义，重点讲 TransactionContext 与 Timer 两个上下文管理器。",
+        "seedPaths": [
+          "utils/helpers.py"
+        ],
+        "relatedPages": [
+          "/openwiki/concepts/nonexistent-and-deprecated-apis.md",
+          "/openwiki/reference/utils-ui-helpers.md",
+          "/openwiki/workflows/level-and-actors.md"
+        ],
+        "instructions": [],
+        "status": "complete",
+        "completedBy": "pi"
+      },
+      {
+        "id": "ad028a56-d8a4-4209-a64a-611b4c0ce5b6",
+        "path": "/openwiki/reference/utils-ui-helpers.md",
+        "title": "utils/ui_helpers.py API 参考",
+        "purpose": "说明屏幕消息、对话框、通知、进度条、选择校验与表格打印的实现与限制（如 input_dialog 是占位实现），并记录它与 helpers.py 的重名覆盖问题。",
+        "seedPaths": [
+          "utils/helpers.py",
+          "utils/ui_helpers.py"
+        ],
+        "relatedPages": [
+          "/openwiki/operations/running-and-verifying-scripts.md",
+          "/openwiki/reference/utils-helpers.md",
+          "/openwiki/workflows/editor-scripting-tools.md"
+        ],
+        "instructions": [],
+        "status": "complete",
+        "completedBy": "pi"
+      },
+      {
+        "id": "fbba3197-15c7-4791-9163-708c66fbaefe",
+        "path": "/openwiki/testing/automation-testing.md",
+        "title": "08-03 自动化测试脚本作为自检框架",
+        "purpose": "说明 TestResult/TestSuite/AssetValidationTests/LevelValidationTests/run_all_tests 的组织方式：如何在无测试框架的前提下，用编辑器脚本对资产与关卡做断言并输出 JSON 报告。",
+        "seedPaths": [
+          "08_AdvancedTopics/03_automation_testing.py",
+          "utils/helpers.py"
+        ],
+        "relatedPages": [
+          "/openwiki/operations/running-and-verifying-scripts.md",
+          "/openwiki/workflows/asset-management.md",
+          "/openwiki/workflows/level-and-actors.md"
+        ],
+        "instructions": [],
+        "status": "complete",
+        "completedBy": "pi"
+      },
+      {
+        "id": "9a985b22-6e0b-4fac-930b-15c476cf7599",
+        "path": "/openwiki/workflows/asset-management.md",
+        "title": "资产管理流：枚举、导入导出与批量操作",
+        "purpose": "说明 Chapter 02 的资产查询（list_assets/find_asset_data 而非 load_asset）、磁盘大小计算、导入导出与重命名/移动/删除的批量流程及其安全约束。",
+        "seedPaths": [
+          "02_AssetManagement/01_list_assets.py",
+          "02_AssetManagement/02_import_export.py",
+          "02_AssetManagement/03_asset_actions.py",
+          "02_AssetManagement/my01.py",
+          "02_AssetManagement/my02.py",
+          "02_AssetManagement/my03.py"
+        ],
+        "relatedPages": [
+          "/openwiki/concepts/nonexistent-and-deprecated-apis.md",
+          "/openwiki/reference/utils-helpers.md",
+          "/openwiki/workflows/batch-and-external-data.md"
+        ],
+        "instructions": [],
+        "status": "complete",
+        "completedBy": "pi"
+      },
+      {
+        "id": "d5ffe748-db80-4a1a-9d6b-12bd109c1d5f",
+        "path": "/openwiki/workflows/batch-and-external-data.md",
+        "title": "大规模批处理与外部数据驱动",
+        "purpose": "说明 Chapter 08 如何把 CSV/JSON 外部数据映射为资产或 Actor 操作，以及批处理的进度反馈与失败处理模式。",
+        "seedPaths": [
+          "08_AdvancedTopics/01_batch_operations.py",
+          "08_AdvancedTopics/02_external_data.py",
+          "utils/helpers.py"
+        ],
+        "relatedPages": [
+          "/openwiki/testing/automation-testing.md",
+          "/openwiki/workflows/asset-management.md",
+          "/openwiki/workflows/level-and-actors.md"
+        ],
+        "instructions": [],
+        "status": "complete",
+        "completedBy": "pi"
+      },
+      {
+        "id": "9b3b7c41-dd77-4dee-b956-4b9bb6156b1c",
+        "path": "/openwiki/workflows/blueprint-automation.md",
+        "title": "蓝图自动化：创建、组件树与变量",
+        "purpose": "说明如何用 BlueprintEditorLibrary 与 SubobjectDataSubsystem 创建/读取蓝图、遍历组件树（层级路径作键的原因）与读写成员变量，含 my03 的蓝图对比工具。",
+        "seedPaths": [
+          "03_BlueprintAutomation/01_blueprint_basics.py",
+          "03_BlueprintAutomation/02_blueprint_components.py",
+          "03_BlueprintAutomation/03_blueprint_variables.py",
+          "03_BlueprintAutomation/my02.py",
+          "03_BlueprintAutomation/my03.py"
+        ],
+        "relatedPages": [
+          "/openwiki/concepts/nonexistent-and-deprecated-apis.md",
+          "/openwiki/quickstart.md",
+          "/openwiki/reference/utils-helpers.md"
+        ],
+        "instructions": [],
+        "status": "complete",
+        "completedBy": "pi"
+      },
+      {
+        "id": "4234e529-8faa-466a-a0e3-608189b96672",
+        "path": "/openwiki/workflows/editor-scripting-tools.md",
+        "title": "编辑器工具化：工具窗口后端与 UI 分离",
+        "purpose": "说明 Chapter 04 如何用 EditorUtilityWidgetBlueprintFactory 生成 EUW 资产、EditorToolBackend 的状态与按钮路由模式，以及为何 Python 侧不直接注册工具栏菜单。",
+        "seedPaths": [
+          "04_EditorScripting/01_editor_utility.py",
+          "04_EditorScripting/02_menu_extension.py",
+          "04_EditorScripting/03_custom_tools.py"
+        ],
+        "relatedPages": [
+          "/openwiki/concepts/nonexistent-and-deprecated-apis.md",
+          "/openwiki/quickstart.md",
+          "/openwiki/reference/utils-ui-helpers.md"
+        ],
+        "instructions": [],
+        "status": "complete",
+        "completedBy": "pi"
+      },
+      {
+        "id": "a001682e-61a2-4e1d-8f49-6c10f196b83f",
+        "path": "/openwiki/workflows/foundations.md",
+        "title": "01_Basics：编辑器内脚本的第一次运行",
+        "purpose": "讲清 hello/logging/编辑器基础三课如何取编辑器世界与子系统、如何输出日志与屏幕消息，以及练习稿 my01–my03 覆盖的内容。",
+        "seedPaths": [
+          "01_Basics/01_hello_unreal.py",
+          "01_Basics/02_logging.py",
+          "01_Basics/03_editor_basics.py",
+          "01_Basics/my01.py",
+          "01_Basics/my02.py",
+          "01_Basics/my03.py"
+        ],
+        "relatedPages": [
+          "/openwiki/architecture/script-conventions.md",
+          "/openwiki/quickstart.md",
+          "/openwiki/reference/utils-helpers.md"
+        ],
+        "instructions": [],
+        "status": "pending"
+      },
+      {
+        "id": "c4fe51f6-a544-48b8-9d01-91753e5384fd",
+        "path": "/openwiki/workflows/level-and-actors.md",
+        "title": "关卡与 Actor 操作",
+        "purpose": "说明 Actor 的生成、属性/变换修改、选择集处理与关卡加载保存管理，重点记录 EditorLevelLibrary 到 EditorActorSubsystem/LevelEditorSubsystem 的迁移与事务边界。",
+        "seedPaths": [
+          "05_LevelAndActors/01_spawn_actors.py",
+          "05_LevelAndActors/02_modify_actors.py",
+          "05_LevelAndActors/03_level_management.py",
+          "utils/helpers.py"
+        ],
+        "relatedPages": [
+          "/openwiki/concepts/nonexistent-and-deprecated-apis.md",
+          "/openwiki/operations/running-and-verifying-scripts.md",
+          "/openwiki/reference/utils-helpers.md"
+        ],
+        "instructions": [],
+        "status": "pending"
+      },
+      {
+        "id": "b541c877-b8a1-419a-86fa-bfac43cffeb5",
+        "path": "/openwiki/workflows/material-and-texture.md",
+        "title": "材质与纹理批处理",
+        "purpose": "说明用 MaterialEditingLibrary 建材质与材质实例、参数读写，以及纹理导入与压缩设置批处理的流程与陷阱。",
+        "seedPaths": [
+          "06_MaterialAndTexture/01_create_materials.py",
+          "06_MaterialAndTexture/02_material_instances.py",
+          "06_MaterialAndTexture/03_texture_management.py"
+        ],
+        "relatedPages": [
+          "/openwiki/concepts/nonexistent-and-deprecated-apis.md",
+          "/openwiki/reference/utils-helpers.md",
+          "/openwiki/workflows/asset-management.md"
+        ],
+        "instructions": [],
+        "status": "pending"
+      },
+      {
+        "id": "ffff7877-314d-4a07-89db-e46f241b01c4",
+        "path": "/openwiki/workflows/sequence-and-cinematic.md",
+        "title": "Level Sequence 与相机动画",
+        "purpose": "说明 Level Sequence 的创建、轨道/绑定与相机动画脚本的组织方式及其对关卡上下文的依赖。",
+        "seedPaths": [
+          "07_SequenceAndCinematic/01_level_sequence.py",
+          "07_SequenceAndCinematic/02_camera_animation.py"
+        ],
+        "relatedPages": [
+          "/openwiki/quickstart.md",
+          "/openwiki/workflows/asset-management.md",
+          "/openwiki/workflows/level-and-actors.md"
+        ],
+        "instructions": [],
+        "status": "pending"
+      },
+      {
+        "id": "26572659-ce5e-4d12-8bda-305d5657f9bd",
+        "path": "/openwiki/quickstart.md",
+        "title": "快速上手：按任务找到对应代码",
+        "purpose": "为读者提供任务路由地图：想做什么（列资产、改蓝图、批量导入、写工具窗口……）→ 该读哪几页、入口脚本在哪、注意哪些坑。",
+        "seedPaths": [
+          "AGENTS.md",
+          "README.md",
+          "utils/helpers.py"
+        ],
+        "relatedPages": [
+          "/openwiki/architecture/repository-layout.md",
+          "/openwiki/architecture/script-conventions.md",
+          "/openwiki/operations/running-and-verifying-scripts.md"
+        ],
+        "instructions": [
+          "同时给出最短的编辑器内运行步骤",
+          "用表格把「用户意图 → 页面/脚本路径」一一对应"
+        ],
+        "status": "pending"
+      }
+    ],
+    "deletePages": []
+  }
+}

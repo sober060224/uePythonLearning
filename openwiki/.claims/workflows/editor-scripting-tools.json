@@ -1,0 +1,502 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:4c77c2bf402732566368f05438c2168e897488c7f9ba5bb17cc722591d0f301d",
+  "claims": [
+    {
+      "id": "claim_723894d69ed84bb782ae5238062bf1a1",
+      "statement": "03_custom_tools.py:33-49 is a byte-for-byte copy of 01_editor_utility.py:34-50 (same editor_transaction contextmanager), which makes the repository hold six copies of the same transaction wrapper: the TransactionContext class in utils/helpers.py plus five @contextlib.contextmanager generators. All copies trace to the same implicit contract that every lesson file must be runnable on its own, so no lesson imports another.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L34-L50",
+          "version": "repo-lines-v1:sha256:a986b202df4690935e98cda88aa69dd9b14597d1c3e1cde88fb8d40f642e237a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmNzI5ZWU3MjczMDVjMTI1NjAzOWZkNWRlYjc4Zjc3ZTE5N2FiNGE0ODA2MTVmMWYwNmI3YjM3ZTVhNTQ1OWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjY2JiZWQzZWFmOTQxMTU5NjcxYTkxMWIwODJjMDMxYWFlOGZjOTIyYmI4NTE4OTM5YWQ4YTc0YmUxYWUxZTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1NDViOWI4MGM4Y2FlYTAyMzgwYjFjNTI1NjNiMzYyZWQ1NjFmZGYyYjdmODg1OWYwMGFkNWJjNWQxNGRiYjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIyYzMxZjcxOWM0MGY5ODc3YzQ0Y2JkMmU0M2QwODczMDM2YjExYTFmMjI3YzllY2I3ZThkNDBjNTc5MTU2MDMifQ"
+        },
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L33-L49",
+          "version": "repo-lines-v1:sha256:a986b202df4690935e98cda88aa69dd9b14597d1c3e1cde88fb8d40f642e237a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmNzI5ZWU3MjczMDVjMTI1NjAzOWZkNWRlYjc4Zjc3ZTE5N2FiNGE0ODA2MTVmMWYwNmI3YjM3ZTVhNTQ1OWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjY2JiZWQzZWFmOTQxMTU5NjcxYTkxMWIwODJjMDMxYWFlOGZjOTIyYmI4NTE4OTM5YWQ4YTc0YmUxYWUxZTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1NDViOWI4MGM4Y2FlYTAyMzgwYjFjNTI1NjNiMzYyZWQ1NjFmZGYyYjdmODg1OWYwMGFkNWJjNWQxNGRiYjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk1MWQwMmUzYTg3NWRhZTgwNjM1NjMzYjEzNzgxM2Y5M2NlNDk3ZTRmYTNjOTc1NjBlZDc3ZDBhYjlhYjZlYzMifQ"
+        },
+        {
+          "resource": "repo://utils/helpers.py#L213-L270",
+          "version": "repo-lines-v1:sha256:f32774c58309255020dac076bf66006cd89470aea0a809a830d0c56706bb2e12:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmZmUyODhkMjgzMzRlMmVhZGVjMzVjNzliYjFjYWUwM2IwZGY0NjAzZDkzNDMzOTNiZGI1MGJhMzlmM2Y1NGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzYTY5ZTdmMzAyNDBhOGQxODE3MzI2YjVjZDFmOWFhYWVhYTFiYjAxYTU4ZWI5ZTllNWI5MmVhMGM4ZTdhZDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ4Njg3ZTY4MWM0ZGFmM2FiYjAxNzA5ZjhkNTAwMmI0ODRkODQyOTgwMDllM2FhYjEwMzE2NTk5ZDg4YTMxOWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyMDhlNzU1ZTY2MzNkMzVlNDg0OWQwOWYxOTUwODQ5NjU1OTgxZmU1MmJkYzY4ZjY1YzU1YWU5ZTE5NjA4ZTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0042549cd92c4b069c807a64b0847ecc",
+      "statement": "The transaction section explains the mechanism as photo/confirm/rollback (begin_transaction takes a snapshot, end_transaction enters the undo stack, cancel_transaction restores the snapshot) and names three failure modes: passing no primary_object or None (editor crashes or fails silently), forgetting end_transaction (the transaction stays in progress forever and all subsequent operations are blocked), and unpaired begin/end (abnormal editor state).",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L66-L99",
+          "version": "repo-lines-v1:sha256:f9018d6b3b153b169746feac83837792f0d69bf6b047f75c15ed06e71be11a75:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyNGJkYjViMjFkOGNhOTAzNzM5Yjg5YjdkY2Y3ZDIxZjEyNWJiOTgwM2IzMTU0MzI3MmI5MDNjMWRkNzY1MTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiNGNlZWE3YTRjNGM4MzFiMjcxNmU5ZDA2ZWIzNDZiMzYwZjk5NDZiOWRlNzRjNTY5ZjYyMWViNmU5ZDcyNWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNkYzQ4NDE5Mjk0YzE0MTcyN2M4NDM3NmIyNDc1MGU0NDU4MTQ0ZDM4OGE4ZDM4OTJlYWU2MWZhMGQ1NTcxODAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIxMzY0ZDI4YTFhMzBmZjRhYzcwZDA2YTliNGIwNzQ0MGVlYzJiN2QxOTY5ZTU2ZmY1MWNhYjE0NjkzNDI1OWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1ffa11eb697e485c9ba1273ad4fa9bcc",
+      "statement": "The 【修改前】 block at 01:99-110 is accurate on both counts: there is no unreal.Transactions class, and the real methods are on SystemLibrary with a different shape - begin_transaction(cls, context: str, description: Text, primary_object: Object) -> int returns a transaction index that cancel_transaction(index: int) -> None requires while end_transaction() -> int takes nothing. The comment is carried into four other chapters as a deliberate counter-example.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L99-L131",
+          "version": "repo-lines-v1:sha256:00f0ca875b5c5789d71ef30b72404e632d569b096309ac2e5cd8abd8a1ece381:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiNGNlZWE3YTRjNGM4MzFiMjcxNmU5ZDA2ZWIzNDZiMzYwZjk5NDZiOWRlNzRjNTY5ZjYyMWViNmU5ZDcyNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhMDg5NDNjYmY0NzAzYmVkZDE0NmE1MWY1ZWZiMGNkNjU5ZjgwOWUyNzk4OTQzMmUzZjZkYzQ1OTI0ZDM4MjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIzNGQ4OTMzYjMxODQxMWNlMTU4OTk4ZDE0MzFiMjhlMjY5MzBhNzkyZTZjZWEwYWUyNWFiZTcxMjljZjk2MzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMwZTNmZjE0ZmJmMTNhMDdkZDJjNDVjMGZhYmNkOTRmYWE3MmM0OTMyNDY3ZTRiNWM2MzU1MWE5ODE3OTY1OWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_76956abfcd7b4de690ce5951cdd0fcd6",
+      "statement": "editor_transaction catches BaseException rather than Exception so a KeyboardInterrupt from the Python Console also rolls back instead of leaving the transaction half-open; it re-raises rather than swallowing; and it uses a try/except/else shape so that a mid-block return still commits. The context argument passed to begin_transaction is the hard-coded literal \"Python脚本\", so every transaction in the repository appears in the undo history under the same script name.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L34-L50",
+          "version": "repo-lines-v1:sha256:a986b202df4690935e98cda88aa69dd9b14597d1c3e1cde88fb8d40f642e237a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmNzI5ZWU3MjczMDVjMTI1NjAzOWZkNWRlYjc4Zjc3ZTE5N2FiNGE0ODA2MTVmMWYwNmI3YjM3ZTVhNTQ1OWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjY2JiZWQzZWFmOTQxMTU5NjcxYTkxMWIwODJjMDMxYWFlOGZjOTIyYmI4NTE4OTM5YWQ4YTc0YmUxYWUxZTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1NDViOWI4MGM4Y2FlYTAyMzgwYjFjNTI1NjNiMzYyZWQ1NjFmZGYyYjdmODg1OWYwMGFkNWJjNWQxNGRiYjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIyYzMxZjcxOWM0MGY5ODc3YzQ0Y2JkMmU0M2QwODczMDM2YjExYTFmMjI3YzllY2I3ZThkNDBjNTc5MTU2MDMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8b6f9d55befc4e11a0e7fb993109e315",
+      "statement": "Both copies of editor_transaction declare parameters (description, context) but pass that second value to begin_transaction as its third argument, primary_object - the API's context argument is the hard-coded script label instead. So editor_transaction(\"排列为圆形\", actors[0]) reads as description/context but means description/primary_object; the same misnomer appears in all five sibling copies.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L35-L42",
+          "version": "repo-lines-v1:sha256:7a087be4b02c1df1b2c04ba188b12385b3d1156403d40cc880d5b60018483e32:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzk3MjQ3ZDcxMGJkMDZhNjQxYjkwNWIyMzI4YTEzYzE5MjM1NmIxYjA1YjI4Nzc1MDFkZTBjNTdhNmQ3NWZjOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTZhNzE1MjU3MmVlODRmMTA5MDZjNzRiOWYyYTkyNDM0ZGRhYjBlM2M0MjgxM2IwNGU1OTdlZmNlYzk1MWIyNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWM4MDdhYjk5OGQ4NmNiMzA4ZGJkYjVmNDY5NTQyYWY3NWVkOWE5YmNhOGQzMWFjZjU3NDUwNjI1ZjI5MTI0YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzBiM2MzYTE4ZmU4ZTQyYzQyMjkwZGI1NDNmYzdlODgyNzQzOTI0NmVjY2YyZTg2ODEwZmQ4ODU3MjA5NzI3NiJ9"
+        },
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L34-L41",
+          "version": "repo-lines-v1:sha256:7a087be4b02c1df1b2c04ba188b12385b3d1156403d40cc880d5b60018483e32:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzk3MjQ3ZDcxMGJkMDZhNjQxYjkwNWIyMzI4YTEzYzE5MjM1NmIxYjA1YjI4Nzc1MDFkZTBjNTdhNmQ3NWZjOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTZhNzE1MjU3MmVlODRmMTA5MDZjNzRiOWYyYTkyNDM0ZGRhYjBlM2M0MjgxM2IwNGU1OTdlZmNlYzk1MWIyNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWM4MDdhYjk5OGQ4NmNiMzA4ZGJkYjVmNDY5NTQyYWY3NWVkOWE5YmNhOGQzMWFjZjU3NDUwNjI1ZjI5MTI0YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzBiM2MzYTE4ZmU4ZTQyYzQyMjkwZGI1NDNmYzdlODgyNzQzOTI0NmVjY2YyZTg2ODEwZmQ4ODU3MjA5NzI3NiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_2cf4a4ac7146400b9c5bbd5e854da4d1",
+      "statement": "The chapter uses two transaction styles with two different primary_object choices and never explains the divergence: transactional_operation (01:88-131) wraps an arbitrary callable and passes the editor world because \"the operation may involve multiple Actors and there is no single main object\" (01:119-121), while all four LevelLayoutTool methods in 03 open the transaction inline with the first selected Actor, as in with editor_transaction(\"排列为圆形\", actors[0]).",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L88-L131",
+          "version": "repo-lines-v1:sha256:11864f514829224d1b7dc3217c6d09cb26313d8920a738936451fe1665dd5445:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyYjg3YjNmYTY0YzdmZTA3MDZlZGY1MGE2ZjEyMmJiMWZlYjZkYjMxYWZlZjczMDY0OGM1N2RhMzk0YjQwNTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhMDg5NDNjYmY0NzAzYmVkZDE0NmE1MWY1ZWZiMGNkNjU5ZjgwOWUyNzk4OTQzMmUzZjZkYzQ1OTI0ZDM4MjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwNjIyOGUwMTk3ODlmNDEzYTNhZGMzMGYzOTZlMzBhYzk3OTQ3NzRmMDM0YTI5NGViOTY5ZjZiZGNiYjBlNGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMwZTNmZjE0ZmJmMTNhMDdkZDJjNDVjMGZhYmNkOTRmYWE3MmM0OTMyNDY3ZTRiNWM2MzU1MWE5ODE3OTY1OWEifQ"
+        },
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L292-L342",
+          "version": "repo-lines-v1:sha256:f05830df1599b903219bcd2a9edb30a0d3ae59dc3e50dbc3546db931def8efec:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyOTE3ODAyZTI1NDRkMTliMTFlNjI3YzkyMDBiNTM2MmZiMWVmMjY0NDcxMGUyMzhiZmFlYTA5Y2UzNmYxNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzZDFjMDY1ZDE1Mjc0ZGY1Y2VkZGEwMDc2ZTgxNTRlZDdmYmE3NTQ5YTE0YmUzYTI0N2VjMWJmOWYyNTdkNzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVhNWVlYzE5ZDFlYzUyOGU1OWZjOGVjNTdlNzFjM2Y3YTYwM2U4NGIzMDhmZWFhMzBmOGJhMjc3Zjk3YjM1OTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM3MWYwODhjNzYzYTIyYmI2MmJiNGMzNWYxZjQ2NmU0YmNmMmJmODg1ODUzZjc2YjZmOTE5YTJhNmRjY2YyOGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_314ca52211f64bb6be5ce0275328a406",
+      "statement": "notify_user maps four notification types to RGBA colour lists and to log/log/log_warning/log_error, then calls unreal.SystemLibrary.print_string with the world obtained from unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world(). All six arguments are positional including the two booleans, whereas utils/ui_helpers.py uses the keyword form print_to_screen/print_to_log/text_color for the same call.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L138-L181",
+          "version": "repo-lines-v1:sha256:697a292575bf74625dac82e64d7afacc3940e61b39c75103dba205d799baf984:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmYTZkNjZkNmNlOGY0YjMyYjViZmNjNmRjYTNhOTIwMDYwOTkzYmU4M2E3OTRjNzI5YmFjNTE5MzQzMjQ0YjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1ZGJjNmJmZmY5Yjk3ZmQzMTU1MzkyNDViMjVhOWRhMzYwZGFlMDJiNDk0M2NkYTFlZDE2OTg1OGQ0NzJjZDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEzMWQ0NTQ0MmNkNTZiMDMxM2FlNDlkNmE1OWVmNWM3N2Q4MzAxOWJjZDJjYWIzNzMxMzc5ZTgwZWVjNzlmM2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRjZTY4YmU0MWM4NGU1MmYzNzhhNTAxODczNDQ4NGU4ODExNjgzMTZiZWVkMmM3MjY4YTE5NjFmMzlhMjk3YmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_dbebe64b54f8485f896c2e73e276ce55",
+      "statement": "The notify_user header documents the world_context_object trap as one of the easiest in UE4/5: passing None means the message is silently dropped in the editor, passing the wrong object type crashes the editor, and the correct route is UnrealEditorSubsystem.get_editor_world() because there is no Game World while editing.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L150-L167",
+          "version": "repo-lines-v1:sha256:e908f404f20041f5237e3f2712d75e2a64e3b3718afc29e785d98b7b87511f5f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwMmYyYzM1Y2JkN2ZiZjBkNWE5MTlkMGFhODBiMTdlOWNjOTU0ZjkyYTdiOTEwN2U4YTg3YWU2YzAxODA5MjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwYzFmMTg4ZjE0MmVkN2E4MjQ2ODBiMjA3MTcyYzU1MTliYzYxNGE0OGZkYTdjZjE2N2VkYjhkZGY3OTk1NmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNjNGM5MDlhNWFlMTQ0MmVjYzcxMDg0ODEwNzc5MjUyNGM0ZGNhZWU5MDg3ZDBlYzFlYjRkMTM0MjI5ZjZmNjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM4ZGQyNGI2ZDFmMmMxNzdmZWI3OWZlMmY0YjYyNGQzZDRjOWM3NzZjMmU0MjcyMjM5NjU3Y2M0ZGYxY2NhNmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_17e2af75dbe54ad0b83419e4022396fc",
+      "statement": "The selection section states that in UE5 selecting Actors moved from EditorLevelLibrary to EditorActorSubsystem and that old code still runs but produces a DeprecationWarning, and that the returned list holds references to the Actors rather than copies (so mutating them changes the level) and is a snapshot that does not update when the selection changes.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L183-L197",
+          "version": "repo-lines-v1:sha256:e2fda68fb3742ede44ea0ec2559281f3cb99a7ddf9c89fa145c830c4b40be80f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxNjAwZmE1MjFkOGE4MzY0ODljOTAwY2MzODhjMTcwZTRkMjJiYjk2MzVjMWVjMTBhM2MyZTMxNTI4NzgxNmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkMjU1Njg1YmM0MWQxOTJmMzYwYzYwNGVmMGM1YzgwZDk4OWIzM2NlNDhkN2VhNmViZDk1MGEwYmRkNzBlNDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMwOTIxMmJjNWNiMWIxNzg5YmMwYzUwNTU4NjdlNmZhNmIxNzYzMzNiZDNkYzdlZjM5ZmEyNmEwMDkwMmI4NTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6e88d1625198446ab0f4d0c118de5b8c",
+      "statement": "get_selected_actors is the only place in the repository that keeps the deprecated API on purpose: the comment says UE5 recommends EditorActorSubsystem but the old form is kept here for comparison, and it returns unreal.EditorLevelLibrary.get_selected_level_actors(). 03_custom_tools.py shows the migrated form for real via unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_selected_level_actors().",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L193-L197",
+          "version": "repo-lines-v1:sha256:6153fc3e6fed64ac60ed066701b2ef6327c9daba1e2de7fa536923c440247393:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODRiZmJiOWMzNDk0NDI1NmE2MDAyNThhMjcwYzk1NDkwMzYyMDg4YTdhOGI4MzlkZGRjMzVhYjJkYTQ1OGZjYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTg5ZjBlN2VmYjM5YWU0NDYyYzljMTJlN2FiOGNiNzU2ZTY5MzFjOTA2MmZkZTM1Nzg4MmFhMTJiNzBhODlmMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzA5MjEyYmM1Y2IxYjE3ODliYzBjNTA1NTg2N2U2ZmE2YjE3NjMzM2JkM2RjN2VmMzlmYTI2YTAwOTAyYjg1MCJ9"
+        },
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L270-L272",
+          "version": "repo-lines-v1:sha256:5196355854b7647967797dc097bfc7d18e90b31338da5578f32535e60ba7e896:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmRlNTk3ZDViNGEyYjkzNGI2Mzc5NTIyYmYxY2JjY2QwNzJjZTFhZTM5YjRhZmE2MWM1OTc2ZjJjYjBiNTI5ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWY3YWZiNjFjNDg4ODFiNWRlNTc0OWQxMzk4NjBlMDc1MTg3OWIxMWY5ZTEwNjJmY2IyODdmMGNkOTFmMzg5YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjgwMThhNzkwZDY0ZmMwMmIxZTc2Y2ZmMGFiNjA5MTQ1NjBlNDZhNTI3YjFjMzFjZDkxMzgyYzZhODA5NWQ3NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzZmZTdmMGI2ZWFiMDM4MThmN2YzYWE1ZDU3ZmI2ZGE0MTFhN2I4NmFlMGQ0OTRlNGVjMWVlYmM2ODk3MzdlNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_632e6aaf0a7948e7ab9526d108e91d4e",
+      "statement": "The deliberate counter-example leaks into two places where it is not labelled: the generated-script template at 01:412 bakes unreal.EditorLevelLibrary.get_selected_level_actors() into a template intended to be handed to students, and 02_menu_extension.py:166 calls the same deprecated API inside EditorToolBackend with no note at all.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L412-L412",
+          "version": "repo-lines-v1:sha256:4e7f51008882ce424f4e832ff964e39acedca37a2eafc7234477b6ffcd6bbcac:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGU3ZjUxMDA4ODgyY2U0MjRmNGU4MzJmZjk2NGUzOWFjZWRjYTM3YTJlYWZjNzIzNDQ3N2I2ZmZjZDZiYmNhYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGU3ZjUxMDA4ODgyY2U0MjRmNGU4MzJmZjk2NGUzOWFjZWRjYTM3YTJlYWZjNzIzNDQ3N2I2ZmZjZDZiYmNhYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTBmNjRiZjg0YmRmZGU5NzZlYzc4MDE1Nzg3MGFiODU1MmU2MzU2MzE0NzBkZWY1OGE4Yjg4NDU5YWYwZTE4ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2I0OTcyMGJlOTNjNTBmMmY2OWVmMTIyM2VjNjU4MDQwYjM0MTRkOTBlM2JmMGIwNmJlYmM0YmY5N2U3YzY0YyJ9"
+        },
+        {
+          "resource": "repo://04_EditorScripting/02_menu_extension.py#L164-L168",
+          "version": "repo-lines-v1:sha256:992343f20cf62c6c08f6371d1392587e0bb0f1cab753952f9887ef673fefbda1:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTU3MWNiMGNkMDMxODYyZDNmNzFmYjJiYjUxNzJlZjZiODgwYjAxZDYxYWZkNDYzY2Q3NDNkYjJhYTRjNmI4ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOThjNzUyOWRlNWVmMDlmYzExYjg4YmEwOWM2ZDdlMDdiMzI1YjU1ZTA2YTVkMWZkOTZjYjM4NGJhNzJmNTc1YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjdiMjI3YmE3ZWFlMmE4OWIzMmFhYzI3MWFiMjhkZTVjZGU2ZjU3NDdjOWY5N2FlY2I1OWRhYTNkZDEyMWEzNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTBjMTQxMmM2YTlmMzQ4OGVmNTI1MmY3MTQ4MWYxMzFhZGMzMmI1YjllYmVkZjllOWZjNmNmY2RjYzM4ZDgwMSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1e3b78f6e7284e5f8fb048ed36ce4af9",
+      "statement": "require_selection(min_count, selection_type) is the chapter's defensive-programming guard: it checks the precondition, calls notify_user with a warning, and returns None so callers can bail out. It takes a selection_type string and branches internally rather than being two functions, and in asset mode it returns the package paths as strings rather than objects, so callers must know which type they requested.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L208-L238",
+          "version": "repo-lines-v1:sha256:bf2cf67821498b85024947c4e0d12949b58951af9e8a096fefe8fa3dece6ace8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlNjg5YjE5ZGI5MzkwN2JkMGZiNGFkMDI0OWRlMWUyNDY1OGQ0ZWNiNTg0N2M4NzU0ODVkN2ZlZjE1NGJjMWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyYzQ4NThlMjJjYzJjOTY3YjQyMTUwZmE1NTA1NjJhMmM4MzljMmNlYmNhYWI5MWNhYmRmNmY0ZGEwMjAwMjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4MDQ1Y2UxMTBhZmQwNzY0YTlhMGNlN2YxMWRjN2ZiYThlM2NkYzcyMjM3MTMzYjM0OWQ3MWE1ZWNjNjFlMDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzOTY0ODljYTkzZjhlZTUyMWI0MTEwNmM0MDdjZWJlOWM1OTU2NWU1Nzk3NzRiYmE1OGQ4NTJmNWM0ZjU0NWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e24db54d1cd441ac9048899ccd7249bb",
+      "statement": "snap_selected_to_grid rounds X and Y to round(location.x / grid_size) * grid_size and leaves Z untouched so objects are not snapped to a height grid; it runs inside transactional_operation(\"对齐到网格\", do_snap) and emits its notification from inside the callback, meaning a viewport message is emitted while the transaction is still open.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L241-L272",
+          "version": "repo-lines-v1:sha256:064c94564e3bbf4345a2b99a1c799502a9f47f594007ec13fbae060e7174ca26:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYjliZDQ0NzUyYzQxYTFlNzA0MDgzZmZhMDRhZjc4N2Y4YTU0YzE1ZDU3NWM1M2VmNmFkZDY2ODEyM2JiY2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhNmM2Zjk0NzJlNzIxY2U1YTU5NjVhMzc3NDE1MGIyZWY0ZDBiMGU3ZjQ1YmU4MTA1ODgyODBlMTk1MDZkNzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhZmJkZjcxZjE2NzQwOWM4YWUxMzU5MjcxNjYzMzAxZjZkMWYwYmJlNzExZjI3YTRjYzQyNTAzNmM3NmVjNDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA5ZTkwYzhjNWI5OGVjMTQ4NjQ4ZDJlOWRmNWUwMGQzMjYzYWRmYzlmZDMxYmJkZGFhZDA2ZTVlMGQ1MjkzNzEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9644bfd3914144b893766f08fa9661d7",
+      "statement": "The two selection-relative tools disagree on their axis fallback: align_selected_to_first uses axis_map.get(axis.lower(), 2) so an unrecognised axis silently aligns on Z, while distribute_actors_evenly uses axis_map.get(axis.lower(), 0) so the same bad input silently distributes along X. Both also guard with require_selection first, so neither crashes on an empty selection.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L292-L309",
+          "version": "repo-lines-v1:sha256:eb069b27647a839557b1cf93296bd368bf7c1dba2c647ac95f2ed124adc15fb0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0ZWY4MzRjMWRmNDY5Y2RiYmVmNDkwZDE1ZjQwZDlkMjliNjAxMjFjYzM3YTljMzAwODkzN2UxZTc4NWI3NmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlNzNmMDA4YjU0MmFiMjQyZTQyMGU1OTRiNTAxNTU5MGEyZjg5ZDRkZDkxMTUyYWNmYzY1MTQyZmRjNzc3ZWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJlNjU4MDdlMGJmZjFhYjY4YjBhMmMyM2MwMzk0ZDhhZWEzZTEyYTE3YzRhNjFiOWM2ODJkNmNjNWVkYTZmNDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1MTdlZDdmMDc0ZWIzOGMxYTRmZmM3Y2Y3NTFlODJjMWZkZGJjNGVlOGM0MWQ3MDlkNTM4ZTNhYjQyYjdjOTUifQ"
+        },
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L327-L355",
+          "version": "repo-lines-v1:sha256:c935d594107750be01825d92ac8227b279a622554198575985b66625681efd76:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNkYTQ0Mjg1MTU0MmQzMTRkMTFmZmE0MTU2OTFlNDViM2QxZDU1YTg2ZTM0MThjZDNkNGQ3NmU0ZjFhNWVmMmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmMzcyOGQ1NzUzZDY5ODljYTE0YjI2ODJhOWY5NmI3YzNjZTcyOGE5MDE5OTE3YzZlNTZmMzllYjgxNzY2NGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgwYTI0MGI1M2RiODZiMGEwODAwZTRjOWQ4ODVmM2U5YzMwNTA5MTJkODVmNTNhMWUxOTFjNmI5ZmQwNmEyYTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFhNjI2YmRhZjM1ZTQxMjgyZWVkYmU3NmM4YTYyNzAyOWJhNTdhNjY4NDZiN2JlYjRlMTdjZTg1MDBiNWRiM2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3be2dc173cf148c5bbfeae0b4147b9d3",
+      "statement": "randomize_rotation defaults to yaw-only (max_pitch and max_roll default to 0.0) with the stated reason that most props such as trees, rocks and buildings only need horizontal variety while random pitch or roll makes them topple; it takes an optional selected_actors argument so callers can pass a list instead of the editor selection. Its import random sits inside the function body rather than at module scope, unlike 03_custom_tools.py:27.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L357-L368",
+          "version": "repo-lines-v1:sha256:297e26117c8764b0b78883e87ec507d3a58665b1d3a03e2581d05b75c4503d16:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwNGRlMzk3NjQ5ZmUxMTAzNjE2YWJjNDQwNjkwMjU3NTg4YmFiNjQ3ZjEyNDJkYWNkNGE4MGRhYWY1NGRjMDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNDFhOGFhNmIxNDQ2YWVhNDFjMmQ0NzZjYmNkOWFhYmNjOTVjMTNmYjAzNDAwMDFjYTE5MzQ1ODhiZjFkNmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIzMmJmMGM5NTI0NDQxNmIyYjIxMzAzZGE4MmFlOWQwMDg1ZGVlNzFlZDljYjdhYTA1ZTRmNjIwMzBmNDhjNmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE2YWM1ODQ4OWMyMjdmY2NjMTI0NTMyZjliNTNiNjNkNzI3YzBlYjZhMzMyNzM2MTFiY2FiYjE4OTQ3M2RmMDkifQ"
+        },
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L372-L372",
+          "version": "repo-lines-v1:sha256:bc5640adcc00472f68e4ae1f0b7eaadcc14b42315de3ecbfac8b95abf01cb3f1:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmM1NjQwYWRjYzAwNDcyZjY4ZTRhZTFmMGI3ZWFhZGNjMTRiNDIzMTVkZTNlY2JmYWM4Yjk1YWJmMDFjYjNmMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmM1NjQwYWRjYzAwNDcyZjY4ZTRhZTFmMGI3ZWFhZGNjMTRiNDIzMTVkZTNlY2JmYWM4Yjk1YWJmMDFjYjNmMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTZhYzU4NDg5YzIyN2ZjY2MxMjQ1MzJmOWI1M2I2M2Q3MjdjMGViNmEzMzI3MzYxMWJjYWJiMTg5NDczZGYwOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmIwZjI0ZDBiNDU4MWEyYmNjMGJjNzJlMjA0Yzk3ZDE5OThiN2Y3YmRkZmIwZmJlMGFiMDg3OWJjODZhZDZiMCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_903f566fb8e14dc8ba40f767f0ec0221",
+      "statement": "The comment in align_selected_to_first claiming that Unreal Vector's x/y/z are read-only and cannot be modified directly is false: the stub lists Vector.x, Vector.y and Vector.z as [Read-Write] with generated setters, and the same chapter's mirror_actors mutates them in place (loc.x = -loc.x at 03:440, rot.yaw = -rot.yaw at 03:450). The three separate get_actor_location() calls feeding the list() conversion also cost three extra engine calls per Actor. The accurate statement of the underlying UE concept is that the getter returns a copy, so mutation does not move the Actor until set_actor_location is called.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L295-L303",
+          "version": "repo-lines-v1:sha256:5ac3f85cef01e859fe5127c6cbf6321d8a8aedda4053a695c60379d2785a9232:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmRkODU2MWNhM2M2ZjBiZjJjMTVlNTM5ZjkzZDE1ZjdjNzVmMzQ0NWRkZGVmNjdjZTY3NDcwNzFhODJkZjdkYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWM0NDI3MDk3ZGRiNzFkM2NmNTUyNWRhMjYwZWQyZDc0MjM5OWYzYWUxYmYxZTExMzUzZjU5ZDE1ZmFhMWY2MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzgyMDRhMTEzZjA3MmQ0ZDliMTI4YjcwN2NmYjVmODgyZmI0YmUwZjI4YzA3MDhmNzU2YzJjNzI4NjFmODI4OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGJlMzVmYjAxOWVkYjZmMWI2MGEyNjQyMTljNmM5ZTgwMWU1MDhmNjZjYmMyYzg1OWZhMjEyMzEwZDhlMzBlOCJ9"
+        },
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L438-L453",
+          "version": "repo-lines-v1:sha256:b869e0d74613fa28f17c98ff5a4bd9d926a868038d7eb619ffb6c4fa20310e72:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0ZGRiODI5ZGQyOWQ1ZTk2NjI5MmQzNDM2NjBiOTQ4N2EyYjY1ZTVlODIxNzI4Yjc2MjI3NjY0OTU3ZWMwNDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2ODE3NjFhZTExNWE1NTE2M2ZlY2VkYjg5ZWRkNTY0OWNkYTFmZTg5OTE3YWNjYWU1ZGU0MWE5NzQ5MzQ4NGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU4YmI1ZTMxODJlZDU0YzJjZjIzZTI1Zjk5MDVhM2Q4YTRmMzExMjc0MGZiZjgyYmJjNGU5MjcxYmQ5MzJjM2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzM2I3ODVmMmVmY2ZmNzkzOGI1YTk3NzY2YmZjYTM0N2NkY2U1NWQzZjUxYTY3NDk1NzViNDQ3N2VkNzYzMzcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5be4ba15b8df46b6a4b5281c333335b2",
+      "statement": "create_editor_utility_widget(name, destination=\"/Game/EditorUtilities\") calls EditorAssetLibrary.make_directory(destination) (documented as idempotent - an existing directory returns True rather than erroring), then unreal.EditorUtilityWidgetBlueprintFactory() and asset_tools.create_asset(name, destination, unreal.EditorUtilityWidgetBlueprint, factory). The lesson states the Factory pattern rationale that every asset type has its own factory class which initialises the new asset's default properties.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/02_menu_extension.py#L53-L107",
+          "version": "repo-lines-v1:sha256:d0f4d93b588b1788e94a185b67cfc0df8c3c68fe834db0a505ec95aa704c153d:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1ZGJjNmJmZmY5Yjk3ZmQzMTU1MzkyNDViMjVhOWRhMzYwZGFlMDJiNDk0M2NkYTFlZDE2OTg1OGQ0NzJjZDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk4OTM0NjNkYmQ3ZjNjMTBmMWUzMmM0YWJhMzJjYWYzNTJjMzY0NTVmMjI4MDI3NzUzMGFkNmQ0NDlmMzgxZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxYjMzYWI2Y2Q1MWRkNDZkZGZkODhjZDEwNjZjYjYzY2U1MmZjYTZjOGM3OTY4N2VjZjMyYmJmMGM2YTdjY2QifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2c20a3534e8d4bcb9bb6c17d82cde9ac",
+      "statement": "create_editor_utility_widget creates only the asset shell: the surrounding code and comments warn that the actual UI layout must be built by hand in the Widget Designer, which is the honest boundary of this tool - Python can create, locate and delete the asset but cannot usefully author the widget tree.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/02_menu_extension.py#L96-L107",
+          "version": "repo-lines-v1:sha256:16082830b90c874ef72facd6590ff64573f50e99f33bccf97740b508d4679ea0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3M2MxMzVkZDc2Njc0ZTU3NTk0ZWFmMTk1NmRkZjJiODhmNWMxZWY1ZDNjYWI1Y2I1NTE0MGRiNGE2NjA5MWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmNGMyYzA5ZGQ2MGZmMjY3YzIwNTM1NzM5ZTI2ODFhYTcwYzExOGU3ZDU1ZGY5MTA4OTE2M2UwN2MyOTZlY2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxYjMzYWI2Y2Q1MWRkNDZkZGZkODhjZDEwNjZjYjYzY2U1MmZjYTZjOGM3OTY4N2VjZjMyYmJmMGM2YTdjY2QifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_010b7fc0dc7441e994dc211abcfb9c52",
+      "statement": "EditorToolBackend is the chapter's model-view separation argument: the UMG layer only displays while the Python class only holds logic, i.e. a simplified MVC where a button click calls on_button_click(button_id). The mechanism is two state fields (status_message, progress) plus a handlers dictionary routed by id, with the stated rationale that a dict makes all buttons visible in one place, makes adding a button a one-line change, and avoids a growing if/elif chain; unknown ids fall through to log_warning instead of raising.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/02_menu_extension.py#L112-L149",
+          "version": "repo-lines-v1:sha256:d27374559ef0c48e26eb475c3ed360cf3f47ca72f8def3f24bdbd20e17e2d6f7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyYzQ4NThlMjJjYzJjOTY3YjQyMTUwZmE1NTA1NjJhMmM4MzljMmNlYmNhYWI5MWNhYmRmNmY0ZGEwMjAwMjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0Mjg1M2YxZjE1NjY2NmUwNDg5NDYzMGI5Yzk2OGRmNDg0YjZjM2M4Zjk4MzVhNjk4Y2FmNGVkOTcxZDIyNjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJlYmQ4YjkzYjFmNzQ5ZjA3MjExMzQzYWMyNDA0NTFjMDg0NmM1YmJhNmUzYjMzY2UxNmUyY2JlY2NmOGRiZDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJmZTA4MWQxNWFjYTA5NjNmYTI3YWY0OGRlYzI5YTViN2Y5NjRiMTZkNDZkYmNhYzY0YmQxZjg4MzkwMjQ5YjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_74188b2ac1314098878a95016ab5f5a3",
+      "statement": "All four EditorToolBackend handlers are stubs: each fetches a selection, sets status_message and logs, and none of them renames, aligns, exports or deletes anything. _cleanup_assets never inspects the project at all - it sets \"正在扫描未使用资产...\" and returns. The backend demonstrates the shape of a tool rather than a working tool.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/02_menu_extension.py#L151-L184",
+          "version": "repo-lines-v1:sha256:039f81259cc0bb6436bbfd4f06e51ab0ff19ec27775929d9affb2a845ae409ee:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1ZWQ4OTBiYjRhMDhkMTU0OTMzNzUyZmM3MTljMTg5MTM2ODQ5Mjg4OGI5YTVhYTEyYTMyYTgzZmI1Mzg1ZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmMjQyZTU3YWYyMmFiM2U1NTRhNGE4MTJiZDZhYTFmMDI0N2EyN2QxYzM1Y2Q5NjNjNzEzNGI0NjM5ZDMyMzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ2ZjljZGRjOTkyOTg2ZTk4OGM2MzgyYjhiYzQ0M2ExMjAwMjkzNWZiM2MwNWFkNWUyYTRmZTNhZmQwZDQxNTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6271028164d846adab84a343f745e189",
+      "statement": "SCRIPT_REGISTRY holds three entries keyed by id, each with path/description/category, and run_script resolves the path against unreal.Paths.project_dir() before exec(open(script_path).read()). Because project_dir() returns the directory containing the .uproject, the registered paths are relative to the Unreal project root (LyraStarterGame/) rather than to the repository, so the PythonLearning/ prefix is load-bearing. os.path.exists is checked first, turning a wrong path into a clear log_error instead of an exception.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/02_menu_extension.py#L196-L259",
+          "version": "repo-lines-v1:sha256:978a96738d2c982d09c102fd4cbf8d60bbdbe5594f33fbc7edefb635b00d11c2:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliODMwMTAxZWE3N2E5YWI4MzMwNzA2YjFlMzJjMTRlNjcwZTQxOTI1NTQxMzY0MGRhYmMzNmU2MDkxNTliZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5YWM1OWEzNWE3YmI2MTBjYTczZjExZTEwZDhmNWIyYTU3ZWMyYjU0MGIyNTNmY2YzOGRkYjNhZmE0YTQ4OTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJhNjMyMGRkNWY3MmE0NzE1ZDA2NWJlODExNmU1OGNkMTUwNzQ5MDI2MmMwYTEwODFkZjZkZWU5MWFiN2NkYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE4YWRmZmVlOTc1MmNjNzRhNWJjMDI0NDM5ZDFhMmZkZGM1ZTY2MDJjNzgwZjExNDI5YjQ3MDQxNTg4Zjg0ODIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8c6ba34c5d7745659833af227f7beb56",
+      "statement": "run_script documents exec(open(path).read()) honestly as read-the-file, execute-the-string, and run-it-in-the-current-scope so it can see the caller's variables, together with the explicit security caveat that exec runs arbitrary code and must only be pointed at trusted scripts. Because it runs at module scope, any module-level side effect in a registered script becomes a side effect of clicking a button; nothing in run_script prevents registering a file that executes on import.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/02_menu_extension.py#L223-L255",
+          "version": "repo-lines-v1:sha256:74cd72755ebdf6266972cc091ac0ce293aa40fa11ea64f122b6071f946c1bc37:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmNTBkMDNmZjM2N2Y3YTI4ZjcxOGFkN2M4ZmIyM2NhMDMzYjE0ODZhOTA3Mjk2NDMxYzQ2Y2IxMDU4NWMxOWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1ZGJjNmJmZmY5Yjk3ZmQzMTU1MzkyNDViMjVhOWRhMzYwZGFlMDJiNDk0M2NkYTFlZDE2OTg1OGQ0NzJjZDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM1ZWY5NTM5MTRkYTg4ZTZmMDBmNjc1ZGJiMWQ3MWIwNzEwNWM3Yjk5YTI5NDAyZjg1MDY0MDM1MmIyM2E5NmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhMDJmYmNiNzgxYzY0MzA4YjBiOTE2ZjBkMmQ4NGYyZGE0NzU4YTVmNTgzNjJhNDI3OTIxZDcyNTg0N2Y2MTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e8160d97491c4303a7c19c6b114fdc9c",
+      "statement": "ToolConfig stores per-tool settings in Saved/PythonToolConfigs/{tool_name}.json and justifies the choice partly because Saved/ is git-ignored so generated config never pollutes version control. os.makedirs(config_dir, exist_ok=True) runs in __init__ so construction has a filesystem side effect, set() writes to disk on every call, and both open() calls omit encoding= so they use the platform default (typically the ANSI code page on Windows).",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/02_menu_extension.py#L261-L313",
+          "version": "repo-lines-v1:sha256:7e6ce8ad6c7256da132e352aaf08bbe0161a5cd1fbfe5378f96c008a78052db5:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAwNjg0NTA5OGY2YzA0OWZjOGY4ODQ3OTc2OGM3YjBlYmU1OGIxOGVmOTliZWU2NmJlZTc3ZTQwZTI2NThmNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZmEzMzgyZDAwNzExMTllYWNkN2JkZmZhZWFlNTliZWQ0YWRiYjk2NTMwNzBlZjIyM2I1MmQxNDcyOGQwOGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEwMTc2YzEwMjA3MjMwNTkxMGNkMmNiZjg0ZTQ0NmI2ZjJhNmFhNGJmMTA3NzQwNzA1ZGI1OGQ3NWJmZTlhM2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU0Yzg1MTU1NzI5OWY3YjAwNjk0MWYzNmY1NWE2YmY5MjYzOTFkMWI4NWE0MTkwY2RmMjUxNjg2ZDA5NjU2ZDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_38c41a7f88ed45cebbdad0cf005b031f",
+      "statement": "json.dump(self.config, f, indent=2) omits ensure_ascii=False, so any non-ASCII string such as a Chinese tool name is written as \\uXXXX escapes, while 08_AdvancedTopics/03_automation_testing.py does pass encoding='utf-8' plus ensure_ascii=False for its report. The repository knows the correct incantation and simply did not use it here.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/02_menu_extension.py#L299-L303",
+          "version": "repo-lines-v1:sha256:934ef30dd6cad8697a6d29e6753502fd5a8f6d6b5a4532b1118204d29b54333f:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODI4NzFlZGQxZGIxODQ4OGI3ZWZmYTEzYjQ3MWMzYTMxZDlhNDczMDk1OGU4M2FhMDM5NDg0M2RjYzY5NDhmYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmQ2OWViZjZjZWQ3YjQ5NmI0NGViMDQ2ZWE3OWI1MTdiOTg3NzM1YmMwZGE0N2Y4NDA5YTk5NGI2ZDMwOTkxYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDZiNWMzZDg5NmU1YzU0YmY1YWJmYjE3MTc3YTAxNDY5NTYxMzUwNzE2OTgwNDg5ZmRmYjQ1NTU4MTI5NDAwZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGIxNjJmMmRjOTZmMWIxMTVjZGNmMzgxOTkyNGQzOTBlYzQyNjI2ZDVlZTMzZWE1NjQxZjhmNmQ3YWMyYTM2MSJ9"
+        },
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L185-L189",
+          "version": "repo-lines-v1:sha256:f92d3d76bf051b51b6b40641dec401e78559f616e63db8670aa61b31ddf43c47:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWY5NTBmMmIyODExZDVjNTJlNzhjYzVjMDdkMGFkMmI4MGVkMTdlYmM1YzljZWJjZmRkZTA0Y2Y3MjRmZWEwYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjNkOWI4ZWQ1YmM1YTA4YzEzNzNhZGY2YjFhYWVkZjA2NGFhYjZkYmM4MDc4MmUzZjQxMTJlZjAyMzUxZTkwOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjJmNWRkNThiZGExZjZkNmQ5NWQ4YWZjZWI0NGEzOGNkNzA0YWFmOGE3MmQ3M2EyYWUzN2VhYWNkYjU3ZjJjYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjViMDI4ODlmMWY3MGU0ODlmZTkwNjI3Y2YyYzM4OGI5ZmQ3YmE1Y2U2ZjdlZDUwYzA4NTZmODllYTdiNzU4NyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_90d99eaa25774c2a8a9273b52f5258fd",
+      "statement": "SHORTCUT_SUGGESTIONS declares five recommended shortcuts but no code in the repository consumes the dictionary, and the surrounding comment concedes that shortcuts are managed through Editor Preferences and that Python scripts cannot directly register them.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/02_menu_extension.py#L329-L335",
+          "version": "repo-lines-v1:sha256:0a591d2e0faab01d439e5491f389fc6891b23743a2f840a112cde8c0cd58e317:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTc3NzlhMzhlYjMyMGJjMmUzNTUyYTcxNTUxNjY1MjhkYjI1Y2M3OGE4YTM5MWFjZTExMTg3MTE3Mjg5OWVhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTk1YTlmYzMxZGZjYjdmZjU0MGZlNGQ2YWU0YWQwODI2MzYzYzMzMGU4ZjcwMjM1NmI4MTFkNWU1NjkzMjg1NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTc2NzA4YjZkNTc2OThlMDViNzU4MDA2YmFkNjFmODc1NDIwODExOWQ0OGZlMmE4Y2M2ZDAzNzNlZDE2ZmM3MyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_fcd7fdac10c84090b00d42c5fc792d2f",
+      "statement": "02_menu_extension.py's premise - that toolbar and menu extensions are usually implemented through C++ or Editor Utility with Python only as backend logic - is contradicted by the engine stub, which the repository's mandatory verification rule requires checking before any claim about Python API surface. The stub contains class ToolMenus(Object) with a get() classmethod accessor, register_menu(name, parent, type=MultiBoxType.MENU, warn_if_already_registered), extend_menu(name) -> ToolMenu, find_menu, is_menu_registered, find_context, and classmethods add_menu_entry_object/remove_menu_entry_object, plus class ToolMenuEntryScript(Object) whose data property carries owner_name/menu/section/name/label/tool_tip/icon/insert_position and whose init_entry, execute, get_label, get_tool_tip, get_icon, get_check_state, is_visible, can_execute, construct_menu_entry and show_in_toolbar_top_level are all meant to be overridden, plus class ToolMenu with init_menu, add_section and add_sub_menu and the supporting MultiBoxType, ToolMenuInsertType, ToolMenuSectionAlign, ToolMenuOwner and ToolMenuContext types. So a Python menu extension is possible in this engine version by subclassing ToolMenuEntryScript, overriding init_entry and execute, and calling ToolMenus.get().add_menu_entry_object(entry).",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/02_menu_extension.py#L11-L16",
+          "version": "repo-lines-v1:sha256:8cd2e85ad2b3d550bb5180044967b5da93738e1798a6f0e705cd5e9ee08f45af:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjE0ODg5Y2U0MTBlMTZiZWI4N2U4MWEyYmY4MTUwZjVhZTMxZDk0OGM3NTk0NGY4OWIxZThmZmQwMjIxNjc3YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjBkN2Y5ODhhNjQ4ZDkzMGViYTA2Y2I0MzEwNGE2MmQ3NWU0OTMwMjRmMDk5MDQwNDQ5NDBmNjMyMmEyMmI2MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGNjODY4MjUxNzhiODU0MmNjNTU1NjQ3ZDRhOTBmMDQ2NDNkZDcxZDJiMDRjNjcwMGIyNGJkYzY0NTljNTI2NyJ9"
+        },
+        {
+          "resource": "repo://AGENTS.md#L43-L61",
+          "version": "repo-lines-v1:sha256:edbafa2b55d2a9c2088be4065bb6b2e2fcac76159993e747182c13968552d96a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2NzgzMzhiZjkzMmQ3YzIxNjg0M2MzYmRlN2Y2NmUzZTZmNGRiNDE2OWQ1NTJlM2E2YTU5NmY4YThjZWM4YWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YmZmYjEwYTkwMmY1Y2VjN2Y3MmVlMzUxMGU2MTQ5YTJmOTA2MGMxZTg5ODE0ODNjNDRhY2QyYzA1Y2Y0YjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3MjA1OTJiMDk0NDc5NjQ2YjY4Yzc3ODExNDA2Nzg3MmU3YTlmNDE5Y2U0MmUzODI5MWM5NWFkZDg0OTQ1MjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFjMDU4MTg5Y2IwNzFhODE2Mzc3YTlmYTZjNDRkMTJlYmE0MGYzMWJhZTAwNjc2MjlhMTljYzJjNjE5ODY0NWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c739daf6c689492ab87dc7c1ef961deb",
+      "statement": "This is the second consecutive chapter whose stated Python limitation is out of date: 02_blueprint_components.py:19-25 declares SCS component editing impossible while SubobjectDataSubsystem exposes it, and 02_menu_extension.py:11-16 declares menu registration impossible while ToolMenus exposes it. In both cases the chapter remains useful as a design lesson (a backend class is still the right structure) but the stated reason is wrong, and a reader who trusts it will reach for C++ unnecessarily.",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/02_blueprint_components.py#L15-L26",
+          "version": "repo-lines-v1:sha256:cc6c175d38c227acca229aa5a9d6c7d071e7841b0ccd055937dfa51de01de6f9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4MmI4YjY4MzIwNGNlNjZjZGY2NWQwYjZhY2QzNTI2ODFjZDc2MDFmYjM4ZTBmOTZiODUzZTBhNDRhOTU0MTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0ODU1MjQzODc1M2RhMTc4YTBkOTcyODQzMThlYjcyMjc4ZmI3OWJmYjhlYTZmMWQzZDRhZTM1ZGJkMmVmYjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU4ZGE4OTExODU2ZjlhNjdiZTEzNzVmMWUyNTYzYTA5YWExMmUxZDI3ZTVhYWNhN2JhY2NhNjZkZTg2ZjNhODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI1ZDQ3NDU4YjI5NTNjM2FjNTY3MDcyODhlMGQ1MGQwNTNiNzk1NTYzNTIzZjQ5ZGUwYTlkYjAwZjcxZTE3ZDcifQ"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/my02.py#L33-L41",
+          "version": "repo-lines-v1:sha256:151eba7af464740949d4d009074f90220351078a26b5f2c98e7f80eaa3dcdb73:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmZhNjI1ZjllMzAxYmRlZDI2MTkwMDNlNmEyMTYwZTJhYmQwZWM2NTAyNTc5Nzg2YmM4NzI4NDVmZTI2MTBmYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmY4MDRmYjAxNmE2ZGRhZjczYjdjZThiYmNiZjVkZDFkOGM5ZDVjZDNlYmZhYzFlYWZkMTQ4YjY5ODI3MGJkNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTc2ZjAzMDlhYWFkNTI4NDlmNmE0NTVkMjc2MDcxMjlkMzU2ZThlYjFhYTRlZDM4MzYyMzg4ZTM2MjVjYjRhOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjFkZTdiYzM1YjFiZTNmY2UxN2FmMTFhZTkxMjk0YmRhNDU2OTEwOWRjMjIzZmU3M2NkMWY4ZjZhOWUzYzNkMSJ9"
+        },
+        {
+          "resource": "repo://04_EditorScripting/02_menu_extension.py#L11-L16",
+          "version": "repo-lines-v1:sha256:8cd2e85ad2b3d550bb5180044967b5da93738e1798a6f0e705cd5e9ee08f45af:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjE0ODg5Y2U0MTBlMTZiZWI4N2U4MWEyYmY4MTUwZjVhZTMxZDk0OGM3NTk0NGY4OWIxZThmZmQwMjIxNjc3YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjBkN2Y5ODhhNjQ4ZDkzMGViYTA2Y2I0MzEwNGE2MmQ3NWU0OTMwMjRmMDk5MDQwNDQ5NDBmNjMyMmEyMmI2MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGNjODY4MjUxNzhiODU0MmNjNTU1NjQ3ZDRhOTBmMDQ2NDNkZDcxZDJiMDRjNjcwMGIyNGJkYzY0NTljNTI2NyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_9dcb0de42c8e43f88d95ce6c2b1453f8",
+      "statement": "AssetHealthChecker.check_project uses the standard three-step skeleton: list_assets(search_path, recursive=True), a ScopedSlowTask with make_dialog(True) plus a should_cancel() break on every iteration, and a per-asset dispatch. The accompanying comment states that operations longer than one or two seconds must show a progress bar because the Python main thread shares the editor's UI thread and the editor otherwise appears frozen.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L77-L116",
+          "version": "repo-lines-v1:sha256:f6a5b1592e0b818c8b91816175fdef0208a17cd664317b79c035ba195c371816:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0NjA3ZmJjZjEyYTBjZjQyYzg2MGQzNWJkMTQ1MTAwY2Y2OTdjZDU1ZTQ2OGU5ZjZjZDZjNTkzYTA4NGY0OTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNzI3MWEyNjVmZjlkMmUxZWUzYzNiZTc3YzI4YTdjMDg0MDZkMmIwMjBkYmYzMjM3YzdlZmRiNWY4MGU3NzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYzZmI2ZmNlMWYzNDMwNWM5YzgxOTM2ODVhYzFiYmI2NzM1YzBhM2Y3M2Y5MTMwOWUxMWEyNTZlMzlkM2U2ODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwNTVmNDg3OWVkOTQ5Y2FhNzM0NjU2YzVlZmMwZTI3MmFlZjI0N2YzYjdhYmRkYzE1NzIyMGMyOGFhMTFjZTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1671b2176d174a9e875e2830e794ad0f",
+      "statement": "The does_directory_exist guard in check_project is unreachable because list_assets is called without include_folder=True, so folder paths never appear in the results and the branch can never be taken. This is identical to the same dead branch in 08_AdvancedTopics/01_batch_operations.py. The docstring of _check_single_asset also restates the rule that find_asset_data reads metadata while load_asset loads the whole asset, so cheap checks must use find_asset_data.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L125-L148",
+          "version": "repo-lines-v1:sha256:61dc0f5edeea4484e194885576c653a723ec9d35375b09c994eec970fe855250:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwZWUzMzgxNmFkNWVmYmU5YzA4ZmNmYjlhMDYzODFkMzI2OGYzYWYyNmRhYjY5OTgyNTVmNDk4NDg4N2MzZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkOTY0NDBiNjZiZTlmMjczYWQzOTY2MjRjMWI1M2ZmNmNhMjM1NTUyZTgxNDM0YjQ4ZmUwMjcxOTg4MTAxY2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI1YTg1Y2NkYmJiYWViZDMwMDA5YTlhZDZmYTM1MDljMzFhOTAxZjQ5NDc2Y2EyODAyMmNlOTQ3N2I1NmIyODUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY4ZjUxNzk1M2JkNGQxMTQ2OTYzN2MzNGI3NGE1NWQyM2E3MTBjM2QwZTQ5M2M5NzM0ODdiMTgyOGZjMjM2ZGYifQ"
+        },
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L96-L116",
+          "version": "repo-lines-v1:sha256:a8c98cf6b1ef284bd11a88db93847fb229ded4171ec9c3659470fc896dbb5ec6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjODJiZDExMmM1OGM3NjNmNWE3NTQ3Y2ZkZTBkZjQyNGVhN2I0YjUyYTUwZTNkYjBlMWNlOGZkNDlkY2MzMTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNzI3MWEyNjVmZjlkMmUxZWUzYzNiZTc3YzI4YTdjMDg0MDZkMmIwMjBkYmYzMjM3YzdlZmRiNWY4MGU3NzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2ZTM1YzE3YTY2MjllYjNmNjRlNGNjMWU0YWU5YjU2YjEwYzI0OGY1ZjI5YTFkYzkzZDRiNmUzMWQ2OTIxYzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwNTVmNDg3OWVkOTQ5Y2FhNzM0NjU2YzVlZmMwZTI3MmFlZjI0N2YzYjdhYmRkYzE1NzIyMGMyOGFhMTFjZTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f401e1590d7048b58644e55b0ba1264d",
+      "statement": "_check_naming matches an 8-entry prefix_map with the substring test if class_key in class_str, and the map lists \"Material\" before \"MaterialInstanceConstant\", so MI_ assets are told they should use the M_ prefix. The comment even describes the collision (\"class_str may contain several class names, so use in for fuzzy matching; for example MaterialInstanceConstant's class_str also contains Material\") and accepts it, which is a description of the bug rather than a defence of it. 01_batch_operations.py:234 solves the same job correctly by extracting class_str.split(\".\")[-1] first.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L150-L183",
+          "version": "repo-lines-v1:sha256:788d712a0adb2ddfa4fb056f892cfdef3f21d26b34bcd567a788bb0e3604ca0e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2NzA2MWEzOWY1ZDMxMTYwN2E0MWE2MjJlOTEyZmQ0MDIyYjE4Yzc0YjczYTY4YzFjYWUzMTMyNzhhYzE1MzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxYmQ1OWJhZjEwOThhZTk2ZmQ3ODY0ZjM2ZTg4MjJjNTExMWFlMGZkNzBmNmFiODI2MzZmZWUyZTg1ZjRhYjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5MDY5NWUyYTVkMGQ2OTNlMTMwZjdiMzI3NWE0ZDBjOTk4Y2NlM2E3NWE2ODU3ZTJmN2YyYjg1ODViYTdiN2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNmOGI1YzUwYTY1OWIwYmU5Zjc1OTc3MTQ3YTdiZWQ3YjVhN2EzZjU1MDhkZDgxZDA0ZWY2NzViNWZkMGY5MjYifQ"
+        },
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L228-L243",
+          "version": "repo-lines-v1:sha256:1de636e01bc3830e03d52096a5127fe6fb5c465fb09ab8cc957c103fd9cf7f77:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzY2U0MTRiMmE5OGVjYzEzNWVmY2ViMDVhZDcxOTZkMzJjMGY4NDg3Yjg3NTEyMWFmNWQzZjI0MzRiN2E4ZWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlMjQ2YmUwNTdhNDU3OGI1MzhlZDcwOTExYjliMzJhYTY1ZGRjYTM0MjYwYTU2NTI5Y2RiMjQxN2M3OWFjMDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFlMjhlOTEyZmJmY2NjMzU3YTIyZDMwMzRhZTMwMTg5ZjQ0ZTZkMmIzN2RkYzM1M2IwMzc2NGZhNzkzODY3NTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhZjI5OGRhNDFiOTc5OGFmYjVmZGJjOWI3MDhjZDg0OTJkZmI1MjNhZGRiZWZiNThhM2RlYzQ0ZWVhODMzMmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d859f8758fef4b13b25cc6c036c364a5",
+      "statement": "_check_single_asset assigns name = asset_data.asset_name with no str() conversion and _check_naming then calls name.startswith(expected_prefix). The stub annotates AssetData.asset_name as Name, and unreal.Name has only __init__, cast, is_valid and is_none - no startswith - so this should raise AttributeError and abort the scan, since check_project wraps the loop in nothing that catches exceptions. Every other read of asset_name in the repository wraps it in str(), for example 03_asset_actions.py:170-172. This should be reproduced in a live editor rather than treated as settled.",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L167-L178",
+          "version": "repo-lines-v1:sha256:3b1401641507ed89fc2e2b75b48e3ecc4eaec3e0b0b7376b205f5bbf29a0f836:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmMTEzM2IzNTE1YmRmYjEwMGIxOGMwYzcxMTM3MDQyZTBjYTk2NGFlYmQyODFlMzdhMGRlZTU5YTM2ZWE4ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1ZGJjNmJmZmY5Yjk3ZmQzMTU1MzkyNDViMjVhOWRhMzYwZGFlMDJiNDk0M2NkYTFlZDE2OTg1OGQ0NzJjZDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBlZjgwODRjMTdkMTgwYzNiOWJmN2Y0YTBkNjRkOGZkOWZhMGIzNDZhOTEyZWI5OWJlM2QwMWQ0NTA5M2YyZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2Y2Y1YzM5MDNiNDVkNjU1ZTI4N2M3MWZiMmVlN2Y5ZGM0MGQwODI4NGJhN2UyZTI0OTJiZWNkOTdmNTIzYTgifQ"
+        },
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L118-L120",
+          "version": "repo-lines-v1:sha256:e69f997c3b78258f64e2cb9db9eb46710f1f8720476d8efef5b9103d28eb9732:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWQ4YTllOWMzMjUyODIwYzY1YTgxNjUyMGI4ZGI0OTMyMjgwODQ5ZWM4YzdkMmViNjI3MmFmZGZlYmUwNTljMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzNmMWNhZTM1ZjM1NjczNTBjYTYzNWNhZGEwMGI1NDJjOTk3OGE2ZjExODZiNmNmOWM0YmQ4NWE5MWJmYTE4ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjc1YzU0MzAxN2EyNGUwYTM4Mjg4YTFjMTZjZTZiY2NhYzdhZjI3Yjk3YzJmOTAzZGEwOWYzZDM1ZTBkZGQwYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTlmYjZmODI5NGZkZDI3OTI2MzhmZDA1OTI3YmNiOWZmMmI4MWMwZmM5NWI0MWM4YTE2MWNlNmUyMDhmNjE5ZiJ9"
+        },
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L176-L176",
+          "version": "repo-lines-v1:sha256:5ec69a74c7707d3c7963ab22872c9a7c3e4c641febb1573d6046ed78523ba110:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWVjNjlhNzRjNzcwN2QzYzc5NjNhYjIyODcyYzlhN2MzZTRjNjQxZmViYjE1NzNkNjA0NmVkNzg1MjNiYTExMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWVjNjlhNzRjNzcwN2QzYzc5NjNhYjIyODcyYzlhN2MzZTRjNjQxZmViYjE1NzNkNjA0NmVkNzg1MjNiYTExMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWUwYmZmNWI1N2VkOTNkMDUwN2EzYzUwODlhYmNiYjcwZWMwZGMyNGZhOTkyNDA4MTc4MWYyZGI5ZDc0ZDA4YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjM5ODI4ZjJiMmM4ZWZhYjZiY2YxYjE5NjVjNGY5MmVjZjJkMWU3NTRhZjVkYWUwNGFhZGVlMjZiODE0NDZlNCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_a298d070aae14f5fa4012d5c50da6a74",
+      "statement": "_add_issue increments stats[\"errors\"] for error, stats[\"warnings\"] for warning, and otherwise stats[\"passed\"], so an \"info\" issue (emitted by _check_path_depth for deep paths) increments the passed counter - making stats[\"passed\"] mean \"issues that were neither errors nor warnings\" rather than \"assets that passed\". It is also never displayed: _print_report shows only total_assets, errors and warnings.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L230-L244",
+          "version": "repo-lines-v1:sha256:7d9f1fdfa77c2769866c8162a439ec6e02e138ffe5c78ac8019069a3d5dac392:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwMWExYzE3NjdiNzNjNWFhNDRiNGJmZGQxZmY0YmEzY2FiNWE1OTg0OTlmNDkwNmU5Njk5NTYwZjUzZGY5YTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlYzA4MmFmMmE5M2E0NDc1NmU5M2YzMTAyYWVmZTQxMmUzMjA2YWQ0ZTJiZDVlMjFmOWQ5NmEwYjNiNWI4MWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU0NjdmMjE5YTgzYTg1ZTY1OTEzY2EzNzEzNzMwNzA3OWYwMzc2M2NkM2Y3MTU3ZGRjZGJlZTg3NDkzMjE4MjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc2NDYxNGMyMjY3MTQ5YWQ0OTRiYTMxNzgxYWYyNmE1YjJkMDgxMDk5MTNmZjRmMDNkODk3ZDJkODRhOTc0MmQifQ"
+        },
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L246-L283",
+          "version": "repo-lines-v1:sha256:8556bbef364c2c630a7c3ac19751692414149aba1a4a972cdab5814f8dae5dd2:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjMWI2ZDE4OGJmM2JiNTU1NTM5YzllZDZjOWNkYTE1M2M3YjBiMTdhMmM2NzZlZDZiYjhhNTI1YWU2YzdkMzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhNThjMTFhYjhiNDI3ODQxNjhhZjA1M2I4NzZlNmQ0OWU0ZjAzNmFjOGMwMzAyY2FjZmY2ZTMwZDhkMjU0NTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM4MzI1MmEyNTIyZmQ1MDY3Yjk5YTJlZjI1ZDdjZGM4N2U1ZTdlOTNkZmVlODJiMTkwMjdkNzBmYmFhMWE1NGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3M2RiNzgwZGZhYzM3OWVhMzA1ZTdjZDkzNmUzMzhiMzI0YWY2ZDVkZTdiOWEyZTUwYTAyMzBmZDY0MWFjZDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a65590f55f03428c835578d77fb248d0",
+      "statement": "check_project resets self.issues = [] but never resets self.stats, so calling it twice accumulates counts across both scans. This repeats the same defect as BatchProcessor.results in 08_AdvancedTopics/01_batch_operations.py - a recurring pattern of clearing the list but not the counters.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L77-L84",
+          "version": "repo-lines-v1:sha256:24432bb5f7a0e8e1f977586e9507f3e0bd5ec66a12e9c72edaff1a2bd0e8ef6f:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzQ2MDdmYmNmMTJhMGNmNDJjODYwZDM1YmQxNDUxMDBjZjY5N2NkNTVlNDY4ZTlmNmNkNmM1OTNhMDg0ZjQ5MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTBkZTI1ODcxOTYxNDkyNjA3MWM4ZmIxOWZkODY2MTUwNTU1ZjFiMDEzNTRmOGNkMTYwM2ExMDlhN2RkYWU0MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjNmYjZmY2UxZjM0MzA1YzljODE5MzY4NWFjMWJiYjY3MzVjMGEzZjczZjkxMzA5ZTExYTI1NmUzOWQzZTY4OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjRlOWQxMjJhNTRlYjllZGRkNzUyN2FkZDk1YzBhMWQ2YzFlM2I4MmQ5NDdiYTkxOGIyN2YxMjRlNGNmNDkwOSJ9"
+        },
+        {
+          "resource": "repo://08_AdvancedTopics/01_batch_operations.py#L115-L138",
+          "version": "repo-lines-v1:sha256:e8d9c5d2bf305e1dc29ee56534f4fd0316531ddca7da9fbd118a89876afecc4f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjZTJlOTE4MGFiZjc3MmI5ZTkzMzk5YWFiYTA3YjNjM2Y5NjIxY2E4YmRjMjhkNDU1OTU0ZTU0MzM5MGE3NzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjNWUwYTk4YzRiYzNjZWQyN2I1NGY4OWQxODFmMGRmYWQ0Y2RmZDFiNTlmZDYxYTk0NmUxMGFiNWY4NzU5OTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjllNWI0NjZhNDk5ODI0NjZmYjI2NGFlMjA4ODA1YWVlZDlmYjliZjkyMDA0OTAzYzgwYzIzYzFmYjM2ZmEyNjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVjMjNhNjJjNTE4NWJlZjgxODczMWU3OWJmNDdkZTE3YjlkYWZkMmVmMDYyZDY1Y2RiYzJmN2MxMWE1ZjljZjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_55c94c3abcce42b9b49e29d1bdded901",
+      "statement": "_check_references calls find_package_referencers_for_asset(asset_path) without load_assets_to_confirm=True, the third place in the repository that omits it, and filters self-references with a list comprehension. The consequence is milder here because the tool only warns, but reusing this check as a deletion gate would under-report. The accompanying comment is the best treatment in the repository of why an orphan is only a warning: it may be genuinely unused, hard-referenced but not soft-referenced, or loaded dynamically from a path string that no tool can detect.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L185-L208",
+          "version": "repo-lines-v1:sha256:7227c7f5b382e2c95697cbb875dcaffe670affdc3a4aadcfd281070a7246871c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUxZTkyOWEyYzE2Mjc1ZjMyYjQ1ZTg0YzA2MjU3MTA1OThhY2E0NmVmN2YzMjlhN2Y4OWIxZmFiNDQ5Yzg3ZjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MDMyZTk2NGQwOTMyMzUxZTVkMTg1MjY5MjgxYjE3MWEzYTA5YjA4YjI4NmU2NjFlYTQ3MDMyM2M4MmViNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhkYjQwMGFlMTg2Njk5YzQ4MDBlODk0MWE3YTQ2Njg1MGI3NWUyYjQ3OWNkMjI1ZTE2ZWI5M2E4NTQ1NjFjOGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3MmM2ZGRhNDcyMzljZDVmM2FhZjI1Y2IyYjIyMTA4YjFlOGE5ODAyZjgzMGJhMmFkNjNiZDYzNjUxZmFjM2QifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_823adf13c99a494aa78fa715de7c9eb6",
+      "statement": "arrange_in_circle places Actors on x = radius * cos(theta), y = radius * sin(theta) with theta = i * (360/count) using math.radians, then faces each Actor at the centre with yaw = math.degrees(math.atan2(direction.y, direction.x)) where direction is the look-at vector to unreal.Vector(0, 0, z_height). Because the look-at point reuses z_height, direction.z is always zero and only yaw is computed. The ring is centred on the world origin rather than on the selection's centroid, which the docstring does not mention.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L292-L342",
+          "version": "repo-lines-v1:sha256:f05830df1599b903219bcd2a9edb30a0d3ae59dc3e50dbc3546db931def8efec:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyOTE3ODAyZTI1NDRkMTliMTFlNjI3YzkyMDBiNTM2MmZiMWVmMjY0NDcxMGUyMzhiZmFlYTA5Y2UzNmYxNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzZDFjMDY1ZDE1Mjc0ZGY1Y2VkZGEwMDc2ZTgxNTRlZDdmYmE3NTQ5YTE0YmUzYTI0N2VjMWJmOWYyNTdkNzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVhNWVlYzE5ZDFlYzUyOGU1OWZjOGVjNTdlNzFjM2Y3YTYwM2U4NGIzMDhmZWFhMzBmOGJhMjc3Zjk3YjM1OTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM3MWYwODhjNzYzYTIyYmI2MmJiNGMzNWYxZjQ2NmU0YmNmMmJmODg1ODUzZjc2YjZmOTE5YTJhNmRjY2YyOGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_92c95671f34e4dd6b4d62198d974d7c1",
+      "statement": "arrange_in_line defaults start_pos to actors[0].get_actor_location() when none is given and places Actor i at start_pos plus axis_vector * spacing * i, so the first Actor stays in place; scatter_randomly places each Actor at random.uniform per axis inside the bounds_min/bounds_max box and optionally applies a random yaw. Both wrap their loop in a transaction opened with the first selected Actor as primary_object.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L345-L377",
+          "version": "repo-lines-v1:sha256:6608bd999c95ac54a4c255df735b4f59ed1a944eddcd6809a2d24a286546e63b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiZmUzYTJjNjZiNjQwMzcxNDc5N2FhYjRiZWUzMmY2MzQ1ZjA3MTNmZmU3MDUxOGVmZDliMTViM2MzZGIyODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzN2I5Y2E4NzZjNzQ4NDgyMDU2OGVjOTY3Yzg1ZGYyMTM4MjkyYzAwMzQxZGRmYmM3ZDdjODZkNTZmOGZjOWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM5YjE2ZGI2YzQ1OWI3MWU5OWY4Mzc1NjJjZWIyOTVmMDk0NjRhM2UwYmZmNDllZWQ4MzEzZTYwMTFmOTE4OTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU3MTNjZmJkMjU4YTI0MjBjMTJjNjVmNzVlMzUyMjdhMmRmNGU5MjMyNDg5MTFiZmQ4M2Y5NzhmMGIzMGM4NjAifQ"
+        },
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L380-L413",
+          "version": "repo-lines-v1:sha256:038530247eb4a817dfd5a2089cb741628a8e07a8f5395ac03075bee353137eb4:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkYmUzZDY1NGNiYTMyZThkY2JhYjYwYmEwNGQ4Y2U5ODRhNWNkZmJhYjhiZDM1MzIwYWE2YTE5ZjE4NzViOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3MWU5N2M5YzI0MDk3NWU1ZmU3MDcyOWE1OTllYjNiNmNkZjJjNmNhYzFkY2FmZDgwNzYxNTUzM2M5MmVkMDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjljYjRiYjk3MTVmNjRlODYzMzYzZjk5MjY1YzlkNDk2NzFhOGQ4OTY3YjdmNmRjNTJkNjRjOTAyZTQ1OTZlYTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFjNTRkY2I0ODkxNDhjZTlkNDNjZmRjODgxNjI2Yzc5OWFmNWUxMDI1YzZjN2RjMTYzMzEyODQ5NDc0MDFhZjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_39404f2395d445c380a4531d47ced354",
+      "statement": "mirror_actors negates one location component and applies an axis-specific yaw rule: X mirror gives yaw = -yaw, Y mirror gives yaw = 180 - yaw, and Z mirror leaves rotation unchanged, with the comment explaining that the Y case reverses back-to-front and therefore also reverses left-right. Both the location and the rotation are mutated in place before being written back with set_actor_location and set_actor_rotation.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L416-L453",
+          "version": "repo-lines-v1:sha256:5217379b1e25695e254dbbc72b5ba9bc3488769885285c046c99f331a2572153:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVhOTljOTM5OWEyNWNiNTVkNDcyNTlkYzhkNmUxNzJmMTdlNTRmNjkxOGUzNjE3YTA2NjdhNmU4ZDBkNjMxMjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2ODE3NjFhZTExNWE1NTE2M2ZlY2VkYjg5ZWRkNTY0OWNkYTFmZTg5OTE3YWNjYWU1ZGU0MWE5NzQ5MzQ4NGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA0ZGZhNTY4OTFlMDhiY2U5YTU0MzE5OTIxMDU2ODZjN2Q3MmJhNmE2ZmYzYWZiODE4ZTEwYzFiOTE2NDE5MGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzM2I3ODVmMmVmY2ZmNzkzOGI1YTk3NzY2YmZjYTM0N2NkY2U1NWQzZjUxYTY3NDk1NzViNDQ3N2VkNzYzMzcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b12ffeed03c24f288c370237d80a7801",
+      "statement": "Both lesson docstrings list actor.duplicate_actor(offset_location: Vector) -> Actor in the exercise crib sheet, but no such method exists on Actor or on EditorLevelLibrary: the stub exposes duplication only on EditorActorSubsystem as duplicate_actor(actor_to_duplicate, to_world=None, offset=[0,0,0]) -> Actor and duplicate_actors(actors_to_duplicate, to_world=None, offset=[0,0,0]) -> Array[Actor]. The receiver is wrong, the parameter list is wrong, the batch form is missing, and neither function is called anywhere in the chapter - yet exercise 2 of 01 is exactly the task this signature would mislead a student on.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L20-L20",
+          "version": "repo-lines-v1:sha256:4042329b7f120712cccb64f1968cff8b200642160cde245552a38e13dd723c75:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDA0MjMyOWI3ZjEyMDcxMmNjY2I2NGYxOTY4Y2ZmOGIyMDA2NDIxNjBjZGUyNDU1NTJhMzhlMTNkZDcyM2M3NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDA0MjMyOWI3ZjEyMDcxMmNjY2I2NGYxOTY4Y2ZmOGIyMDA2NDIxNjBjZGUyNDU1NTJhMzhlMTNkZDcyM2M3NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGU3MzY2M2JiNjcyZmM1NTc4ZTA0MjRlODNlNTVkN2ExYzRjNGZmZGYxOGZhOWQyMGZmNjI4MWI4Yjc5NGI2NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTg0NjM5ODJmYzE5YWMwYjQzODdjYWQ5OTUwNTc2OGZmOGU5NjIwNzU3MjM2MjM1MGM0OWM3NGRiYmQ0NzVhMCJ9"
+        },
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L20-L20",
+          "version": "repo-lines-v1:sha256:4f722dd06329de9ef5e0ad26d7533d14dfc957dc3fa981e76d6cde73cb195e79:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGY3MjJkZDA2MzI5ZGU5ZWY1ZTBhZDI2ZDc1MzNkMTRkZmM5NTdkYzNmYTk4MWU3NmQ2Y2RlNzNjYjE5NWU3OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGY3MjJkZDA2MzI5ZGU5ZWY1ZTBhZDI2ZDc1MzNkMTRkZmM5NTdkYzNmYTk4MWU3NmQ2Y2RlNzNjYjE5NWU3OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzYwYWFjZGUzNGQ0M2IwNTk3MjkwODk3ZGQxZGQ2ZDcxYWE2ZmY4MzQyZGVhZjdkMDJjY2FiYzNhN2IxZjU5YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTc4NGU2OWNiZTdlNzllZTc5ZGU3NzQ1MGU1M2ExYTA1NTA5MDExZGMyYzE4OTBiZDc1ODQ4NWE2ZDg1NGRiYyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_30475d39131c4fc3b38b2bf525e5f0eb",
+      "statement": "The Rotator keyword-argument warning appears three times across the chapter (01:381-383, 03:339-341, 03:406-408) and keyword form is used consistently: the positional order is (roll, pitch, yaw), so writing Rotator(0, yaw, 0) would put yaw into pitch.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L381-L383",
+          "version": "repo-lines-v1:sha256:df4c8de99e4b53b3d6969f7e6f2ef14e75b460ca463c6e170e8ea81bee7fdd06:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmJmMjRiNWE4MWRhYzY4MWMwNTE1ODZiNWY4M2I3ODc1OTNlNDdlYmI0MWRiMWM0OGY4NTU3Y2Y0YmIxNWJhMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGJmY2QwZjdhMWJmYjdiYWMyMGYzYWVkNmFhMzJjOTM0ODNmMzY3ZDAwZTg5ZGM4Nzg0YWQ3ZTBlZWIxODU1YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzdlMDYwMWM5YmNiOWM3ZjY4NWE1OWI0MGE3ZThkNDhmOGM4N2E4MDMyZDk3NmJjNmU0MDMwNmUzNDIyMGEyYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDFkM2JmY2ViMjBmNDMxNzE3MGNhZWU4YmNlODM0MWFlMWVjNzM5Y2JjMDllMzA0ZjVkZTMyMjY5ODQ5NWZmYyJ9"
+        },
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L339-L341",
+          "version": "repo-lines-v1:sha256:1ef7b21ba66e37523ef42dbe377279e186121e3b6f8924524d094ddb8e7d8624:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2RlZGQzNDJmYzU3MDY1NzIxOWY1MmQ1MGFmMzE3ODg3YzdiM2RkMDIzMTgxNzNlMmE4YmFiN2FhNmI2ZmIwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTk0YWVlMmQ2YmJiZmIyODgxYjUxYzljMTQ3NWM0Yjk3MjQyMTMwOTdmZWRhMDNhMThiNzU4ODZjNjQ0ZDkyZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDY3MGEwZTFlZjBhMTA2MGUwZTFkNzYwMjkzNDY0MjE1NGQyYTIxNjBkN2I4ODA0ZWI3OTM5MDRkNTVkNzM1NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzliMTZkYjZjNDU5YjcxZTk5ZjgzNzU2MmNlYjI5NWYwOTQ2NGEzZTBiZmY0OWVlZDgzMTNlNjAxMWY5MTg5NSJ9"
+        },
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L406-L408",
+          "version": "repo-lines-v1:sha256:c7f995a075ca23f99678b4bd70af3a9ed2582fadbe3c8d13f22041757df99126:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmI1ZjU4NWYzYzkyYzc0YmUxNjA3NTVjYjI0MmE0NWE0ZDE2ODBhNTBmMmE0MGZhYmVjZWNmNDA5NDAyMzViNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODk1ZDQxNTFlMWQ2N2MyMjQyOTg2YTNhYmRmMjVmMjdkMjk1OTE0Y2MxMjE3YWFjOGMyZjJiNmMxY2QwZjVkMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDM1OWQ4ZjAwZDliZDA5ZWJmNTI0OGQ2OTNiYmM1ZTZlZGFiZDFkZDYxMzVlZjc2OGRlMTExMjE5NDJmNDE5NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjg2Yjg1OTVkYjFkYWMyY2U3NzYyZDQzODdiNmU1NDBkMjFmYzFiMWQxNDBmZmFlNTc3ZjlhOTg3MDM5MGZlNiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_21bd02221f8f46ab8690abf43456d1af",
+      "statement": "LevelLayoutTool uses the migrated selection API throughout and explains why: the comment states that in UE5 get_selected_level_actors moved from EditorLevelLibrary to EditorActorSubsystem and that the old form still runs but warns, then calls unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_selected_level_actors(). This confirms the chapter knows the difference, which makes the untagged deprecated calls at 01:412 and 02:166 look like oversights rather than pedagogy.",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/03_custom_tools.py#L302-L312",
+          "version": "repo-lines-v1:sha256:afe442e778050b1c9ead0be3ec48a95de8dd625a686174907dfe544956019cba:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwZGUyNTg3MTk2MTQ5MjYwNzFjOGZiMTlmZDg2NjE1MDU1NWYxYjAxMzU0ZjhjZDE2MDNhMTA5YTdkZGFlNDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2MDFmNWZmNTc3ZWIyNDc2ZTJkNzYzODZhMDdlYWY2MzVjMDQ5NGQyMzE2ZmQ1NTA4YjQyM2VhZTI0YjhjZjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEyNTU3MDIwMmExMjU2ZGRmMzIxZmI0OTMyMTc0YzIyM2ZkNDVhNGFlYWZkNDg1YjRkZmQ1MjEyM2RiY2Y3OWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5ZGU2ZmEyNjA2MDM1NWQyNTcyMjcwOTUyY2YwYjJlYTQwNzYzODc0ZjBmNmM3MTIwMTNjZjhiMGU5YjQ2ZDgifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.1",
+    "at": "2026-10-07T08:34:04.254Z"
+  }
+}

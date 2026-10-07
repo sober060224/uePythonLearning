@@ -1,0 +1,368 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:656e577a0c834b604fea1577c2b59b2c17bc632451a803fa5afcd52b106eab4f",
+  "claims": [
+    {
+      "id": "claim_955bd79a13174c62beaec74991d8baa9",
+      "statement": "第 02 章的查询铁律是“先 find_asset_data 读元数据预筛、只对命中的资产才 load_asset”：01_list_assets.py:106-133 的 find_assets_by_class 先把 list_assets 拿到的路径逐个过 find_asset_data，my02.py:283-292 把这条写成四步思路并指出如果写反（先 load 再判类型）会把整库读进内存、脚本慢到像卡死。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/01_list_assets.py#L102-L133",
+          "version": "repo-lines-v1:sha256:08fa8e42c69036bdc343971977a2b954a43dbcac38d8ae643696a0a8a2cf9c09:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjMjVlOWNkZGQ4Njg0NzdhMDdhYTJjNjY1ZGNiNTBhOTkyODE5ZjM5MmIzNzIwZDBhNGNmMTMzOWM5ODcyNWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNmI1YjUxNTdhNzFkYzg5MzE4MWNlYjU0Mzc2MTFkNjhhOGVmNDE5YWRjMjY3OWUzNTg1YWJiZTUwYTc0ZjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhODZjMjk2MzA3YTAwZGQ0MDYyM2Q2YzA3MDgzODQ2OTQ2NzNkM2EyZjY1ZTkxNjhjODMyMDA0MjQ1YTBmOTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiNWIyZTUwYmY4MDVhZTU3YTkwZDhmODg0ZjJmYjY5Y2JmYWJmNGRkMDZiMzgwZDE1ZGJhZTUxMTJiNTc3MTIifQ"
+        },
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L181-L213",
+          "version": "repo-lines-v1:sha256:c57e2801c155ff7ea89055612b888d77c0ff6d40aa2baa8c6898428d420ea439:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzODFhOWNlMTI1MWEzODYwNjI3MmQ4YmE5Y2VmNThlYTA5YjRmZjA5ZjAzZTNkYjc5MjE3ZTJkMjNjMTg1ZDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI3ZDVhNjAyYzJhZjc0MWUxZWFiMmU0YTU2MTA5ZjM0MGM3OWU1ZTAyOThhMGFiMDM5OWUyMGE3NDJjN2IwOWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1d4c96e9b5774fa488d6743bd9691785",
+      "statement": "UE 资产路径必须写 /Game/... 这种虚拟路径（对应磁盘的 Content/）；写成磁盘路径（如 Content/Characters）不会报错，只会静默返回空结果，是最难排查的一类失败。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/01_list_assets.py#L35-L45",
+          "version": "repo-lines-v1:sha256:cb2adb9c3f33940a8ad86a3bcd502341a5b9c8376caa85fbc8ebbdd19fd8b508:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2NTU2ZmRkODI3MDNiODQ5ZDY5M2E4MjAyZTRmNTBiMzE3OWQzY2M5MzhmMTBiYzVlN2JiMDY1M2YzMmZmMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzZmJjNWZhZmIyZTVhYjQwOTAxODM3MjY0NzEzOGY2NGIwZmFiNGIxZjY3YWE3YWQwM2FhNmI5YjVmOTQzZTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE4YzYzNGIyNjVlNTA5ZDVjYzBmZjQ0Yjk0MTY4ZDc0MzA1ODk3Y2NmODA2NjNlNzZlYzUwMjI4ZWRlNzllNGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVhY2VmOGMwYzEzM2NiYzU4OGY5YjM2MWQ0M2U2OGJiMGNiYTFmMzdhYWVjOThhMDY5MmYzZWI0YjMwZDgxZjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a0bd7bf0bf4842acb6f589063a7e4838",
+      "statement": "print_directory_tree 处理 include_folder=True 的结果时有三个必需的坑：文件夹路径带尾斜杠所以直接 item.split('/')[-1] 会得到空串、必须先 rstrip('/')；判断文件夹还是资产要靠 does_directory_exist(item) 而不是看尾斜杠；max_depth=3 是必需防御，大型项目的 /Game 嵌套很深不限制会爆输出。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/01_list_assets.py#L65-L97",
+          "version": "repo-lines-v1:sha256:1fb142886439833b49a221c90bdde0d562a843f37ce1c06c4f2371c688b7fdbf:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2ZTUyY2NlMWQyMTcyNjQ3ZjAyMDU1ZGM0YjBhNTNlMTY5NDNmMGQxMjAxOWE3MjFmYmU5YzIyNmI1YmRlZWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhhNTdmOTk5N2E4MGI5YzM2YzFkYzU2YzRhNDU4MzdmNmU5N2RjOTc2ODk1MTZjYzEyNDRhMDBkNDI5N2FjMWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIwNjlkZmRkOGVhYTIxNTNhNzcwNDM0Mjk3MjBiYTM2MjNmMzUwNWZkZDNhYWZlOWM5YWRiODMzZDgwNjQ1MzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1200df6033364a8283bb24121797333f",
+      "statement": "find_assets_by_class 用子串匹配 class_name.lower() in asset_class.lower()，因此 “Mesh” 能一次拿到 StaticMesh 与 SkeletalMesh，但无法精确匹配（“Material” 会连带命中 MaterialInstanceConstant、MaterialFunction）；同章 03_asset_actions.py 改用 str(asset_class_path).split(\".\")[-1] 取裸类名再查字典，两种策略在同章并存。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/01_list_assets.py#L106-L133",
+          "version": "repo-lines-v1:sha256:8e2424c5ce176865146cb4aafc57904220fa427668afe99ea3a90dd9ed1d968c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkOWY3NDk1Mjg1YTAwYTgxMWM5YjQ0MjQ2ODczZTIyZWZmM2RmYmU5M2E3YTBlMzczYWMwNWFiNDllNGQyOTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNmI1YjUxNTdhNzFkYzg5MzE4MWNlYjU0Mzc2MTFkNjhhOGVmNDE5YWRjMjY3OWUzNTg1YWJiZTUwYTc0ZjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhhNTdmOTk5N2E4MGI5YzM2YzFkYzU2YzRhNDU4MzdmNmU5N2RjOTc2ODk1MTZjYzEyNDRhMDBkNDI5N2FjMWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiNWIyZTUwYmY4MDVhZTU3YTkwZDhmODg0ZjJmYjY5Y2JmYWJmNGRkMDZiMzgwZDE1ZGJhZTUxMTJiNTc3MTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3409b6a9c0474e3e8a9283d4230df5ea",
+      "statement": "读资产类名在仓库里存在两种并存且都有效的写法：str(asset_data.asset_class_path.asset_name)（01_list_assets.py:125、my03.py:74）与 str(asset_data.asset_class_path).split(\".\")[-1]（03_asset_actions.py:170-172，先得到 Engine.Texture2D 再切）；读完类名后还要把 asset_name 也转成 str 才能用 startswith/split，因为它是 unreal.Name。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/01_list_assets.py#L106-L133",
+          "version": "repo-lines-v1:sha256:8e2424c5ce176865146cb4aafc57904220fa427668afe99ea3a90dd9ed1d968c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkOWY3NDk1Mjg1YTAwYTgxMWM5YjQ0MjQ2ODczZTIyZWZmM2RmYmU5M2E3YTBlMzczYWMwNWFiNDllNGQyOTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNmI1YjUxNTdhNzFkYzg5MzE4MWNlYjU0Mzc2MTFkNjhhOGVmNDE5YWRjMjY3OWUzNTg1YWJiZTUwYTc0ZjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhhNTdmOTk5N2E4MGI5YzM2YzFkYzU2YzRhNDU4MzdmNmU5N2RjOTc2ODk1MTZjYzEyNDRhMDBkNDI5N2FjMWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiNWIyZTUwYmY4MDVhZTU3YTkwZDhmODg0ZjJmYjY5Y2JmYWJmNGRkMDZiMzgwZDE1ZGJhZTUxMTJiNTc3MTIifQ"
+        },
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L167-L178",
+          "version": "repo-lines-v1:sha256:3b1401641507ed89fc2e2b75b48e3ecc4eaec3e0b0b7376b205f5bbf29a0f836:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmMTEzM2IzNTE1YmRmYjEwMGIxOGMwYzcxMTM3MDQyZTBjYTk2NGFlYmQyODFlMzdhMGRlZTU5YTM2ZWE4ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1ZGJjNmJmZmY5Yjk3ZmQzMTU1MzkyNDViMjVhOWRhMzYwZGFlMDJiNDk0M2NkYTFlZDE2OTg1OGQ0NzJjZDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBlZjgwODRjMTdkMTgwYzNiOWJmN2Y0YTBkNjRkOGZkOWZhMGIzNDZhOTEyZWI5OWJlM2QwMWQ0NTA5M2YyZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2Y2Y1YzM5MDNiNDVkNjU1ZTI4N2M3MWZiMmVlN2Y5ZGM0MGQwODI4NGJhN2UyZTI0OTJiZWNkOTdmNTIzYTgifQ"
+        },
+        {
+          "resource": "repo://02_AssetManagement/my03.py#L70-L78",
+          "version": "repo-lines-v1:sha256:873fa4b60233dfa1a74a49d0dd137387fcd4e9a06191a6ddce652d5d21bb3a0a:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTgwNWU2MWNlNGRhMGQyYWNiZTdlYTJiYmZiNjVmZDU1NzE3ZjIzMTMyZTZjYWE2YjY2NjU3NTI1Nzc3YjJmZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjc2ZWM1MzdmMzg2MzVlM2UyYzc2ODI4MzJhZmNhMjkzOWIzNzQwZTJmYjY4ZmQ2YTM1MTE0MDIwMmRmZjVkNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTcxOTI0NmI5NGQyYTEwOGNhOTg1NDQ5ZjBjODRmOGI3ZTA5Y2E1ZTcyM2RlMTk0N2IzZmZhZTIzMzNmNDE5NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTU3YWQ3YTkzNWI0NmZjZDU2ZTI0ODRlOGQwZjYxZmZlMjg1ZjAzOGM1MmY0ZWIzMDU5MjliNjNhZGVjZDQ1MyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_7e63e2806d4b454a85ffe1d7a1a894f4",
+      "statement": "AssetData 没有 disk_size 属性，算资产体积必须离开引擎 API 用 os.path：my01.py:151-170 用 unreal.Paths.project_dir() + “Content” + 相对路径 + “.uasset” + os.path.getsize，并用 os.path.isfile 过滤存在性、sorted(..., key=lambda item: item[2], reverse=True)[:10] 取体积 Top10；my03.py:41-66 用 os.path.abspath(unreal.Paths.project_content_dir()) 再 os.path.normpath，并用 next((a for a in [path + \".uasset\", path + \".umap\"] if os.path.exists(a)), None) 二选一，因为关卡资产存成 .umap 而不硬编码 .uasset 才不会漏掉所有关卡。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/my01.py#L151-L170",
+          "version": "repo-lines-v1:sha256:a9a5ba5a38b57e7bee62b73fa50158f90ceb7915c171e807ab22182236974e38:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwNzkyZDJkZGE1YTBjOWJmYmQ3NzBmZjQ2MmMxMDM4ZWEzZTAzMzE1MmM5OWRiYmFlYTFmZTA5YzQ0ZjBjMjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwMzU0ZmQwYmNlZWU3OTBiNzRkZWJlNmYwYTA2OTBlMGNkOTUwZjZmYjZhZDdiNGQ4YWQxMzk3OGYzNWNlZjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYyZGUzY2IxOWQ4Y2I2MDk4ZjljYzIzMWIxYjRjNDQ3ZmQ0ZDAzODQwMjAxZWEyZjc3N2E2ZTE5MTQzYTA2YTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI2YWQyMzM1ZDM5NGEwMTE2NjAyYjcyMGNiNzJjNDdmN2NiNDk5YTM3MzM0MzMzMmEwNGU4OTRjMDE3MjkxMmIifQ"
+        },
+        {
+          "resource": "repo://02_AssetManagement/my03.py#L41-L66",
+          "version": "repo-lines-v1:sha256:1ab5788c10a01819e4939f5b092f79a34e8f15b1d2c7da7fe67de11736b9073b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjMTVkMTY3OTY1OTRkZThhZWY5N2FmODQyNjA5MTM0YmVkODc1N2M0NDVlMjE1YjlmYTIwYjRlZTZiYTIwOWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxZWM0ZTRmMTEwYWMyYTU1M2UwYmY2NzExZTQ1YWMyNzQyNWI2NzgxYWE2MWRjOGY5YWUyOTJjOWU2MTc1ZTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzYjAzODNiMTM4OWQ1Nzg2NWNiNWJjZDE4OWY4NmJhMWJiZGExYTAzNGI0NWM0YjIyMTJkYTk1MmU2ZjZhNTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE3MTkyNDZiOTRkMmExMDhjYTk4NTQ0OWYwYzg0ZjhiN2UwOWNhNWU3MjNkZTE5NDdiM2ZmYWUyMzMzZjQxOTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_27ec54553fff420dafe9d2bcaac841e6",
+      "statement": "磁盘路径反算回引擎路径的四步是：dir.removeprefix(f\"{content_dir}\\\\\") → unreal.Paths.normalize_filename(dir)（把所有斜杠统一为 /）→ unreal.Paths.combine([\"/Game\", dir]) → removesuffix(\".umap\")/removesuffix(\".uasset\")；my03.py:109-127 留了一段草稿，记录 removeprefix(content_dir) 不加尾分隔符会剩一个前导反斜杠的失败经验。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/my03.py#L88-L127",
+          "version": "repo-lines-v1:sha256:cbfd6d2c4b4a4f6c1e44aaa1faff722471f7f42d1556da404866469c9e91aba0:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3YmFmZTllMWRlM2RhNTZhYmRjMGY0NDlhMTkxYTg2MGU5NTZkZDU1OGI1OGNkMmY0YWFiNmU3YmJlYjgwMmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFhZDlhNWQwMDIwODAxNWVkZjNhYWRiOWU3YTY5M2ZhOGZlMDY5ZDkyNWE4ZWYyMzI0YjhhN2QyYmFmM2YxNTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5OTQxNzA5YjhhODZlZTJmNDM4OWM4NGI2ZjAxNzIyNWQ1NGI3OTBjZDdjZGNhOWNhYzZlOGIyMWY5NGVmOWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c959484e894149ca98e509e430abac4f",
+      "statement": "凡是用 find_package_referencers_for_asset 判“未使用”的地方都必须过滤自引用（资产可能引用自身，例如蓝图的默认值，这不算被外部使用）；01_list_assets.py:244 与 03_asset_actions.py:259 直接比较 asset_path，而 my03.py:48 写的是 asset_path.split(\".\")[0]，后者更稳因为该函数返回的是包名而调用方传入的路径可能带 .AssetName 后缀。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/01_list_assets.py#L244-L244",
+          "version": "repo-lines-v1:sha256:d2e150080a8f091d19a0afa4abdf6e0ee0f2b5fd2093450467b7a630b3d1a4d3:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDJlMTUwMDgwYThmMDkxZDE5YTBhZmE0YWJkZjZlMGVlMGYyYjVmZDIwOTM0NTA0NjdiN2E2MzBiM2QxYTRkMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDJlMTUwMDgwYThmMDkxZDE5YTBhZmE0YWJkZjZlMGVlMGYyYjVmZDIwOTM0NTA0NjdiN2E2MzBiM2QxYTRkMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2E5YjU0NDBkMjQzYzM4ZDczMjg1YzMxYTA0OTEyYWZhZTI0NmE3YzUxNGM1NWY4OWU4YzM1MDcxYTY2YTllZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWFkODBkMDM4NGZlZDVkYjk0NWFlZjVlYjlmZDQ4ZDI0NzVmOTg0ODE1NmU3YTBiNzhlYmIyNzQ3YzRlZDkxMiJ9"
+        },
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L259-L259",
+          "version": "repo-lines-v1:sha256:507e6068672732f68eca539bfc624692c62d88d14cd7e01fc392fe402c8ee16c:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTA3ZTYwNjg2NzI3MzJmNjhlY2E1MzliZmM2MjQ2OTJjNjJkODhkMTRjZDdlMDFmYzM5MmZlNDAyYzhlZTE2YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTA3ZTYwNjg2NzI3MzJmNjhlY2E1MzliZmM2MjQ2OTJjNjJkODhkMTRjZDdlMDFmYzM5MmZlNDAyYzhlZTE2YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDA0OGQyZmJmMjY0MGY0YTcwMjIzYWRiZTEwMjc4NzlkYWIwYWM5MWVkOGZiMDRhM2U3MDEzMjY4YjgxNWMwNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTZjNTVjYWE0MGM5MGNhZjU3NTc2NGFhMTJkZTlkY2Y2OWEzZjU5YTA2MWJmNmFlZmUyMWU3ZDZjMTEzNGM4NCJ9"
+        },
+        {
+          "resource": "repo://02_AssetManagement/my03.py#L47-L48",
+          "version": "repo-lines-v1:sha256:5dbde4a879542d4f670bc21d8f33f33e03793cbe561a5e2286f17a83f7691ea5:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTk3NDFiYTVmNjNkMTkyMmNlZjYxNzNkMDM3MDZkMDhmMTkxODhkOTU1ZmJlNDJmMTBjYTY1OGIwZmVhZDRlOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTVkYTFjNzBhY2M0YWU0NTcwNzExNzdhNThiNDFjYjkyMjMxNDc5ZGMyY2FkZGUzNmUxMWY3MDZlMjk3MWYyYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzYwN2JmZTMyNWQ2ZWY4NmU3MDcxZWRmYzYxZDQyZTRkZTU5NDIyYjA0NDY4NDFmY2VlYmY4MGY5M2NmYzJiMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTQ4NTBkNzljYTgzZmYwNWVmNjM4OWZjYjVkODFmYWMxNDE4ZDE4MzhjZDAyYTljODU2OTQ1OWE3ZTcyZDcyNiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_a08d37e04cfc44be9a9108c8b7c33caf",
+      "statement": "find_package_referencers_for_asset 的 load_assets_to_confirm 是准确度开关：默认 False 会漏掉“必须加载才能确认”的引用，所以在判定未使用资产与删除前检查引用这两个场景必须显式传 True（三处注释措辞一致：“删除/判定前把需要加载才能确认的引用也算进来”），代价是它会让本来零加载的遍历真的加载资产。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/01_list_assets.py#L232-L246",
+          "version": "repo-lines-v1:sha256:b78512d815067656cb21a8358bf4e0ae2b04e9a10eb6a8ad67811a3b4c89f507:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1NDM1NGFiYzgxMDBkZjY0MTNlMGE1ODdlZjEyZWM2Nzk1YzI4ODU1OTFiOGFlMzMyYmVhZWM2ZDI1NWMzOGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZDllYTkwZWQ4NGRhNTMwNzdiMjdjYjQ1MjRiZWFhYjNkNTM1MjI5Yjc5MzY4ODdhZjdhNzk3YWUzYWI0MjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQxMWU0NTliMDIyMjBhMmY0ZDU5OTY1Yjg0MDZkZWYwYTZhM2IyYWVkZjQ1ODkxOTU4NmViMDgwZTUzZmVkNzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ3YTcyOTFiNTcwYjM2MjBkMGU5ODM5ZTY3YmMzY2EyYzM5YmE2ZjljMjQ4ZWIyNGEzMjU4NzFlMjMzMWQ4YjEifQ"
+        },
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L250-L268",
+          "version": "repo-lines-v1:sha256:1de5ffc25e3a0e745002c68214af982dc60ad5561596d34a10691b1dddfde507:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkZmJlMzUzNjIzNzU2YmY3ZTRjMzczNmYzNjFiMzEwNDI5OGRmMzJhYjZhZGNiYTZlMDk3ZjkzMzljNzU2YWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjZThjNjZhODFkMWI1MTM0Y2JhMDQyMGQ5ZDUwMDU4ZWFhZTZhMmY2MmQ2OGI2YTJkY2Q5YjlmNzBjNTIyOWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAyOGZhZTA1YmU4MzIzODZhYWFhMjcwODJlM2YwM2UwMDY5ZjQ1YWQxZWU3MDYzMmY0Mzk4NzEyN2ZhNzdmZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIxZmI5YzQ2ZjZmNDM1MDg5MmM4ZmQ3ZmRjMmMyOWIyYWI3YTU1NmJlZjkxODBjZWZmNmY4OWNlMGU4YWM0MjgifQ"
+        },
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L320-L328",
+          "version": "repo-lines-v1:sha256:f6f470f274b8ebc946bf0632cbedb1088046d2b3881726ddb024d2dd9a6a1b5b:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzFiZDU5YmFmMTA5OGFlOTZmZDc4NjRmMzZlODgyMmM1MTExYWUwZmQ3MGY2YWI4MjYzNmZlZTJlODVmNGFiNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTUwMzJlOTY0ZDA5MzIzNTFlNWQxODUyNjkyODFiMTcxYTNhMDliMDhiMjg2ZTY2MWVhNDcwMzIzYzgyZWI0ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjIxZDU0NDE1Y2E3MjZmZGFhM2ZkN2FmMWVhYzZiY2VjYTQ3ODRjMDcyNzVmMjQ2MGM2YjdiZWFkZjc0MzQzNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjhkNDhkMDk4NzJmYmNhMDg1NWM2MDAyYjIwZmZkZjdmYWI1ODcyOTQ0ZTgxMjA0MGYxMTNkYjU0YzI3ZGM0YiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_90866c55ae224fd1a4f9704565c9adb6",
+      "statement": "find_unused_assets 的成本是 O(N) 次资源注册表查询加全量加载（每个资产都调一次 find_package_referencers_for_asset(..., load_assets_to_confirm=True)），所以外面套了 unreal.ScopedSlowTask(len(all_assets), desc) + task.make_dialog(True) + should_cancel() 中断点 + enter_progress_frame(1.0, ...)；注释明确说**不调 make_dialog 进度条不会显示但任务照常执行**。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/01_list_assets.py#L214-L246",
+          "version": "repo-lines-v1:sha256:738cb3638d7f2896f6581a2e7060ddf7d33923ed9c509995241db4a6192b02a7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiNTM2YWNhYjM4YmE5Yjg1Mjg4OGFhNGMxOTc3ZGRmZWVmMmJlMzhhNzc5N2UzMDZjMWNhYTkwZDNhN2ViNTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZDllYTkwZWQ4NGRhNTMwNzdiMjdjYjQ1MjRiZWFhYjNkNTM1MjI5Yjc5MzY4ODdhZjdhNzk3YWUzYWI0MjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1YzJiYjIxYmIyN2UyNWNhMTFhZjhiYjNkOWNmNDNmYzc1OWY0NDY1YjU2N2Y4NzQ3YzMyYWE1ZGMyZjg1NjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ3YTcyOTFiNTcwYjM2MjBkMGU5ODM5ZTY3YmMzY2EyYzM5YmE2ZjljMjQ4ZWIyNGEzMjU4NzFlMjMzMWQ4YjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f61c43989ef345c595c9bb2a5c6c7648",
+      "statement": "导入走任务模式：先建 unreal.AssetImportTask() 填好配置，再交给 unreal.AssetToolsHelpers.get_asset_tools().import_asset_tasks([task]) 执行；六个核心属性是 filename（磁盘源文件）、destination_path（/Game 下目录）、destination_name（资产名，不含路径也不含扩展名，用 os.path.splitext(os.path.basename(file_path))[0] 取）、replace_existing、automated（跳过所有弹窗，批量脚本必备）、save（导入后自动落盘，否则资产只在内存里关编辑器就丢）。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/02_import_export.py#L156-L208",
+          "version": "repo-lines-v1:sha256:77ba30aca9c923f6d28dbed4a6ad5499eeecf1dae4dfaeebd3152cd6acacf26e:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwZjY5ZmNkZmU3NGFlOTczMzA4N2E2ZjEzZWI5YjMxMzg0NDFlMTBiYTJiNzIyYzY5NzhhNzA4Y2U3M2VmN2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhhNTdmOTk5N2E4MGI5YzM2YzFkYzU2YzRhNDU4MzdmNmU5N2RjOTc2ODk1MTZjYzEyNDRhMDBkNDI5N2FjMWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2OGI5M2RkZTU5MzcwYzY5MDY0YWY1ZjExNmZlMDM2MzgzMWI1NTllMDdkZDM1YmE2NTFjNzNmNjAzNDMyYjMifQ"
+        },
+        {
+          "resource": "repo://02_AssetManagement/02_import_export.py#L39-L77",
+          "version": "repo-lines-v1:sha256:cc89591c401520875a78263d3a6bf67d9757ae8f4b3b7887a1e3977cc942fc5b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg2NzI3OWNkMDkxNWZkYWMzY2YxNWFhNTg2ZGY1NDIzNGQyN2UyNzQxOTRkZmIyYmNmYmE5MDFiM2ZhYWEzZDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZDQ3YTA1MWJmMWNhMjJhODk0NmUwZWUwODA4YTJlYmNlZTg4M2Y5NGZhZmM2NzU3ZGYxMTY4ZjllZTcxYTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVjZWFmMTRlZmM4NTRkY2VkMWIxYjY1ZjgyN2Q3YThjYmM0YzhiZGY4ZDcyNzI0YmVmYWRlMGU0NDc3MTljOTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e881627d92954f2d93bc10720dbe93b7",
+      "statement": "导入结果按任务分开记录：task.imported_object_paths 只有在导入成功时才有值（格式不支持或导入失败为空列表）；批量导入的正确写法是先建完全部 AssetImportTask 再一次性调 import_asset_tasks(tasks)（引擎内部会优化内存与 I/O），然后对每个 task 分别读自己的 imported_object_paths 汇总。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/02_import_export.py#L182-L208",
+          "version": "repo-lines-v1:sha256:bed7846d442bb4146808a6ceafe5f46256bb70edebf0d703cd4d00e8a1dfceaf:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkZjI4NDk0ZDljNDVhNmUzNDAzMmI0M2YyNGIzMjllOWY4MzlhY2Y0NGQzMWY4ZWNkYjBlYmY0ZThkNDQzOGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxMDdjYTg1MmZkYmExN2ZiMWRiZDRiZDQzNzJjYjM3YTk1YTMxODI5MGRjNmEwMWM4NzA1M2Y2MWU5N2I0MjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2OGI5M2RkZTU5MzcwYzY5MDY0YWY1ZjExNmZlMDM2MzgzMWI1NTllMDdkZDM1YmE2NTFjNzNmNjAzNDMyYjMifQ"
+        },
+        {
+          "resource": "repo://02_AssetManagement/02_import_export.py#L68-L73",
+          "version": "repo-lines-v1:sha256:1c0548b0a83bebe6d3f50850f0540c29d85365e14bf36e711579824a9d8adf90:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzU0YjdlOTI5NjYxYjllOWQwZjZjMjExNWM1MDY1YjIyMzJjOGU5NjM2MmJkODFiOTVkZWY1YTEyOTQxMjAxYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMmZjNjc3YjJiMWEwZGM2OGE3MDczOGQyZGFlMWM4ODhjYzI0YmM5ZDY5YzljNWIyZDMzYWU5NTZhMTgyMTVlZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTRmYTIyZTMwMjdkODk2ODFkM2ViMzM0M2YxMDE1MjljMWI2MTQ2NGZiMDg4Mzc3ZWM3NTk1MjI3NzBmMDA0ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODk3ZTNjNzRlMDdlZDM1NzQ1ZTAwZmExYjcyNDJlMTJhMTdlOWYzNjFmYjRjZTdiMmYzMmFmOTgyNmYxOTdlZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_75ee9ffac9dd45eb8222293fd4043253",
+      "statement": "task.options 是通用 Object，要按资产类型挂不同导入配置类：FBX 用 unreal.FbxImportUI()，关键开关 import_as_skeletal（False=静态网格体、True=骨骼网格体）；静态网格体细节在 options.static_mesh_import_data（import_uniform_scale、combine_meshes、generate_lightmap_u_vs），骨骼网格体在 options.skeletal_mesh_import_data（import_uniform_scale、import_morph_targets、update_skeleton_reference_pose）；导入动画必须在 options.skeleton 上指定已有骨骼资产，否则引擎不知道动画绑在哪套骨架上。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/02_import_export.py#L96-L141",
+          "version": "repo-lines-v1:sha256:968fd32d2b9ccba6b633642ac77d7acb9966106b3429ba91319822aac1bdbfd7:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRiNzQzNmU2ZTRjY2YxYmJiMTBjODk2YTYyYWFlZjA3YmY5ZTE0ZGFkZjA3M2NkZDgzMTYxODRmNDY3YTQ0ODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmZGU0ZWY1MTdjNzhiYWFiMGQyMzVlYzFmODNjMWQzMmE4ZjE2MjlkNWQzZWE0ZmFkMmZhNDIwZWRlMDQ4MGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE0MWYxNjY1MGJiMTY1YzEzNWUyNWM0NWUxYmExZDg5YzAyNTUyY2MwZmNjYmJjN2E5ZDRmOTdhZWIxMTVkY2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE3YzIxZDgzMTY5YTQ4ZjMwMDFkNTU1NDkwYjJiMDA4MmM1MDEyNzU0YTQ1MGU3Mjk1OTY1NTY5MjQ2Yzg3MjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f5ca1ba03f514baebada92874fa11e64",
+      "statement": "纹理导入走“引擎用默认设置导入、脚本再改属性”：load_asset 后用 set_editor_property 改，属性名必须与桩文件完全一致（sRGB 是 \"srgb\" 全小写、纹理组是 \"lod_group\"）；compression_settings 等枚举属性不能直接赋字符串（会 TypeError），要先做字符串到枚举成员的映射表（如 \"normalmap\" → unreal.TextureCompressionSettings.TC_NORMALMAP）且枚举成员名必须全大写（TEXTUREGROUP_WORLD）；映射表都配了 .get(key, 默认成员) 兜底，所以传入未知字符串不崩，但拼错参数名也不会报错；改完必须 save_asset 否则修改只在内存里。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/02_import_export.py#L240-L294",
+          "version": "repo-lines-v1:sha256:45886d3719a65820f90933235f5f1301f6c3ef72a38c467c0896390cdbcfdfbf:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwNGMyZjgxYjI4NTMzNGM3M2IwNWY5M2QyOGQwMDRlYzBhNzExMDUxMDU4MWQ1NTFhNmE4MmUyYmQxYTg2NTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwMmNjOGUxNjYxNjZlMzk4YWE2ZGRiMjc4MDY4YzE4MmEwNmVkMTQ2YWJhODAyMDk4MDgwOWZhNWY0OGUzNmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0MGU2Y2Q3YzA2NGU4YTliZGNlOGNhZGEzNzhkNDU5NjQ1MmViMzAyOTRhNWNlYjZmODJiYzQxNjJlMjM2YWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRjNzMxZDFkMGZhYWFjM2FhYThhYThjYmM5NWRhM2ZmYzZmOTlmOWUzMzc0OTZiZWJhNTRhMjQ2Mjk5NTQ2ZWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5e7c8393f8db48078094a0e2e1d80992",
+      "statement": "导出有两条路且用途不同：asset_tools.export_assets(assets_to_export: Array[str], export_path: str) 只收路径字符串数组加目录、不支持自定义选项，导出器按资产类型自动选；而想挂 FbxExportOption 这类自定义选项必须走 AssetExportTask + unreal.Exporter.run_asset_export_task(task)（注释原文：“关键点：AssetTools.export_assets 不接受自定义选项，想用 FbxExportOption 必须走 Exporter.run_asset_export_task”）。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/02_import_export.py#L307-L366",
+          "version": "repo-lines-v1:sha256:48ab29c63f689ef1a9c5524a7a1acbd4076d789bd8380d02f7919f4c6fc9a179:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1MjU3N2UyMjQ5ZDRiZjI3MmU4NGRkMzRmZDc3MmY4NzI1N2FhNTgyNDg4NjI2NjU3MDY5NTkwOTNkOGJhMTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM0MzM0MTc4ZmVjODc5ZWU1ODZmMDZlM2YzMWY0OTQ0NTVkOGY4OWY1NDQ3ZTk4OTY1ZDEzNjU0MmY0YTkzZTIifQ"
+        },
+        {
+          "resource": "repo://02_AssetManagement/02_import_export.py#L369-L390",
+          "version": "repo-lines-v1:sha256:8b221f02951b9e9c7bf4b52137fdf37731114d50e1edc37ba796612552dfd64a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMyNGQyMjRlMmIzMmVlMTIwNjBlZTVjZGU3ZjAyMGFhMDFmYTkzM2IyOTMzMDA3OWQ3ZjljODY3Y2JiMDYyMGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU4ZTI3ZTRjMDA0YzA1NjAxYzFiYWQ1M2E4MjIyZTM1NjcyNmQxNDQ0MTdlZjNiY2VmM2VhYTJlZmNkYTQwMWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d5ecf3216267411ead2de4cac7f73a88",
+      "statement": "AssetExportTask 的用法要点：task.object 要是对象不是路径字符串（所以先 load_asset，拿不到就早退避免拿 None 继续跑）；task.filename 是“目录 + 资产名”且**不带扩展名**（导出器自己补 .fbx/.obj/.png）；automated=True 不弹对话框、prompt=False 不询问确认（无人值守必备）、replace_identical=True 覆盖已有文件；导出前必须 os.makedirs(export_directory, exist_ok=True) 否则第二次导出到同一目录会 FileExistsError 中断。类的其它属性含 exporter/selected/use_file_archive/write_empty_files/ignore_object_list/errors。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/02_import_export.py#L310-L358",
+          "version": "repo-lines-v1:sha256:b1f36ffef281a2f935aaf3ba46f7a2b134be1c9e5bb55426519ce44ffb75a5b9:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlODcwYzgxZDc4OGM3ODI3ZDAzMjQ1MzYzYjIwZTZlZjk4ZjgxYjFiMTVkODg4YjIyNGRiYzhiOTA4MWVmYmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1M2E0ZDBjMjBiMThhMzk0Y2YwYzAwYjM5MjgxMDQ5ZTJlZDgwN2M2ZjE0MDJjNjNhZDFmZjgyZmUyYWNjNDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJjY2ViODljNTQ3ODk5YjBlZmI4ZTY5NjQ3N2UzMzYyMDk1NTcxOGI1YzcyNmFhNzFlYTFjMWM0MzdjMWI4NjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzMzJhYzNiOTI0YmIzMTczNDBmZjE2OTJkMWVlN2NmNDg1NGI0NDZiMWRkYTg0OWYxOTlhOWU0Y2I3OTczMWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_20bd15d8dbf04f4b82f526eae62de6d7",
+      "statement": "create_asset 是“分步”模式：unreal.AssetToolsHelpers.get_asset_tools().create_asset(asset_name, package_path, unreal.MaterialInstanceConstant, factory) 创建材质实例后，Factory 不负责设置父材质（MaterialInstanceConstantFactoryNew 没有 initial_parent 属性），必须再调 unreal.MaterialEditingLibrary.set_material_instance_parent(new_asset, base_material)。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/02_import_export.py#L399-L431",
+          "version": "repo-lines-v1:sha256:0380ccc253291492039373d9e04a935d30032dfcb909796b6174699d0a429054:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0N2ZmOTBiOTdhNjE3ODVhMzIxODY2ZWYwYWI1OTkxYTlhNGJlNThlM2I4NmE0OGMyZDI3ZWY3NjE1NDA5OTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1MmRhMmNlYWNiYWU0MGYzNDhhODliZmI1ZDcyMDYxYmNhMzg2MDUxMDdhODJkYzI2OTM5NWY4YTIwMjRhMzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhhNTdmOTk5N2E4MGI5YzM2YzFkYzU2YzRhNDU4MzdmNmU5N2RjOTc2ODk1MTZjYzEyNDRhMDBkNDI5N2FjMWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc4M2NiOWE4MzMxMjRkY2FiNTZhN2U1ZDIyNzEwMzA5N2RmMDExOWEwYzhkY2I1ZDYyMWU2Nzg0MGFiNTM3ZjkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0338f1b5518a4e4eb22c1a2df8112c54",
+      "statement": "UE 的资产路径就是它的地址，所以移动与重命名是同一个操作 rename_asset(source_asset_path, destination_asset_path) -> bool；最容易踩的是第二个参数必须是**完整目标路径**而不是新名字（写成 \"NewName\" 会失败），并且 rename_asset 会自动更新所有引用该资产的地方。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L44-L62",
+          "version": "repo-lines-v1:sha256:491fb3a4b4dc550060b3da6a41654c33a8cba7bdfbcb321a8ad5d4dd3758893a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3MjllMzk2OWY4NzE3NjllMDI2OWQ2ZWE5NWRjNzdkNGU3YTljZGJmYjJlMjE1MTI0YzFjNWNhZGMzZmI2M2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliMTE2NTkwNTgxMDgwZjk0ZWM3M2MyNzNlMjU3OTVhNjRjNTYwMzYyOGI5YWVhMjRhYmEzOTI0MWYxM2UwYjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjllZDlmNmU2ZGI5NDk2NzcwYWU0MzA5NTQxZTYzZDQ0NjRlN2JmMTFmODBhY2ZlYmY4ZTc4ZWFmZGM3NjZlODgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0MGFmZjE1ZGQ3ZjU2NTdkZDVhMTQ0NmRjNWM2ZmYyZGNkYTMzOTY0ZWM5NGFhYjM4ZDU3NzU2ZjNkMWYwMGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_45b642fbab6f49e2a485a69269669062",
+      "statement": "move_asset 在 rename_asset 之上加三步：make_directory(destination_directory) 递归创建多级目录（已存在不报错，类似 os.makedirs）、拼出 dest_path、先 does_asset_exist(dest_path) 检查——目标已有同名资产时 rename_asset 会失败，不检查就是静默失败。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L185-L213",
+          "version": "repo-lines-v1:sha256:cd26dfbf4f7e3a84f358ca34c8dc767278658bd675cbd086a27488cc68ebb99d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyMzMxOTg0YmFiZjAxMTQzZDYxNDUyZjVhZTFkMjRiNTgxNDVhNzhiZmE3MWEyMzdkMzlmMzAyOWJiYTQyMTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ZjFhYjZlOGZhYzVjNGY2ODA0MDBkODc5NTE1OGYyZjk1YTMxYTIzZDE3YmJlNjgyMTFkMGI0NjA0N2Q0MWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI3ZDVhNjAyYzJhZjc0MWUxZWFiMmU0YTU2MTA5ZjM0MGM3OWU1ZTAyOThhMGFiMDM5OWUyMGE3NDJjN2IwOWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_066ba8d04cf54d7aacbdc62e67ebe12d",
+      "statement": "batch_rename 有三个刻意选择：查找替换必须在加前后缀**之前**执行（反过来会把新加的前缀也纳入替换范围）；用 recursive=False 只处理当前一层，理由是跨目录批量改名容易出问题、建议逐层确认；只有 new_name != current_name 才真的调 rename_asset 以避免无意义 I/O。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L74-L119",
+          "version": "repo-lines-v1:sha256:0c1e2eacf280001bccb33c3bb7566475a7da2e6fe5178f47a02e30f0c5fa5c84:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlY2E4NmZmMmEyYWY3MTk2Njg0YzNjYjllZmQyNjdkNDIxYzRhOGU0Y2U2NmFiODFhNzk3ZGJhMTVmOGZmOTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyNzFmNDM0OTg4ZmM0ZjgwNjE3ZDdhZmMzODVjN2M3YWNlMGZkOGYyMmE5YzFlZjY0ZjRlYjY5YjdhYjI3NTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1YjkyM2JjZTIxNDBkMmEzMGJhYzc4Zjg1YzM3ZWFhMWUxNWM4OTNhNTQ1NjllYTM4NjE5Y2UyOTNkNmMxMmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_692fd0b61c6e45339b1796bb8780c090",
+      "statement": "标准命名前缀表 03_asset_actions.py:129-145 的 PREFIX_MAP 共 14 条（BP_/M_/MI_/T_/SM_/SK_/ABP_/AS_/S_/WBP_/PS_/NS_/DT_/DA_），add_standard_prefixes 用 PREFIX_MAP.get(class_name, \"\") 查表、表里没有的类直接跳过，因此它匹配的是切出来的裸类名而不是子串、不会产生子串误报；my03.py:130-151 是另一种实现，它用 str(asset_data.asset_name).split(\"_\", 1) 丢掉原名的第一个下划线之前的部分再拼标准前缀，并且必须用 len(prefix) < 2 挡住没有下划线时的越界。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L129-L176",
+          "version": "repo-lines-v1:sha256:b7f1fa6d7fa22b95c9b07b10f98288ca0ea948bd93fb0f9ff4828d2c6715a5f4:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmZWViOThjMTA3MDQyMmU0NzFjZDJmNmE3MTdiNDM4Y2RjYWIzMGE1MmRhYjQ1MDBlZTMxNjE4NjNjOGI4ODYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1ZGJjNmJmZmY5Yjk3ZmQzMTU1MzkyNDViMjVhOWRhMzYwZGFlMDJiNDk0M2NkYTFlZDE2OTg1OGQ0NzJjZDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA0ZTdlZjQ4NDU5NDNjNWUyNGZlMTczZTM1OTg1YzU4ZDlhZTMwYTk2ZjFlOTU1ZDZlY2FkZGU2ZDA5N2E4MjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhkYmU3MTFhYTUwMWM4NDJhODU4M2ExNGZjYzA1MzY5ZmUyMTZmNDQyN2YxNzYzNWMyYTQwM2M0OTYzYjYwYmUifQ"
+        },
+        {
+          "resource": "repo://02_AssetManagement/my03.py#L130-L158",
+          "version": "repo-lines-v1:sha256:32203083a51436d68c0a1153cca887fb626507b9460e21e36272314c88c757cf:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlNDUxYTBmYzEyMWI5MTg4NDk5YWM5ZjJiODJmMjg1YThmZmM1ZDk4YzUyOGE0Mzk2Nzg1NGUwNzk4MjBiMzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2YmZlYWNlYTAxNmVhMDJkODBkYTBlY2JlM2VlYmE2ZmNmMDhiNDQ0ZGMyOGVlZGIxODIzNTk0MTYwMmI2ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIyNDYzOGVhMzcwOWRhNTY4NDlmNWZjYjcwMmE0MGEzYzRhMGU3ZWEwMjczMTZlZmM5ZTQ2MDI4MTM3OWU0ZGIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cf8102a8bea247638fc0fd07037ab19b",
+      "statement": "删除是全章唯一有强制门禁的操作，叠了三层防线：safe_delete_asset 先做引用检查（find_package_referencers_for_asset(..., load_assets_to_confirm=True) 过滤自引用后非空即判“不可删”并打出前 5 个引用者）；delete_asset(asset_path, force=False, confirm_force=False) 要求 force=True 时必须同时给 confirm_force=True 否则 log_error 并 return False（理由是删除不可撤销、光一个 force=True 太容易误删）；cleanup_unused_assets 默认 dry_run=True 只报告不删除。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L240-L297",
+          "version": "repo-lines-v1:sha256:b873a6f303897f53e7d891b4815796df801c1251487ef628d4b4365580f67414:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmMGIwMTAxMWFhMzcyODI2MmU5ZTA3YTYxNGY4NGNiMzA2NGI5ZmU4YjY3ZjgwMzJhYjgwY2Y1ZDhmNGI2OWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkwMTcwYmQ3OGNkOTJhY2FmMmM2NGFkZjcwNThjZGM1M2E2Y2RhYzVmNjFmOTdiMmFmYTkwMGNkNzMxMjFhNjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cc18982b524249b78390725a1a50eb61",
+      "statement": "cleanup_unused_assets 存在一处自相矛盾的缺陷：删除分支调的是 delete_asset(path, force=True) 而没给 confirm_force=True，按同文件 delete_asset 的守卫（if force and not confirm_force: log_error; return False）每一次调用都会被拒绝返回 False，所以 cleanup_unused_assets(\"/Game\", dry_run=False) 一个资产也删不掉、只会在日志里刷满错误。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L272-L286",
+          "version": "repo-lines-v1:sha256:8849849e9070c9241ecdbec558aa769526e1147fb0c3925d87196932f24ce05d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxNjc1MjFhZjVkNjdjNzYxYTQ0YjdhZjg4MjI5NTVlMTVlZDIxYmZlNjVhMjQwOGI1NmFkZDc5MDY5MmIxODgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MDlhNTNhNjE4ZDAyOGUxZDMwMDBjMGE3YWJjZWVjYmU1ZmIzN2Y0ZTUxMWVmZTQ2NjQzZmFkNmU2Njg3MmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxZmI5YzQ2ZjZmNDM1MDg5MmM4ZmQ3ZmRjMmMyOWIyYWI3YTU1NmJlZjkxODBjZWZmNmY4OWNlMGU4YWM0MjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUyOWNhMTcyMDBiNDI5ZmY1NjQxNTA4NGM3NjE0ODY3Mjg5ODc3YmIwYWVjMjAxNTMzZjFjYTEwZjc3NjExZGYifQ"
+        },
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L333-L346",
+          "version": "repo-lines-v1:sha256:7db99ddece9b041b89f973743536a51dc136389472f71124816b04b536da1f88:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5ZDc4MDc3YjZhYzUzMjFkZTZmNmJjNDgyNThhOTFlNDhmNjI4YTllN2M1ZGVlMWI0ZDQ4YzMwMDk1MGI0MTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg3OGJmY2RlNzMwOTM4M2FkYTk2MGIyMmY4MmM2ZWRjY2IyYzUzZDVjYTNjNDUyODk5OTY2M2Y3Mjg0NGNmYjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0NzVhMjI0MjNjZmQzNjI3Nzc2YWUyNmFkYTJmZWRhZTE5MzMwNmRhNjQ0ZTI0NjQ4MGE4ZGYxYzM0ZDg0NDYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cd181c94ffae4d70809123ff7ee00fe1",
+      "statement": "consolidate_assets(asset_to_consolidate_to: Object, assets_to_consolidate: Array[Object]) -> bool 的语义是把所有引用 asset_to_replace 的地方改成引用 asset_to_keep 然后删掉 replace，用于清理重复导入的资产；它的两个参数都必须是对象而不是路径字符串（要先用 load_asset 转换，传字符串会 TypeError），第一个参数是单个对象而第二个是数组，所以调用写成 consolidate_assets(keep_obj, [replace_obj])。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L356-L393",
+          "version": "repo-lines-v1:sha256:c50d6bb161dadf036777540ab70f0206663b9866ba2952dde55ad533f28bfa47:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljZmZlMWEwZTNhYzU2OTdmNzRjN2JhMDY5MGVhN2YxZWM4ZDgzODdkZDRlODRmMTg0MDNiMzRkM2Q2N2E3ZjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQzYTUxNGYyYzE5NzFlM2ExMWY5OGI5MTNkNzMxMTNjNjllMzcwOGM0NDM4YzQyNDNlYjI3OTNlZjEzMjllZWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2d00dbb973ea4f96a3b3f2624f63d2c7",
+      "statement": "保存分四档：单资产 save_asset(asset_path, only_if_is_dirty=True)、目录下全部脏资产 save_directory(\"/Game\", only_if_is_dirty=True)（recursive=True 是默认）、已加载对象用 save_loaded_asset/save_loaded_assets、当前关卡不能用 save_asset 而要调 unreal.get_editor_subsystem(unreal.LevelEditorSubsystem).save_current_level()（因为 EditorLevelLibrary 属于已废弃的 Editor Scripting Utilities 插件、调用会打 DeprecationWarning）。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L399-L424",
+          "version": "repo-lines-v1:sha256:d5ef12c12d8cb3d50e541db22ab03157f13305808293081011c0dd4230bbc57b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjZmI5MTI5ZjRkMTg1NGY1Mjg2NTA2MjUxODg1Yzk5OTM3MzQ1MjcxYTVmMzU1MWU0Yjk5MTNmNGZjODM0YmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3YmUzOWY2YzhkNTVlMTIzMjMzZGRiNmRmZjgzODhkYzA3ZWVkNjU4MzdkZjQxMDg4YWQ4NzdhNDRlZjQ5NmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1YjkyM2JjZTIxNDBkMmEzMGJhYzc4Zjg1YzM3ZWFhMWUxNWM4OTNhNTQ1NjllYTM4NjE5Y2UyOTNkNmMxMmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3104d8637989402ba96d4ac5fdacbe22",
+      "statement": "03_asset_actions.py 的学习目标里写了“修复引用关系”，但文件里没有任何对应实现；核验桩文件可知 Python API 完全没有暴露 redirector 修复能力（全文件大小写不敏感搜 redirector 无 fix_up_redirectors、无 Redirector 类），能做的只有检测半个能力（AssetData.is_redirector() 与 unreal.AssetRegistryHelpers.is_redirector(asset_data)），修复只能靠内容浏览器选中后右键 Fix Up Redirectors。因此“rename_asset 会自动改引用但会在原位置留下 redirector”必须作为流程约束记住。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L44-L62",
+          "version": "repo-lines-v1:sha256:491fb3a4b4dc550060b3da6a41654c33a8cba7bdfbcb321a8ad5d4dd3758893a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3MjllMzk2OWY4NzE3NjllMDI2OWQ2ZWE5NWRjNzdkNGU3YTljZGJmYjJlMjE1MTI0YzFjNWNhZGMzZmI2M2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliMTE2NTkwNTgxMDgwZjk0ZWM3M2MyNzNlMjU3OTVhNjRjNTYwMzYyOGI5YWVhMjRhYmEzOTI0MWYxM2UwYjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjllZDlmNmU2ZGI5NDk2NzcwYWU0MzA5NTQxZTYzZDQ0NjRlN2JmMTFmODBhY2ZlYmY4ZTc4ZWFmZGM3NjZlODgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0MGFmZjE1ZGQ3ZjU2NTdkZDVhMTQ0NmRjNWM2ZmYyZGNkYTMzOTY0ZWM5NGFhYjM4ZDU3NzU2ZjNkMWYwMGUifQ"
+        },
+        {
+          "resource": "repo://02_AssetManagement/03_asset_actions.py#L8-L13",
+          "version": "repo-lines-v1:sha256:37bde8213e54bba6fc4fe40a5354692da41235e72a4667f2a66a13bcbadab8a3:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmRjOTEyMjAwZjUyODg5MDYzMjJhOTYzNWY4OWFhNGZhNjU3YmVmZDAyZTdhZmZiYjY5NDlhOTgzMWY0Njc1YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTI5MjhlZjA3MGI0MDNjMTAzODI2YjBkNTFiMjkzMTk2ZTJhMTQ1NmJmNjgzZWNkMDY4MzQ1NzUzMTRjNGQ5MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWQ5NTY2MDJkZTU5OTFlNTE5ZTZiMTdiZWQ3ZTZkNmFmYzY2YTRkYmYwNmU0ODQ5NTA1YWM5ZDdhZTY1OWY4MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjdkNTRjMDQzODI1YTk1Mzg5MzU1MWEzN2U3YzZiOGFlMDM4MjRjNzJkNGU1MDYxNjYzY2ZhYmQ0MTVjMzBhMCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5d26c288a954477c968b461e3923c102",
+      "statement": "依赖遍历必须处理环：my02.py:436-455 的注释把做法拆成 stack（待查询清单）与 pkgs（成果袋兼已访问标记）两个容器，入栈前查 dep not in pkgs、出栈后再查 pkg in pkgs；my03.py:239-262 的版本用 queue.Queue 加 selected_package 列表同样防环，但列表的 in 是 O(n)，包数量大时会退化。两个版本都用 registry.get_dependencies(unreal.Name(pkg), options) or [] 给 Optional 返回值兜底（None 上 for 遍历会 TypeError），并只追 /Game/ 开头的包。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/my02.py#L436-L518",
+          "version": "repo-lines-v1:sha256:52c6a2ec0dc536d64e0a6910e6b3780495c98a26b98f0039b7dde65dd2b70c16:eyJzZWxlY3RlZExpbmVDb3VudCI6ODMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3ZDIzNDZhNTE4ZTkxNWM4YTcxYTYwNzUyMzdmZTgwYzk1NzU5NmFlODEzYWQ0MzhhZjk2YjQ2YjMxNDk4NWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQwMzg2NDM4MDBmZGU0NGMxMzk4NDJhM2VlODU3MDllOWY1YmU4YjZhNGM1YzgyNWY2ZmZhOGM5YjM0OGEyMzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2NzlhZWI3NTVkN2UyM2Y3MjMxMTUwZGY2MmU1ZWNmNzFiOGQwMDVhMDBmYjc0N2Q5ODg0ZTg2NTEzM2U3M2UifQ"
+        },
+        {
+          "resource": "repo://02_AssetManagement/my03.py#L239-L262",
+          "version": "repo-lines-v1:sha256:a3b2026c5cb5ec664b6d162fc9339a7c07a3ed27728056ee6945918f48ed8dca:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4ZDQyZGJmZmIzYTljZGY5YzNhZmMxMzU5NjhlZDE0NjRlYTYxNzBiYzYwN2NkOGEwNjQ5OGVhODkwZjM2MWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkMDBmYTdiOWZjYTNmOWU1NDM0MTMzNGUyNmE3ZjExOWZhOGQ2OTU3MDljOTA4NzNhOGE0MTJiOTg0ZTlkNGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM1MGM1NmU5MTg0ZmVlYzA1N2VjOTA4MTFmYWI3ZWVjNjg0ZjE1NDE1Y2FmN2RmMjYzNjAyYmQ2ZTE0OWJhMmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_575ab5c135ef475681a072547a791402",
+      "statement": "AssetRegistryDependencyOptions 是引用类型的开关集合，两份练习稿选法不同：my03.py 只开 include_hard_package_references 与 include_soft_package_references，my02.py 再加 include_game_package_references 与 include_editor_only_package_references（注释理由：迁移才完整）。依赖查询的入口是 unreal.AssetRegistryHelpers.get_asset_registry()，方向与 find_package_referencers_for_asset 相反（一个查本资产引用了谁，一个查谁引用了本资产）。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/my02.py#L476-L486",
+          "version": "repo-lines-v1:sha256:5fc74744dbef122da0c2a7f9189d670662e86d524c7b6f3d050915f06e84700f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyMDFhZWZhZTllZjU2MmYyNzBmMzY1YWI2OTIxOWQwM2NmZmJiNjNkNWQ5MzhmODQwYTM0ODUwNWRjODcwOTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4NTQ5YTdlMWU4MmViMWJlMWExNDhhMWM3N2M5MzNkMjYyOWUxNTM3YWQzYjM2YWNlZTA0ODIxNGI1ZWYxOGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQyZmE5OTBhZTExYjI4ODBkNGRlNGVmMGIwZmE4NmQ2NzNhOGUwMWMzMGEwNTMwMzI4NGUxOThiODg3MDE2ZjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNhY2FmZDc1OTQxZjZjYzkwNTdmYmEzM2U4ZTE4MjVhZGM5YWY0ZjJmNWMwYjU1YmJkZDlmMjc4NTFmZjhkMmYifQ"
+        },
+        {
+          "resource": "repo://02_AssetManagement/my03.py#L243-L245",
+          "version": "repo-lines-v1:sha256:f8f8ded5517af59a8f9a5a66df03428b36e66cf845251a839f7533cdcbf1a681:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzhjN2RkMGNmMTU1ZGVmNzYyODMwODdhMGZlNGZmMzhhMDQ2MjczM2NjZTA0NzI2OWQzNmIxODlkMzJjYjhkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGM3OWRlNDE3YzdlY2ExNjQzYzNkMDdlOTY2ZjM4NjBkMDhiZGUyYzhhOTVmNzEwYzAyYjY1NWEyYzc1MDVlOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjc4ODM0YjEyZTExNTdjMzg3ODIyYzAzZTJiMWI5ODZkYTIzNWNjM2Y1NjVhNmJlNDg1MTE1OGQ4MThkOGMwNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjZiNDUyNmZiM2NmZTc4NGM5OTIyZDVlMzFiNjQ5ZmEyYjUxZmI3ZjFjYWQyODIxYTg4NTI5ZmUwMmMzZDg5NCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_8ca4aba8302f416a830dd9a918ab479a",
+      "statement": "枚举类成员的核验方法是直接在桩文件里搜类名看全部成员（06_MaterialAndTexture/03_texture_management.py:154 推荐用 dir(unreal.TextureCompressionSettings) 自查，因为枚举成员不能直接赋字符串），这与仓库的强制 API 核验规则一致。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/my02.py#L283-L292",
+          "version": "repo-lines-v1:sha256:8057ab4286d71654fd74b86b5f9c11db5072df07886eb5facf2da715c5621c9c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3NjY4OTU4ODhlNjY1ZTE0YWU2NmNiZjBhMmI1MjM1MTIwNzQ5NDhiYjc1ZGQ0ZGFjYzgxOWEyY2EwMjVlZWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxZjZiYzM2ZmY1ZWZhODI3N2ZlZWVhZTdlNWFmZTdmYzllZTJiYThkYTZjMjcyMTM3YjU4OTJhODQ5NjZkOTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYyYWQyMWIyN2ZiODU1YmY5MDU1OTdlMWFkYTNlM2M4NjZlNTg2ZTUzOTBmZWI3MDhlMjZjZjkwMWRhNTBkYjEifQ"
+        },
+        {
+          "resource": "repo://06_MaterialAndTexture/03_texture_management.py#L150-L158",
+          "version": "repo-lines-v1:sha256:3a2fc4e4113de3cbd8aaca5fe807195e2d7dbad7a4936b71156309b7bec0a7ec:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzg0NjNmMDI4ODkxODYxOTBlZjI4MTY3MjU1ZGU1MjZiNWM2NjM2NDMyNTMxNjNkMDRlMGNhN2NlZmFhNTRiYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGJmNTA1ZmJhOGVjMjk5ZjRjNzYzNTViYjI2ZTExY2U0Mjc1MTdjOWE3ZTZiMTExYzdiNGNiNGE1NzQ0YzkwOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTdhOTA3NWU1OTJhY2I3NmI1YTAxN2Q4YzQ5N2IwYmIzNWFlMTQ4ZDAwYTE3M2FlZjRmZTViNWFlMzYwYmMyNCJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.1",
+    "at": "2026-10-07T08:34:04.254Z"
+  }
+}

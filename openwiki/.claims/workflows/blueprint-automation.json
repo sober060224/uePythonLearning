@@ -1,0 +1,392 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:1d8be75e05d8bf0acbe73e2323843240a050704ccaeed43b21c0e826e18d6fe0",
+  "claims": [
+    {
+      "id": "claim_be99279e85494a799b88a6e7d545f666",
+      "statement": "01_blueprint_basics.py 是仓库里唯一会在载入时自己执行的官方课：:72 的 bps = find_all_blueprints() 与 :123-124 的 if bps: inspect_blueprint(bps[0].package_name) 都在模块级，所以用 exec(open(...).read()) 载入这个文件会立即递归扫描整个 /Game 并真的 load_asset 第一个蓝图；其余官方课的示例调用全部注释掉、末尾只留一行完成日志。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/01_blueprint_basics.py#L123-L124",
+          "version": "repo-lines-v1:sha256:afa497429bdf28c0838040121941b0eae0600c36396301c4bdec200e91e1d48b:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTU5YWIzMTQwZDQ5ZGRkNGIxODJmMGRjOGRjNzY0MjQ2NGQ1OWUxMDc4YzUwZDliY2QzODI4Y2ZjZjA2MDM4NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjBjN2FjNDgxNTk2MmJkYjU5YWU3NmQxM2E0NmRhMDdmNzRlODUzNmY1NDJlZTVmOTQ3OTQ0ZTY3ZmE4YTU3MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDUxYzg0NDVkYjdmNmZmMWM1MzJlNTI1MWJkZjJlZTFiZmU2MmNmMWM4YTQ4MTA5NmY2MDExYTE4Njc2NDQ2MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzM2NmQ3MzFhMDg3Yjc5ZDM4YTBiZGQxYjRhM2FiMjNmY2JjOGQ4N2I1OTMzMTQyMTU1NWE4OTllZjAyYWFlZSJ9"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/01_blueprint_basics.py#L72-L75",
+          "version": "repo-lines-v1:sha256:8e4428f4035069efdf2e5453bd35543e55376af8f2999ebac562d222dc3bb90a:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGRhNDZmOTU1MDQ2NDM2MjVkNGVjMzRkMDkxNmYzZDRmNjEzYzVlNDA5MjQ4NmYyNjM0OGU2NWU4ZDE0MWFlNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTAxY2I2YThlODU2YWNiMTRjYzRlM2JkYjI1MDRmNmE1MjEyNjlhY2NmNzFiOTJkMmNjNzlmMGYyYTAwNjRmYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjk2YTcyM2IzYmRhZTZiZDI5MTdhYjE0MWNkN2EzZmQyNzBlOTI3Zjc5NmE3ZjA0MWU5OWUxNjJlMjY1MzNiNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzA5NzY3MWVkMGVkYWE4YzJkZTllNWY1OTUwMGRhYjVkM2MwMDYwOTcwNzNkYzFmYzU5YmVmNzExMTA1NDc2NyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_724c3b0adf72495b9f8acb18dc1d550d",
+      "statement": "创建蓝图在四份文件里用同一套「工厂三步曲」：make_directory(destination) → factory = unreal.BlueprintFactory() + factory.set_editor_property(\"parent_class\", parent_class) → unreal.AssetToolsHelpers.get_asset_tools().create_asset(name, destination, unreal.Blueprint, factory)，然后 compile_blueprint 再 save_asset；同样的流程出现在 01:131、02:51、my01.py:37-48 与 my02.py:44-50。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/01_blueprint_basics.py#L131-L178",
+          "version": "repo-lines-v1:sha256:6c9a9f31645c11b95ce08639a8cdd606669e3e9fedff9d7860bf448d71d51a8c:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2ZmNlNGI0YTA2OTEzNTg4MDg5MjVmYmRjZDUyODIyZTA2MzllYTVjOWRjNmMzYWM3NDhlYzZkMjNiZGEyZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBlZGZhYmFkNjY4YzM0NzMwM2M4NThjNzUxODJhZjMyMDhiODdkMjgyODJmMGM3YzMzYWM1OTUzZWFlYzAwMjYifQ"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/02_blueprint_components.py#L51-L88",
+          "version": "repo-lines-v1:sha256:d3385aa003bc3419e2906a7de1555038a24c5697942931a12b95474f0cbe58e1:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmZmU2NTFmY2U5YTk2NDY2ZmUyMWRmMWEzNzZmMDAyMzA2YTlkNjc1MDIxMWM0NDZmODk3YmU0ZDA5NTc3NmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5MjFmZTAzMzk3MWU4MWNhNDE2ZjU3MjBmMTA0NDQwZTc2MzQwNjQzOGY2MTQyOTE2YmFhOGEwZTYxMGJmMWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllMGZkZDA0ZGRiNGZjODA5ZWJkY2IzNTM5ZmY2YmVjMTUyN2Q0ZDVlZDIxMzcxYWQ5MTAyZDE2Y2ZhNTZiZTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c6b3a9fed10742f4b607e089b2300b00",
+      "statement": "蓝图工厂的父类属性名必须是小写的 parent_class，写成 ParentClass 会失败；01:145-149 的【修改前】/【问题分析】记录了这个错误并给出核验方法（去桩文件看 class BlueprintFactory 的属性列表），结论是 set_editor_property 的属性名必须与 UE 反射系统注册的名称完全一致且大小写敏感。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/01_blueprint_basics.py#L140-L152",
+          "version": "repo-lines-v1:sha256:a2fcec9ebdf1b4041eea799fd7837fa10d1c7e263330d99015276b7d5b06c39c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1Zjk1ZmY0NjNkMDZmNjgwNTU5YTBkYjJjYjZjZjVjYmJmYWZlNTI0MmMyY2U4MDVkZmEyODJiMTA0ZWYxODQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzZWFhOGI2YjA3OTJmZDY5NDg4MWY4NDYzYTVmOWE4YzE0Nzk3ZDJhNmFlMWY1YzVlMzk1MzAxOWIwOWZkNzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAwMDA5NGY1YjE3MTY2NzBkMzdkMWUzMGVkZGQ3MzJjMGJhYTMyZWRiMTMxODkyMGEyZmZhYjc4NTFhNmJkYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE4ODQzYzMxYmFiY2IzYTIwMDI3MjFmMWEwNWIxM2JmZWM1MzQ0YmY0YzE0NGQ3MWJjNWQ0OWY1ZTIyMmVkMzYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_de49426233fc4a719095aac86d1cb764",
+      "statement": "创建失败的处理在两课之间不一致：01:163-165 在 create_asset 返回的东西不是 Blueprint 时是裸 return（不打任何日志，完全静默），而 02:57-59 会 log_error 并 return None；两边都先做 isinstance(new_bp, unreal.Blueprint) 再判空，因为 create_asset 的返回类型是通用 Object、名字已存在时会返回 None。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/01_blueprint_basics.py#L160-L177",
+          "version": "repo-lines-v1:sha256:e6933a1a5bb8d46f49fea0a61b3f395f24b9bb289a9298007e122638941faed3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzMTZmZjNkMzA5ZDYwMzUwNWZhOGY3NjIzYzg0Yzc2NGIyMzI0ZWE1MmVlMDg3YmE2N2QxN2IzNWM4ZjI0ZDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlN2M5NTdiY2I0NGZiNjczYzk4YjAwNTBhNzVkMzgwODJkYjgxZDkxOGRlMzEzYTNmMDdjMTIzNTMwNmQ3ZWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhhYTZiNjYwNWMwMGQ0NDdmNjk5YTdjOGUzMDExOWM0NjhhMDRlMGYyZWNmMDNhMzg5YWU2MzI5MjY3MDY0YzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1YjkyM2JjZTIxNDBkMmEzMGJhYzc4Zjg1YzM3ZWFhMWUxNWM4OTNhNTQ1NjllYTM4NjE5Y2UyOTNkNmMxMmQifQ"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/02_blueprint_components.py#L57-L62",
+          "version": "repo-lines-v1:sha256:4f81b1e1646a1524207c16c609e6b1b3d1378647ceeca49bcf4e6a97f70c6d50:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjljOTQ1NjRmMDRlNWI3OGQ1YTVlMDk3OTFhMTk0MDlhMjQzY2M3NWE0MzA0NjljYmViZGY3NDAxODAyNTFlYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWIwMmFmNWZhNjA5ZDdkNmQ4OTc1MGRkMjViMDMwNzk3YTdhOTMxOWIzNTA3NTI0MmRmYjdkNmFhNmFiMDEwZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTA3MDQzOGNlYTgzZTc2NWRiODMzZDVkY2FiNjNkY2JlYzVmNTE3OWYyZWRlNjIyNzAyM2RlMjcyMzhhZjNhNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjBkZjg2YmI3Y2IzNGNhNGNjYjEyNmM5ZWNjNWI4ZmRmYTlkMGIxMWUzMjUwMjkyMWNkMmU2OWFlYTU1ZDIxNyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_149fbb9621974b3680109c9c1fa734c2",
+      "statement": "两份官方课的 compile_blueprint 都把编译结果丢掉了：它们调用 unreal.BlueprintEditorLibrary.compile_blueprint(bp) 但不接返回值，然后无条件 return True / return False（只有加载失败才 False）；而桩里该函数的签名是 compile_blueprint(cls, blueprint: Blueprint) -> bool，02:204-205 的注释甚至已经写对了它的行为（“编译成功返回 True，有错误返回 False”）。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/01_blueprint_basics.py#L266-L279",
+          "version": "repo-lines-v1:sha256:dd46813815c1b35d0396ea6503013085df91bf9584a95a84799f62907ac7c769:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzNDU4ZmMzYzBmMWFjYjBiNjZhMmM1MWE5YzgyMWYxYTQwMTA1ODE5OTE4OTk2N2RiYmQ0NDIxMzE1MTdiMTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwZTJhNDY1MDA5NWZhOTVkMGUyYmI0MWIyZGIyOTA5NGQzNDA0ZDI4Y2UxMjMzOWVjODhiYjRiNWM1YmU4ZjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM5NjQwYmQ2Y2NlOWQyYWFmZGRiMjVhYWRmZDE0MTNkYmM1NTNhMWFmODIxYjI3ODMwODYzYWYyOWRiZWU2YzkifQ"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/02_blueprint_components.py#L197-L207",
+          "version": "repo-lines-v1:sha256:c43208abb490b462cdc5f567840866467c9d5f511f38781885d5c2a001519880:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzNDU4ZmMzYzBmMWFjYjBiNjZhMmM1MWE5YzgyMWYxYTQwMTA1ODE5OTE4OTk2N2RiYmQ0NDIxMzE1MTdiMTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4OTMyOTYyYTk5OGU1NzkzNGU4NjQxNDIzOTVjYjk0NDczMWI5MWFlZDRhNmVkMDU3NWQzYmI0N2E2ZTM2OTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlNzU3NWMzYjc3NzZjZjJmOWMyYmZiY2E0NGYyMTQ4MTNhNzgyN2VhYTljMzg0NTRjNzAzYjY4OWE3NDQzODYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d40f2c8630304f3eab2ec9466ae1d0eb",
+      "statement": "因为 compile_blueprint 恒返回 True，01:282-303 的 compile_all_blueprints 里 if compile_blueprint(...) 永远成立，最终日志“已编译 N/N 个蓝图”必然是满分；要真正实现本课练习题 4 必须读状态而不是去编译。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/01_blueprint_basics.py#L246-L255",
+          "version": "repo-lines-v1:sha256:3ae0e53d7afc1487b4920689b79da8dcfd83a9ba97b6494106d75b0cc483c31a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0NWE5M2YwNWYwMmI2ZWZiMzhkZmE1YTYyYTgyZGQ4YjJjMDQ1OGY5MDU4ZDViYjIxZGE0Y2MzNWFkMWI0YzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4YTc1MDZlNGFkZjI1ZWNiMzhkN2Y1YjUzZTY2MDU5ZTBlNTQ0NjBkMWM0YzhiMDA2Yzg0MTNjOWNiZDEwZTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIyNjYyNDFkM2M5MDkwZDMyZTM3YjM0Yzc4YmQwZmRjZDI3NTFkYWJiMWFmNTJkNGVlNGJhNTM4NTJhMDE4OTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZhZWNhNGJhOWRmZDE0Y2JhN2MzMjBjN2Y3OGMyMmM2MmQwOTIyZjdiNjFlYjU5NWMxZTk1MGI4M2E0OGExOTAifQ"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/01_blueprint_basics.py#L282-L303",
+          "version": "repo-lines-v1:sha256:c8e162cb0cafa81d28cca06864bb7f37a97ed2748c90d8bb236652a0cd578b9a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwNTM5Njc3OTA2NjNlMWU2ZDA0MjI3MWMzNDFhNzZjMjQ1N2ZhNGE2OThkYjg2YzFhYjJlODM2Zjc0NWNmNjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1ZGJjNmJmZmY5Yjk3ZmQzMTU1MzkyNDViMjVhOWRhMzYwZGFlMDJiNDk0M2NkYTFlZDE2OTg1OGQ0NzJjZDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlNzU3NWMzYjc3NzZjZjJmOWMyYmZiY2E0NGYyMTQ4MTNhNzgyN2VhYTljMzg0NTRjNzAzYjY4OWE3NDQzODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ1MzUxYTM1Njg2NjRjOThlNzMyZmIxMmU2YmY3YTg3OTNlYTk1YjQwNzUzMjU3MzllMjRlMGRhZTFmMDYzYjkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c8bedaf5d2e0417c8527350526eba608",
+      "statement": "练习题 4「查找所有编译有错误的蓝图」的答案在 my01.py:141-160：蓝图有只读属性 status（BlueprintStatus 枚举，含 BS_UP_TO_DATE / BS_UP_TO_DATE_WITH_WARNINGS / BS_DIRTY / BS_ERROR），只要 obj.status == unreal.BlueprintStatus.BS_ERROR 就是上次编译失败；my01.py:143-145 还指出不能用重新编译去探测，因为编译是有副作用的操作会真的改动蓝图。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/my01.py#L141-L160",
+          "version": "repo-lines-v1:sha256:21ecc5a9568399951b215814e4df6f7cdad66cf10ad302738fe587219c42cee3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1ZGJjNmJmZmY5Yjk3ZmQzMTU1MzkyNDViMjVhOWRhMzYwZGFlMDJiNDk0M2NkYTFlZDE2OTg1OGQ0NzJjZDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzNGZmZjg4Y2FmNTFjNjE0ZWIwOWE4YmJlNTk0OGM2NWE5YjgzMTE5ODkyNWE5MGQ2N2I5NWQ4MWMwNDZjNzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ2ZTg2YzQ3NDAyNzhkNWI4OGM3NzcwNTE4ZTRmMTdjZTJhYmUxYWVhNDRlNTM3M2E3ODBlNDAwMWQxYjU1NjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYxNDU3MThiNjYzNmRiMjlmNTg2OGI0ZTAxZTkyOGY4YjUxZTRmMzA2Y2ZiYmI5MmY0YzcxMzY2YTdmYjkxYTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a48e1d54649f45ee80445e8b0505bf54",
+      "statement": "01 与 02 是同一课的两版而非递进关系：创建蓝图（01:131 / 02:51）、检查蓝图（01:84 / 02:97）、批量创建（01:220 / 02:158）、编译蓝图（01:266 / 02:197）四项功能两边都有且同名，只有 02 多出 reparent_blueprint（:126）；01 独有的 create_game_framework（:306）与四个父类快捷函数（:190-214）在 02 里消失。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/01_blueprint_basics.py#L47-L67",
+          "version": "repo-lines-v1:sha256:0721672bc0654998e0c054532ef55ac3fd178bff7bf21842a17d2e7a2ae3f2be:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjODhjODQ3ZGE4NTlmZWQ2YTBiNzhjN2RmZGI1MTNlZTAxY2JlMGEzOTM5YmRjMDRhZGQxYmY3NmI4NDYzYWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJkMGRiMTQ1MTRkZWIwZDQ4N2ZiZjBjMGE0NTg3YzFjNTg0M2IyMDQ0ZWYyNjgxYjg5YjFjNmY4ODA4Yjk5MmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkMjgzNDk5MGZiNzFjYTg2YTY2YzkwYjA2ODI3YTczOWI1NTNhOTdiOTViMDU3NDAwZmRiYjM4YjA0ZDdiNjkifQ"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/01_blueprint_basics.py#L84-L122",
+          "version": "repo-lines-v1:sha256:c0fa7a7839323e97b4cef6a993ca0eb72ef6e3d2064ef91b3d9fd7c12cce3166:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExMmQ4MGZkYTA4MDFlN2Q4MTdlZjA1ZTQ5NDBjODMxZjRjZjQ3YzlkOWViZWIwNGNkNTEyMmM3MTkwZDA3MGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjMWZiYmNhNzEyOTNmMDQ2NzUxZWRmNDUwNTRmNDU3MzhhMTE5YmNmODUwYjZjMjI2NTBkNTBiMTQzYzgxNzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlOTY1NDYzMWMwYTgzYjFjNzZkNTYyNjQwMjM4NGY2MjJjNWZmZWU2YWY0NzkzMjIwZjA0MTExZTU1MzdiN2EifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_00375a7085bb499f8c3d116b522a84c6",
+      "statement": "同一章里出现教材滞后：02:19-25 断言“UE Python 没有暴露 SimpleConstructionScript / SCS_Node（在桩文件搜无结果），因此往蓝图中添加组件无法用纯 Python 完成，需要 C++ 编辑器扩展”，而 my02.py:35-41 在同章第三节明确推翻：UE5.8 的 SubobjectDataSubsystem（桩 unreal.py:666504）已把蓝图组件树的增删改查全部暴露给 Python。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/02_blueprint_components.py#L15-L26",
+          "version": "repo-lines-v1:sha256:cc6c175d38c227acca229aa5a9d6c7d071e7841b0ccd055937dfa51de01de6f9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4MmI4YjY4MzIwNGNlNjZjZGY2NWQwYjZhY2QzNTI2ODFjZDc2MDFmYjM4ZTBmOTZiODUzZTBhNDRhOTU0MTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0ODU1MjQzODc1M2RhMTc4YTBkOTcyODQzMThlYjcyMjc4ZmI3OWJmYjhlYTZmMWQzZDRhZTM1ZGJkMmVmYjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU4ZGE4OTExODU2ZjlhNjdiZTEzNzVmMWUyNTYzYTA5YWExMmUxZDI3ZTVhYWNhN2JhY2NhNjZkZTg2ZjNhODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI1ZDQ3NDU4YjI5NTNjM2FjNTY3MDcyODhlMGQ1MGQwNTNiNzk1NTYzNTIzZjQ5ZGUwYTlkYjAwZjcxZTE3ZDcifQ"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/my02.py#L33-L41",
+          "version": "repo-lines-v1:sha256:151eba7af464740949d4d009074f90220351078a26b5f2c98e7f80eaa3dcdb73:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmZhNjI1ZjllMzAxYmRlZDI2MTkwMDNlNmEyMTYwZTJhYmQwZWM2NTAyNTc5Nzg2YmM4NzI4NDVmZTI2MTBmYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmY4MDRmYjAxNmE2ZGRhZjczYjdjZThiYmNiZjVkZDFkOGM5ZDVjZDNlYmZhYzFlYWZkMTQ4YjY5ODI3MGJkNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTc2ZjAzMDlhYWFkNTI4NDlmNmE0NTVkMjc2MDcxMjlkMzU2ZThlYjFhYTRlZDM4MzYyMzg4ZTM2MjVjYjRhOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjFkZTdiYzM1YjFiZTNmY2UxN2FmMTFhZTkxMjk0YmRhNDU2OTEwOWRjMjIzZmU3M2NkMWY4ZjZhOWUzYzNkMSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_2c14147f2f9f404c83507083f6ed2a2e",
+      "statement": "my03.py 的 first() 是“批量改蓝图属性默认值”的练习实现，它走 list_assets → find_asset_data 过滤 Blueprint → load_asset → object.generated_class() → unreal.get_default_object(cls) → cdo.set_editor_property(property, value)，但结尾**没有 save_asset**，所以改动只活在内存里；它也没有 try/except，属性名写错会以异常中断整个遍历；调用点（:34-36）被注释掉所以这个缺陷从未暴露。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/my03.py#L34-L36",
+          "version": "repo-lines-v1:sha256:985002adfa8abf95eb960079095e8c8dd0a24c49a44f4406db300d301261507e:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmNiYjM0ODQ5OTllZDQ1ZjI1ZjIwMjFjZDNmNzNjYzgzZmNkNzM2ODhmMjA2YmY3MGQzNzQzZDc5NzQ5ODQ2ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTE5MjMwMzhjOWI2YjdmMDc4NGE4YjRiNzE0MGMzYzU0ZTA1Y2RjMjk1NGZiNjA1ZjU3YjU1N2JmYjJjMzYwZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODBlNjkwYzE4NzQwODZhMjBhMTFkYzRjZTdjYWUwMDUwNDU3MzQ4ZmRkNmI3Mjk5NTBjNmI4MzFlMGNlNjBiOSJ9"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/my03.py#L6-L33",
+          "version": "repo-lines-v1:sha256:60c22b366c659df520fe03cfdfa1ad9fbfd456da66d741046554b79c486e6eb7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhkNDk2NDk2MWVjNTM1NDNlMzVmMjA4OWQxNTMwYTNjYTMzMzFhNzlkNTIwYWJlNDgwMjdlZGQ4MDFlYTMxZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4YTA3OTk4NmJjODkxZTM4MTc4ZTI4OGI2MmViYTQ0NjI5Nzg2MWM2OWQ1ZDVjZGZlODQ1NWVmMDM0ZmUwZjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxNGM2NWRlNmM1NjE1NWIxNGYxYjgyNDI5ZmY2OTk0YTdjOTIyMDMwNzQ2NjBiMDU1MzUzYzVhNmMxYmE5OGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk4NTAwMmFkZmE4YWJmOTVlYjk2MDA3OTA5NWU4YzhkZDBhMjRjNDlhNDRmNDQwNmRiMzAwZDMwMTI2MTUwN2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_92018aed379f4458a16fcc237e3c9e79",
+      "statement": "官方课的 modify_blueprint_defaults 是同一需求的正确版：逐属性用 try/except 包住 cdo.set_editor_property（注释列了属性名拼写错、类型不匹配、属性不存在三类常见失败原因，单条失败只 log_warning 不中断整批），最后 save_asset；同文件 :147-152 的【易错点】记录了 generated_class 是方法而不是属性——不加括号拿到的是永远为真的绑定方法对象，空值判断会形同虚设。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/03_blueprint_variables.py#L114-L178",
+          "version": "repo-lines-v1:sha256:4372c1c5860781fad56c4cb9c37f78e7532eee36824369716d2cfb55d2877e36:eyJzZWxlY3RlZExpbmVDb3VudCI6NjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0Mjc1NTg3Zjg3MzNhYzQ4YzcyMTRhNzVmMTE4YzAzMTZmM2FjZTc4MTU5NjAxMThmYWNjZTI3MzQ2MTc2MzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdjZjQ1NjA5MDhhM2I4YzVmNGRhYWU1MzllY2EzNDAxZWMwODgxMjZiYWM5YmYwNmEyZTNhYTUyOGI5MzA0YjcifQ"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/03_blueprint_variables.py#L147-L152",
+          "version": "repo-lines-v1:sha256:47e9ace671d2870af8af0f9ce04695b9a5b49f455de3793e4164b8ba4deba9fc:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWFlMmUxMzM4MTJjOWRkY2E4OWViNzk0MzJiZTNjM2Y2NWM3Yzg1NjdkZTI5NmIyOTY3ZjQ0N2RkZTc0YmExOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDU5MWQxODIzMWZjMTM1NDQ0ZDAzNWI0MTk4ZTdmYTEwMDQ0ZDMxNzc1OTM2YjM0MzM4NzhjNWZiZTYwZTJmYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjU1NTBiOGI2MmRlZjdmZWNhNDVkZDlkZjU1ZWNlYTkyZTIyOTQyMDdkZGYwYTdmYThkNGM2NzgzODcyMzE4MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGNmZGNlMDFkNmE5N2MxZjU5ODEwODA0NzI5ZGVkYzlmZTc2MmVjN2VjNzE3NGI1MTYyMjY4ZjUwOWEyYzQwYyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_15eec9f11dea4bb5a004de636b77f532",
+      "statement": "蓝图变量名清单来自 BlueprintEditorLibrary.list_member_variable_names(bp, include_inherited_members=True) -> Array[str]，变量默认值必须去 CDO 上读（unreal.get_default_object(bp.generated_class()) 再 get_editor_property(变量名)）——这两处是不同层的东西；include_inherited_members 是两份实现的分水岭：03:56-74 用默认 True，my03.py:236 显式传 False，理由是“父类已经单独比过一次，否则父类一改，两张蓝图会满屏属性差异噪音”。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/03_blueprint_variables.py#L153-L168",
+          "version": "repo-lines-v1:sha256:6b94e76b3ccad7f613cd24a58501547f7d858068bab28574d310f0d76d23ff7e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0Y2MyMmZkNTUyNDNlMzgyNGFmZTA2MzRiODVjNDUyYWM1N2Q2ZDllMWE4YWM2MWJjNmFmNmQzNzQwZWU2ZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjMDJjMjcyMThlYjY2ODI0NDE0ZDVhN2IyZGZjYWE4OTY1YTE4NjgzMDU2ZjVhODBmMDVlZjNlNThmZDI1NjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ4NmU1Nzg3MzNmNDJlYTlkNzQ3Y2IxYWQ0ZDI5NTI4ODIxYzYzZGUyNzBhYjNlY2YwYWU1NDUwNGRjMzc0NTUifQ"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/03_blueprint_variables.py#L48-L74",
+          "version": "repo-lines-v1:sha256:236aca050093b4df952d6f0f6c01ece4dad88a22529139c9bdd23ef4a834f182:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjOWY4YmNiNTYwZTkzNTg3NGQxNDc1M2VmZWM4YTAzN2Y5N2Q3NDc1ODYyYjBjNTQyMDhlZDc0MTMzNDQzYWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxNTJmYTgyYzA3ODEwNmIyZWJmOGY3ZDkzZDNiZWQyOTA1ZGY3Njg2NzRlM2FlYTZiYTU2ZDQ4ODRmNmMyY2MiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlmZTYyZjhmNTEyYjRkZTJlNjFkOGQyYmE1MDEzZDRiZWY5NGQ4MjVjY2E3ZWY4NWZmZmM5ZjRiZjc4MzEyMTUifQ"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/my03.py#L220-L256",
+          "version": "repo-lines-v1:sha256:884b54ed1c05ee34f7e219ceafdf38ee7625295a979715319240c062f23f6b56:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3ZWY5NzhhYjBlYjhiODk2ZmZjYTQ5OGRhNDhlZTc0OTU5ZDFhOTIyY2EwNmM5YjY0Y2VkNDRiMTYyZDk0NDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzODhjZWFjNzM5YmIxOTRiYjQyZGY3NjY4YTgzODQyY2M0MDU4ZWY3ZDBlZGMzMmQzZTgzNTIyZWMxOTE4MzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMzM2VmZTU5MDQxYjAwYjc3YzljYjJkMmM0MTRlODE5ZjE2ZjU3N2EyMzZhZDFmNTE1ZTFlOGU4OTYxZTRhMGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmZTYwNjVmNGRkZmFiMTA5MzMwOWNjNmRiY2FkZjZmZmFlNWY4OTA3ZDE3MjAyODMzMGE2YTg5YzRmYTM0YmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4b00dc192c524dd6ae1f33b9f07bc9e5",
+      "statement": "03 的 get_package_dependencies 记录了源头修正：本课原本调用 unreal.EditorAssetLibrary.find_package_references()，但桩里 EditorAssetLibrary 根本没有这个方法；EditorAssetLibrary 上“引用/被引用”两个方向只暴露了一个（find_package_referencers_for_asset），依赖方向必须绕到 unreal.AssetRegistryHelpers.get_asset_registry().get_dependencies(package_name, dependency_options)；第二参数 AssetRegistryDependencyOptions 是必传的（桩里无默认值），返回 Optional 所以要用 list(result) if result else [] 兜底。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/03_blueprint_variables.py#L222-L253",
+          "version": "repo-lines-v1:sha256:3678e746dc00fbc9ec3e1d93a8da02766c9a953322b2f30be728898240495809:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0YmZiYjYzODA0NzBiMzJmZDdiNjhmZDBkM2E2MDY3ZjI0YmExNDhlZmI1NzNkNTMyZDNkOTc2Y2NlOTk2MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFjZTJiMGZkY2Q5YjllZjgzMTMzMDEyN2M3MzFlYjYzMTU0ZTNiNzcyYjVmZTAwZDdkZjQxMjQzYjU3ZWI3MGIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ed8bac7e9f42400e85d25b0339583b9e",
+      "statement": "get_dependencies 的第一个参数在两处写法不同：03:252 直接传 asset_path（str）而桩里形参类型是 Name，第二章 my02.py 写的是 unreal.Name(pkg)；两种写法并存说明这里没有定论。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/my02.py#L476-L486",
+          "version": "repo-lines-v1:sha256:5fc74744dbef122da0c2a7f9189d670662e86d524c7b6f3d050915f06e84700f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyMDFhZWZhZTllZjU2MmYyNzBmMzY1YWI2OTIxOWQwM2NmZmJiNjNkNWQ5MzhmODQwYTM0ODUwNWRjODcwOTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4NTQ5YTdlMWU4MmViMWJlMWExNDhhMWM3N2M5MzNkMjYyOWUxNTM3YWQzYjM2YWNlZTA0ODIxNGI1ZWYxOGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQyZmE5OTBhZTExYjI4ODBkNGRlNGVmMGIwZmE4NmQ2NzNhOGUwMWMzMGEwNTMwMzI4NGUxOThiODg3MDE2ZjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNhY2FmZDc1OTQxZjZjYzkwNTdmYmEzM2U4ZTE4MjVhZGM5YWY0ZjJmNWMwYjU1YmJkZDlmMjc4NTFmZjhkMmYifQ"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/03_blueprint_variables.py#L250-L253",
+          "version": "repo-lines-v1:sha256:23c4005ba69047b85e85e70db56f8d1c3f547d1d76e3518997bc6a205371aa0c:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzk1ZjFmNWE2MmNmZjQ0ODE3ZTM4NzdhMjM0YzUxZDBhNDhjODc1ZmUwODBlOWY5MWZkMzE5MTI2OGUyZWUwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzIwYTM2YmQxYWUwMjA4NDU5NjlkMjZkNWQ5Nzk0NDg1ZWY4ZWU1YTAyNmUzNGNjZGNlMjJkN2ZkYWMyNzdhOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWNlMmIwZmRjZDliOWVmODMxMzMwMTI3YzczMWViNjMxNTRlM2I3NzJiNWZlMDBkN2RmNDEyNDNiNTdlYjcwYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_07df4290dd9040919b176f52afeb4849",
+      "statement": "03 的 find_what_references_blueprint 调 find_package_referencers_for_asset(blueprint_path) 时**没有传 load_assets_to_confirm=True**，与第 02 章三处判定/删除前显式传 True 的做法不一致，用它做删除前检查会漏掉“需要加载才能确认”的引用。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/03_blueprint_variables.py#L265-L283",
+          "version": "repo-lines-v1:sha256:e1e444c144e4d91317cb88939623fcb57462d80d053517f28638ddba75cda1dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlN2I2N2I4Y2U5YmRmMTE4ODJmZjhiYzk1MGYwMjU2N2I2YzlhMTMwMjVkZjM3ZmEyMjUwNTk1ZDYwZjg3YjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzN2NmYzIwOWZkZWQyY2ZkMDA0NTFhY2ZhY2JjOTZkZjgwYTM0YzliMGFmMzgxM2M1YTI0ZTg5MmZlYTBmZTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI0OGJlZTRlMmE4ODJmODY4Yjk3ZTJhMDJkM2Q3ZGE4NjY2ZDY3ODNmZDkyYWE1YzA4MjBkN2RjODg1NjhjNTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_256986352a11411183655b664b2baa7b",
+      "statement": "audit_blueprints 的 docstring 承诺四项检查（命名规范、是否有描述、依赖数量、父类），但 results 字典里只有 no_prefix 与 high_dependency 两个计数器，“检查是否有描述”与“检查父类”两项根本没实现；它用 find_asset_data + str(asset_data.asset_class_path) 里含 \"Blueprint\" 的子串匹配挑蓝图，再用 str(asset_data.asset_name).startswith(\"BP_\") 判命名前缀。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/03_blueprint_variables.py#L317-L390",
+          "version": "repo-lines-v1:sha256:3ce68ae89b941eabc66699814ea472adee1977cfb44a4ba3dfaa01b3c3bea252:eyJzZWxlY3RlZExpbmVDb3VudCI6NzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0MmMwMTUxOTViOGE3NTE5YzJmNGMyYWFkM2RmZjBmY2JkZWY5ZWQyY2NiOTFlZTdmZWM2NzVjNDMzZDM2ZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkxNzZhNDM5NTdiZWM1MmIzYmIzYTAzZDczZDhmMjUyNGQ4MGVlZTNlOGIwODc3MzczNTMyZmMxY2I4YTNjNDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e38d8729ccc241e9b5b2466b7c7cd66a",
+      "statement": "改蓝图元数据时两个属性名都被记录成【易错点】：描述属性叫 blueprint_description（不是 description），分类属性叫 blueprint_category（不是 category_name）；桩里两者的说明分别是“Shows up in the content browser tooltip when the blueprint is hovered”与“The category of the Blueprint, used to organize this Blueprint class when displayed in palette windows”，都是 Read-Write。两处都用 try/except 包住 set_editor_property 并立即 save_asset。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/03_blueprint_variables.py#L285-L315",
+          "version": "repo-lines-v1:sha256:8225252f98b401668bcef788952ee4ddcfc6280b880ef9cdfc3b821e0121a05f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ODA0MGZmMDgzNTM2YjQ1OWMxNGQ0MjE3NzA2ZjkwNWNjZDMzYjgwZThjYWM2ZDRmY2Q0YzIxOTdiODg3ZmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwYzUzMDYzMGJjMmIyMjhjMjdmMmIzNWE4NjYzOTk2MmU0ZDQ3OGNjZDJiN2QxYmQyZjJkMGY1ODBlN2U3ZGYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_61ba120d6ef84ddba46056b858c5acb6",
+      "statement": "reparent_blueprint 的桩签名是 reparent_blueprint(cls, blueprint: Blueprint, new_parent_class: Class) -> None，**不返回成功与否**，所以 02:145-155 只能无条件打一行“已修改父类: …”并 return True，调用方无法知道这次改父类是不是真成功；02:134-141 的注释列了三条后果：移除旧父类的默认组件与函数、继承新父类的、与新父类不兼容的节点会产生编译错误，所以固定顺序是 reparent → compile → save。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/02_blueprint_components.py#L126-L156",
+          "version": "repo-lines-v1:sha256:ca0451e46eb30b322f07ca54403b0bc783d815877848128a443c8a25b0548c83:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmMTY0MjYyYjJjZWRmYWJiM2M5YTQ3NjY0MmQ1NDAyYmQxYTY3ZDM5ZDZlMDRlOGM1ZDNkOGQ5YWUxMjg4NGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5MjhlMmZkNjU0ZDgxZjFjMjM0ZjcyYmE2MWRhMmJjODRhMDI0OTRjYjgxMGYzYmQ2NGFhOGM1NWYxM2E0ZDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_307ee62981d34b2ca5cd92f41e00ced6",
+      "statement": "my02.py 的 third() 是批量改父类的练习：遍历 unreal.EditorUtilityLibrary.get_selected_asset_data() 的选区，过滤后对每个蓝图调 unreal.BlueprintEditorLibrary.reparent_blueprint(object, unreal.Character)；它的过滤条件写的是 asset_data.asset_class_path.asset_name != \"Blueprint\"（没包 str()），而 my01.py 与 my03.py 在同一位置都写了 str(...)；批量改父类没有任何 dry_run 或确认步骤。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/my02.py#L17-L39",
+          "version": "repo-lines-v1:sha256:ddcf4a4f05c26a327ef53d962cfa504962c5a8ea2bf3af7149f55c4d5288b945:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1ZGQxZWVjODc1YjM3MDNmNTQ4ZTdmMjE5MzBhZDJiYjllYjc1ZGNkNjdjMTlhYzIwMDNiNjIyOGJjNDliNDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2M2VhZGQxODE5NDZiOGNkZDRmMmRmNzViYWIxNThiODhmYzMxMGRhYWMyYWIyZjUwNDhjYTViMDM1ZTNhYjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFjMjhkZTljNGM1MDFlM2ZjOWU2Zjk5MmQ2YjdlYjUyOWYzYzRlODRjZGZmODBhZTQ0MmY3YjQ4ODIzZWYwYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI3OThkMWY0ZmI5MjRiMmY5MzI1OGQ1Y2Y5ZDRiNTNlNjNmYTc3NjAzN2Q0YTkwMzRkZGY0Y2I0ZTA4OWZiNjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_425803c3214245f687a660253b3c6d68",
+      "statement": "my01.py 第一题把组件增删的底层路径总结成“要改谁 → 通过『句柄(handle)』定位 → 再操作”（用图书馆索书号/快递单号作类比）；代码是四步：unreal.get_engine_subsystem(unreal.SubobjectDataSubsystem) 拿到子系统、k2_gather_subobject_data_for_blueprint(bp) 拿句柄列表、handles[0] 当根句柄（:53 注释用“一般是根节点”标出不确定性）、AddNewSubobjectParams(root_handle, unreal.StaticMeshComponent, bp) + subsystem.add_new_subobject(params) 返回 (新句柄, 错误文本) 二元组。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/my01.py#L37-L48",
+          "version": "repo-lines-v1:sha256:b61803762d690624c9ccdcb9d6c84edfa9a1e12e73587ed64e689ab8ebcb53e6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlMmY3OGFjYTcyZjljMDM1Zjc1YWE0NTYxOTBmY2Q0ZGM2MDI2ZjQxM2Q2MGUyZjk1YTg0OTg4ZDA0NzA5ZTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiNWM4MjYzMmZjODJkNGIyYzM0MGY0MjU1OGJhM2RmYTMxYzc2NTVkZjZmY2MxNjhiNGZkY2U1N2ZhYzYwNDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYxMjgwYWUyYzQ1OWNiOTkwN2ZjNGIwNDY1Y2RkZDI2ZmUwMTUxNjI2NDA0OGEwOGNjMDViMGFiOWJjY2MyYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY5YjUzYzMyYjBkNTFlYjVhMzgzNmQ3MTg4ODY2MjljNDgwODc4ZTIyNmExZGRiM2IzMGVlMDY5YTkzMWVmMjUifQ"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/my01.py#L50-L76",
+          "version": "repo-lines-v1:sha256:ef667f4aff89aa5d3c99a143643b9c008461c70af123ba4cbd331623585da286:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZiMDY4MGM4Y2M2ZmEzYzNiYWY1ODczNmViMzIwNjk1Nzg1ZDVhMDM0YzExZmFmN2FmYWY1MDVjMTU2NmUyYzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0MTdhNjU4MTIxMjU5N2ZhZTljY2Y0ODA4MWY0ZDg5ZTZhMmQzNDkxZDA4YjFmYzZiMTk0ZDZjMmZiOTZkOWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNlYjc5MDU0NDJhZTI4ZWExYWY1ODRkMGIwYzk4ZDRmMDVmOThiYWZhOTYzYTk3NGJlZDM4NmMxMDUwNzk4NjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM5NmQ0MTc1ZjljODZlYWU3MDQyZWFlOTY0NTRlNzExMmYzMTcxZGI1ZmE4ZmRhMWUyNjY5Y2QwMGEyZmQ4MTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_81861d2c8ca54897ac177143ecc6fbfc",
+      "statement": "my02.py 的 fourth() 在同一套流程上多了一步删除：先 create_asset 造一张 BP_ComponentDemo，再 add_new_subobject 挂 StaticMeshComponent，然后 subsystem.delete_subobject(root_handle, handle)；而桩里 delete_subobject 的签名是 delete_subobject(self, context_handle: SubobjectDataHandle, subobject_to_delete: SubobjectDataHandle, bp_context: Blueprint = None) -> int，两份练习稿都只传了两个参数、没有显式给 bp_context。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/my01.py#L71-L76",
+          "version": "repo-lines-v1:sha256:6738676c411f4e846caaa215ee2a114b44b8d853634418674093f95d52c20843:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjVkYmM2YmZmZjliOTdmZDMxNTUzOTI0NWIyNWE5ZGEzNjBkYWUwMmI0OTQzY2RhMWVkMTY5ODU4ZDQ3MmNkOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTQxN2E2NTgxMjEyNTk3ZmFlOWNjZjQ4MDgxZjRkODllNmEyZDM0OTFkMDhiMWZjNmIxOTRkNmMyZmI5NmQ5YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGRlMjg5MWEyZDZkMWVkMGE4Zjg0OGQ3NjJlYTg2NmYxZDc4MTM2OTA1YTEyYWNmMzk3M2YxOWJjODY5NDU3NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzk2ZDQxNzVmOWM4NmVhZTcwNDJlYWU5NjQ1NGU3MTEyZjMxNzFkYjVmYThmZGExZTI2NjljZDAwYTJmZDgxNCJ9"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/my02.py#L42-L77",
+          "version": "repo-lines-v1:sha256:cfe7663884ee2f130dd567f498d8a7d85b8dcc9223082525d36d1c5f3abece65:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2NWE5NGIyNTM5YTUzZTlmNWNhNjk3ZDE4NTZlMDE1NTI4MTQwNzRhMjRkYzJmMjY5OTA1M2QxNDdjNjBiNzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViYWI4NGIxNjlkMDk2MzE0ZDYxNmRlOTFmNzMyZmJhODk3ZTYwYTE5MzMzOWVjMmZmMWEzZDEwOTI4YWZlZWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5MWFhOTk0YjdjYjRlZDM1MWIxZDE1YjhkMWVlMzFlNzk5M2Q0ODUxMDc5ZmVlNDE4OWJkMjQ2MDk1NzkxNTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8a3d3ea1fc3f44489e1eacae0e6f4641",
+      "statement": "my03.py 的 subobject_path 用“从自身一路回溯父级拼成父/子路径”当作组件字典键，注释给了三条实测理由：根 Actor 那条的 variable_name 是 None、同一个 SCS 组件节点会被 k2_gather_subobject_data_for_blueprint 输出两条（SCS 节点视图 + 实例化视图）且 variable_name 与关联对象完全相同、跨蓝图时同一变量名可能出现在不同树层级；实现里有一个顺序陷阱：str(None) 会得到 \"None\" 这个真字符串，所以必须先判 None 再 str。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/my03.py#L110-L137",
+          "version": "repo-lines-v1:sha256:57fa3c06deb43241048ef10837da596dae5a7c195a0b8a2ff9f84010ec111795:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlYzYyOWE5MTdmYWM5ZWJiOWIxYjhiMTNlYTFiZjYwMmE5NmEzZmYzMzYyNzVjN2NkMDhmNzYzNjkyMTA0ZTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJkOTdjYmUxZjJhMjE4ZjdlZDkyMjRmMGY4NmYxOGMwMjAxYTYyNGRlZmE0ODZkOTEwODY4ZmMzYzRiYzc2ZTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQxNWMzMzFjN2M2Mjc0N2Y5YTg3OWNkNzQxZTY1YWQ5ZjZkOTRkMDVlZjY3MzNkNTE2NjkwNjFjY2Y3MjZkMjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b507fe5857ee4542b4dcb77384801c9d",
+      "statement": "my03.py 的 test03 实测了重复视图问题：它按路径把视图归组（path_views.setdefault(path, []).append(data)），打印每个路径的视图条数，并把三个来源标志（is_native_component / is_inherited_component / is_instanced_component）与四个能力标志（can_rename / can_reparent / can_edit / can_duplicate）全打出来对照；结论写在 docstring 里：BP_Cannon 的重复两条在所有标志上完全一致，说明 Python API 层区分不了它们，引擎把两条都保留是给编辑器“组件面板(SCS)”和“CDO 实例”两套 C++ 逻辑用的。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/my03.py#L417-L455",
+          "version": "repo-lines-v1:sha256:6b726e6c435c24cb0da16db3a8dd4ee25af5270a80fd95c27915422e55c88ad8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkZGI1ZjVjNWMxMTRmMTJhZGJmYTNmNWFkZDc2MTQzNzNhNTEyM2E4NzJiZjg0M2FkM2I1MDJlNTFjOTkxODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUxMDM0ODFjNTdkMGYwZGMwZjc2Y2QyY2M4YjM2MDRjNGU4Mjk2ZGE0MTIyYWRkMTllODE3NDVkYzdlMzMxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIzZGYyYWNmMDZlOGMzZjAzYzcxMzVjNmU4YWM1YTljYTU0MzJhYmUwNmE3NGFjYTBmZGQ5YTUzYTAwOGY5ODciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJiYzVmMWNiZGRkYjkyZjFlOTZjOTA3OTNlNzg2MmM1ZWRlNDA2ZmUzYmM1Nzc2NThlMTM4ODhiMjBiZmU2Y2IifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_53e98c44d58a462dac453c8e5ca85feb",
+      "statement": "my03.py 的 get_components 把每个组件拍平成三列 {class, origin, config}：class 来自 component.get_class()，origin 由 is_native_component / is_inherited_component 三分成“原生/继承/本蓝图”，config 由 read_component_config 只读 static_mesh / skeletal_mesh / mobility / relative_transform；只挑这几个属性的理由写在注释里：桩里没有枚举 UPROPERTY 的 API，所以按组件真实类型用 isinstance 判断、只读它一定有的属性，不需要 try/except 兜底；遍历时用 is_component(data) 过滤掉蓝图自身与根 Actor 等非组件项。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/my03.py#L139-L178",
+          "version": "repo-lines-v1:sha256:62bd05edf5843f5103ce122a4977147fcd6b14d9ec8826e9cfe6ecfe80c6bdd5:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0MDk0YWU0ODY1NDE5YTNkZTNkMTA0MzRmZDcyMjFiOGM3NWNmNDcwMzlkNWZmZmVhN2FiMmQ3M2M2ZWI0NzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjNDA5N2Q3YzAzZTQ0MDgwYmM1YWQ2NGVjYWVlOThlYWJhNmEyZTcyZTNjNzM1NzMyMzVkZDBiYmEzNWFjZDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImViYjUyY2I5NGUzMTU3ZTJkM2QxMjIyZWFhYzg3MTljYzViMmU5M2EzMDM5NDU1N2Y4N2QxYzNjYTAzODNiZTIifQ"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/my03.py#L180-L205",
+          "version": "repo-lines-v1:sha256:18f9ced7b9950054ef27f444d2802cd2ee0064a22dbc2ea49ab34d1e1d813bb7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5YWQ5YTk4MmE4YmJmZGRjODFlNmJlYjI0YzBhMWE2NDIyMWNlYWFhOThkYzk0NjZiMzI3MzNhOGEwNGM3NDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3MjIzMTA2ZmQ4NzQyYjcwZWEyMzNmOWRjMzU5ZjRiMDJiYmIwNjliNzI4M2VlZjc2MjQ5OTUxNmJkN2I5YzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzMDIxODA4OTQ5MzdhNWQ5OGIxN2U3NjQ1NTNlNzExOTY0OWM1Yjg4ZjJlOGU5MTg5MDljMjY2MGU3ZWZmNWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_488db801ba7543d5a11a0b5cb5d5734a",
+      "statement": "my03.py 的值比较用 same_value：先 type(value_1) is not type(value_2) 直接判不同（理由：int 0 与 bool False 在 Python 里 == 为 True，但在蓝图里含义完全不同），再退化成 str() 比较（理由：结构体/数组/枚举的 == 行为不一致）；组件与变量两处对比都用三段式集合公式 set(A)-set(B) / set(B)-set(A) / set(A)&set(B)，注释说明好处是先用集合筛出“要不要比内容”，并且三组分开遍历时每组取出的字典一定不是 None、省掉一堆判空分支。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/my03.py#L259-L283",
+          "version": "repo-lines-v1:sha256:b793286c7e44ae4ed1274b0848b2a143f02dc444012b0cac53121e660c57c166:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4NjJmMGIxYzdmZThhZWVlYjMwY2JhNDZlNjlmM2M4ODM0MmYzNjUzZGMwZTJkYTNlOWM4ZDE4M2YzMGViZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0YjhiNWJkNmVjOThkNjY0ZTg1ZTNhN2M2ZGU5YzhmNGNmNGM5ODBhNjFmNTRhNDRhYWY3ZmJmYTIyMWI2MGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE2M2ZhODRiM2NiZWEyY2NkMTYxYmU0Mjk1YWNkNDNhMmIyZDVmN2NlODQ5MGJiNjE2MDEzYWMwYWRkNDU4NWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU2NzM5NzNjYjg0OTI2N2FjOTE4MDIwMzJiMzI5ZTQ3NzEwYWUxMzJkMDVmNzQ3Nzc2YzVkYTE2NTk2NWQxMGYifQ"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/my03.py#L93-L107",
+          "version": "repo-lines-v1:sha256:f383a868a2a6f325c4bfb40e885891369df58a8cc78039098b93a34613759daa:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2N2QzNGFkODk2MjdkODAzMzlmYjdkNzI0NjA4NzM3YWY3N2FhOTc4NWFlYjBlZjE3OTM3MmI0ZDM0NjA1ZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0YmVlY2MyNjI2NGM1MWEwMTBmYTZjMzAyNmVmYTBlNmY5N2JkZDBjODg3ZGQxZGZjNTdiMTVkMGZiZmYwNjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNhMzI3NTVmYTFlMjJiYTJjYjQyYWM2MDFjNzRkNWRmN2NhNjg0NmVlNmFmYzEzNzc4Y2NmMmJhNmJhOTI3NTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4YTA0ZTM4ODBlOWRkNzg1NzM2YTFiYzFlMmY2NmFmZWEyYjQ2NjI0OTg4MmI2M2E5NjBlM2UyZjIyN2RkNGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_41768f9f0db74fb2b071cbb995d5dffd",
+      "statement": "my03.py 的输出风格是刻意选择的：全程用 unreal.log 打印成人话而不 return 大字典，理由是“这是给人在 Output Log 里看的工具，屏幕上的可读性 > 程序里的可解析性”，代价是它无法被自动化测试或 CI 消费；执行顺序把父类放最前，理由是父类不同意味着后面所有继承来的东西都可能不同；second(...) 在模块级被调用（:363-366）且参数是写死的 /Game/BluePrintClass/BallAdventure/BP_Cannon 与 BP_Cannon1，所以载入文件即执行对比。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/my03.py#L262-L271",
+          "version": "repo-lines-v1:sha256:1ab62daf9831a5dd065d43e1817360d4bac497f104dc4bc0c8987c4201049650:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzNzA1M2Y1YmM2MWZkMTgwYjQ4MWU3Y2RhNzcyZmY0MTc5OGZmNGNlZDU5ZDEwMDI5YmVhMWI0ZDRkN2UyMWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4OGIzYTc0Njg5NmRiNzY1OTQ5MGRkNDNhZjM5ZGQzOWM4MTYxMjZkY2M0NzYyN2I5ZWVjYjg1NWY3YThmYWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmMjI5MDJhNWIxZTYyNjI0ZGNiZjBkNTA0OTk2ZTNlMzc4YmRhMWVhYzNkOWFkZWJhY2FjMTA3NWUyM2U1YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlOGEyNDk1OWNiNTZjYzVkZTUwNTIyZmJiNGU0OTkxOWQwNGFlM2MzY2U2ZTEzNGRmOGVhOWY5YWM0OTI0NTgifQ"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/my03.py#L363-L366",
+          "version": "repo-lines-v1:sha256:aa3d438768567e398bb94e038c38c37fa0510a9b9719316460883ede40943d75:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzYyZmIxZGJlNWM3MjcyYTM0ODE4NTRmMWZjMmM2NWYxMjdlNWY1NmZmNjk0MDFjZDdjYmQ0YjhhNTA4NWM0YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmFmYmEwNTI3YzM5NTNjNGI2ZTBlNWI1NzM5YmE4MzYxMmY4MDUzYmNkYzk0NjY3MzAxOTNjZDFkNTkwYjQwOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTdkNDNjNjJhNDQ5NDM1NDkxZDlkODliYmZkNTY1Y2IyMDA4NjA0NGQ5NjE4ZjdiZDNjNWJmYmRmMDFhNDc4NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTI1NWEyY2U3MTE3NzcyZWNjYTI4Yjg2ZDUyODczYTQwNjUxOWQyMDVhYjUwMmY2OGU3NDUwMDkwODc4YzkxZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_65de05aec395454fae65700a5629bbf4",
+      "statement": "my03.py 的调试函数 test02 有真实错误：它写的是 unreal.log(object.get_name)、object.get_package、object.get_full_name 都**没加括号**，打印出来的是绑定方法对象而不是值（只有 object.get_class().get_name() 与 object.get_path_name() 写对了）。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/my03.py#L519-L526",
+          "version": "repo-lines-v1:sha256:bc4a098ee989dc4c58877a5f9de97e0a842ccd2c97a74b79bcec1ff7bfdbd56d:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQyNDcxZGEwNTllZTA2Mzg0MTdlOWI5YjliZjJjYjRlNmI5NDE1Y2UyYjAwNGQyZGM1ZmVmYmUyODU2ODIxMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmE0YTFhMjU4N2Y4YjY4NTgyODliMjM4OWM1NDYyODE4YTgyMzhmY2E1MDIxNmI0NGZiYjFiN2NkODZmZTZmNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODVlMTY1OTNjN2JiOThiYTQ0Y2Q5NjJlOWVmZWM2ZDE3OTFhNGJkNGEzNjYyZGM0YzlhMzIzNDUzNTZjNWEwZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_41d6bad68c4d44679673f02229cc4723",
+      "statement": "my03.py 的入口状态：main() 当前调用的是 test04(selected_asset)（第 4 题的演示）而不是 test03，它先取 unreal.EditorUtilityLibrary.get_selected_asset_data() 并判空（注释指出没选中时返回空列表、直接取 [0] 会 IndexError）；而 :539 的 if __name__ == \"__main__\" 被注释掉，这是全仓唯一一处 __main__ 保护。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/my03.py#L528-L539",
+          "version": "repo-lines-v1:sha256:f8f32686166da3fcbe14d59e66a76d9b4e2701ded4a6f0079afd1e67b9d72246:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyZTMxMjU3ZGMwYWUxZDU5MzAzN2MyODBjOWFkNTA4MTliOGE2YzhjZjcyOGJlMDcxNmQwMGEzZWVjYzA0YmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYmE2MWMxOWY0YmRiNjViZjY2ODI2ZmIzMmNkMGYzZWM2ZDFhZjgwNzIwZWU4YjE2OGE4NzU2NzQ2ZjM5ZjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5M2Q1OWUwNWNlODk5NTlhMzI2MDdlNjIzMjNhOWE5ZmZhOGEyYmJjMjAyMTIwMDY2MmM2ZDdiYjc0OGRkZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyMmI2NjA2YTdlNTNmMzQ4ZjgyYzNkMzg3ZDZhMDhjYmU5NDlhMTFjMGRlNWIxZWM2ZjY2ZTU3ZmM1MDY4ZmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_76b99d915e5943fba78025e674dfb83f",
+      "statement": "my03.py 的第 3、4 题都没完成：third()（:544-553）只有外壳——list_assets 全库 + box = \"|\"（声明后从未使用）+ 往 os.path.join(unreal.Paths.engine_saved_dir(), \"md\") 打开一个**没有扩展名、名为 md 的文件**并写一行表头，文件落在引擎安装目录（Program Files 下可能因权限失败且不该污染引擎目录），循环体内只有类型过滤没有任何内容生成；:557 的第 4 题（蓝图版本管理）没有一行代码。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/my03.py#L544-L557",
+          "version": "repo-lines-v1:sha256:f6acfb9570935acd6b627fdcf45ead7c58a262187c503fa05de69f36ad19edd4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY2YzAxZWZkZGU2MTkxZTk1ZjA1ODdkY2ZlYjk2YTllZGZlNmQzYzY1ODEzMTFkY2FjZmNiMTE1ODU3YTczMzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwNmVmODk5MzRmNTI5YmM1N2Q3OTQ0NmVhOWE0Y2IwZTdlYjgxNGZkNWZlOTdiOTUzYmE1NTI4NGNiMzBhY2MiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMzYmRjOTUzM2IyZTQ4NDQ1N2YzNDkyNDhjNmJlZTNkYmQ2M2NiMjJmNDk1NTY4MzA2ZTdjZTRlZTc5Y2Y4NDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8a58433d6c514837b8f5813c832ec936",
+      "statement": "03 的 inspect_blueprint_properties 用 dir(cdo) 取前 30 个属性、getattr 加 callable 过滤来探索可用属性，读到抛异常的属性就 log_error 后 pass；而 my03.py 的注释明确给出对比工具不能用这条路的两条理由（dir() 里混着方法和内部属性、还得靠 try/except 筛，而且拿不到变量类型），所以探索性工具用 dir()、生产性工具用反射 API，这个分界在仓库里是自洽的。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/03_blueprint_variables.py#L180-L220",
+          "version": "repo-lines-v1:sha256:16c2bf8052c29a4eb0849f5ce7efef2b426a4611c31c672b6cc99608e91e9ca9:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyY2FhMWYyMGFmYjk3MDljYjM0NzU1ZDgzZjIxNjcxNjdkNTg0NDFlN2MwMjliYTE5ZmQ0MGMwMDJjOTYzYzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA0MDE5NThkNzliNThjMTc4ODhhZmQ2ODBlNjUxZDQxODUxODQ4ZTMxODEyNGI3ZjY4MDM3YjVlYjE2MzU0ZTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a61c2821dd5649bb89404a47cd01035f",
+      "statement": "批量操作都套 ScopedSlowTask 并留中断点：01:236-256 与 02:170-184 与 03:334-348 的统一写法是 task = unreal.ScopedSlowTask(len(items), desc) + task.make_dialog(True) + 循环内 if task.should_cancel(): break + task.enter_progress_frame(1.0, 描述)；01:220-258 的 create_blueprint_set 还把 should_cancel 带来的 break 与“成功创建 X/Y”统计组合在一起。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/01_blueprint_basics.py#L220-L258",
+          "version": "repo-lines-v1:sha256:71d267d817a74974c723d763c68b95235bf5cf07d846314b46118edc68c305a5:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiZjE4NTQ4YTRmMDVjNjVkNTc1OTlkODkwMGY3MGZiMjJhYjI5Yzk2YjU2OWZjZWY0MGYxNzU0MTkwNjIzY2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0MjQ0YTgyODA5NzBkYWQ2ZjM5NWNiZWQxZTg5ZGJmNTAyYWYyNjZlYTQwMzM4MDVmZDlkZGU3NmI4MDQxNzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkOTE3YjZlYmNhZmFmNDVhMmVlYTljMTY4YWE0N2IxYzc4MGNjNTU3ZGU0NWM2MzBjMDEyMjY1NGMxMjZiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1YjkyM2JjZTIxNDBkMmEzMGJhYzc4Zjg1YzM3ZWFhMWUxNWM4OTNhNTQ1NjllYTM4NjE5Y2UyOTNkNmMxMmQifQ"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/03_blueprint_variables.py#L334-L348",
+          "version": "repo-lines-v1:sha256:59ee573aecbf3d7feb43ad61c5e7309c98d0e28d35ff05e6fa61a5665d5b0290:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5M2VjN2ZiY2NjY2ZjY2M3NDgyMGFjOTNlMDdjZTRhYjYxNWJiMzhiNmMwMDVkY2NmNTkyMzkwMjhiMjMyNjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmMWJlZWZiNThjZTFkMjMzZjRmYWI4M2NiNjQ2YzVlZTRhNWI4NzNhZWJmZTllZTY3MDRmM2FiNjJlZjJjOWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlNzc2ZTVkMGQyYTg2MDM0NWNlMzI0MzMxMmE4ZDliN2U4ZjY1YWQyODMzM2FlNjg1OTIzOGNhZGU5OWMzNGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwYTUzNTJiNzlkOGFhMGIxYjA3OGYxMjZmMGIyMDJkZTJiMjg5OTZmZjMyOTdmMjNkZGVlZDZhMmMxMjdmNjAifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.1",
+    "at": "2026-10-07T08:34:04.254Z"
+  }
+}

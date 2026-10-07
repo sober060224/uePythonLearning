@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:2d0dfb5b5344b8e89d15339bae3ad261ae0f9c6175ef8dba41450b64e1750b77",
+  "claims": [
+    {
+      "id": "claim_ded235a99b83447090fa8fcc14a8c3ab",
+      "statement": "运行任何脚本前需在编辑器里启用 Python Editor Script Plugin 与 Editor Scripting Utilities 并重启；控制台在 Window → Developer Tools → Python Console（快捷键 Alt+Shift+P）。仓库将运行方式分为交互式 Console、命令行 -ExecutePythonScript、Editor Utility Blueprint 三类，而 AGENTS.md 把 exec(open(\"绝对路径/脚本.py\").read()) 定为在本仓库运行脚本的首选方式。",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/01_editor_utility.py#L55-L61",
+          "version": "repo-lines-v1:sha256:02a57b6d126c2cd23057ccfe026c18d81d407b87657372af1be17c0733c6d532:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzNiMTk4MTk3MmY1NTUyYzM2OThjNWQwZjlmNDA4NmQ2ODgwZDFkZjI3MWU4NzkwODNjMmExYjliNWE3NGYxMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTYyNzMyM2NjNDBjNzg3NmVkZWJiZTRhNjQ4YWIzYTJkNDE4NjAxMzZmNTVjOWIzNmE2YzkzNTBjMDBkNTE3MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGU5YjBlZjg2Y2M1ZWRjYjI1NzJmM2FkOGU4NWRjM2NmNWI5ZTRkZjllMTlmMmRhNjk3MDIxYjk5ZjY5OTQyMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjBhNzc2Zjc1ODc4ZDYwZGYyMWNiYjc4M2ZkYzM1ZWQ3YmYxYmIzYjg5ZTEyMzcwYTFiY2M0MDZmN2UxZTY5ZCJ9"
+        },
+        {
+          "resource": "repo://AGENTS.md#L33-L36",
+          "version": "repo-lines-v1:sha256:6e1a3a2a481389e748411783c9958650772f5f17666fa96e14fbd80a9e6b912e:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ViNzAyNTc1OTNkYTA2ZjY4MmEzZGRkYTU0YTlkMjYwZDRmYzUxNGY2NDUyMzdmNWNhNzRiMDhmOGRhNjFhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGFjNDIzZmExMzdiNDgzYzAxNzZhNDAyMzkwZjdjZTFiNTMzNDVkN2Q2MGFlMGU5MDdiYzBjOTE4NzAwYzZmMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODVjNTZhMWNjZjBmOTAwYzA4MzNmNjUyMjU1NTBiMTQ5YTVmYmMzNWQyNmU1YjkzOWFhM2ViMWE4ODg4MzczZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTg4ODFmYTk4NmRlNTBmOWUxYzdkZDc0NmEzYmFjMmZiZWI3OWQ3ZDAzZWE2N2M2YjRhYjYxYzBiZDgyZTE2MCJ9"
+        },
+        {
+          "resource": "repo://README.md#L7-L18",
+          "version": "repo-lines-v1:sha256:e6cd5af5f7d7635038f73ef484c6d03ed61be1323bed3919366a46436caef0d3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwODcyNGRkOTcxN2MyMzMxNjk1ZTVlZjMzNWZjMzEzMjNlNTFlZjdjY2I0OTRhNjczYzVmNGQyYzY5YmJlM2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1OWYzMWYxYTQwYjZiZjYxYjVhMDI5N2E5MzFlZGJiYmFmMDMxOTZmNjhjYTUxYzJjNTJlZmI4MDJmMTFhOTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAwMWYyZWMxNzU5M2MxMDU0ZWI0NjM2N2Q4NDUzZWYyNGExNzNjZTk2YjcxMTdkOTFmOWE2OGQ0NGZlZjhiMDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4YmVmZTdmMzY3OGRiN2RiYmE4MjUzZWYwNjNlYjYzYmZiMmVhZDg4YTIzMjQ2MDQ3MTk5YTc2NTAyZjNhMWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_969e6e3a38de470db514b5f2e15210af",
+      "statement": "exec(open(path).read()) 的语义是：读文件为字符串、当 Python 代码执行、且在当前作用域内运行（因此能访问 Console 里已有的变量）；它的代价是会执行任意代码，只应用于可信脚本。因为编器的当前工作目录不是本仓库，路径必须写绝对路径或相对项目根的路径，稳健写法是 os.path.join(unreal.Paths.project_dir(), 相对路径) 再 os.path.exists() 检查。",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/02_menu_extension.py#L223-L255",
+          "version": "repo-lines-v1:sha256:74cd72755ebdf6266972cc091ac0ce293aa40fa11ea64f122b6071f946c1bc37:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmNTBkMDNmZjM2N2Y3YTI4ZjcxOGFkN2M4ZmIyM2NhMDMzYjE0ODZhOTA3Mjk2NDMxYzQ2Y2IxMDU4NWMxOWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1ZGJjNmJmZmY5Yjk3ZmQzMTU1MzkyNDViMjVhOWRhMzYwZGFlMDJiNDk0M2NkYTFlZDE2OTg1OGQ0NzJjZDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM1ZWY5NTM5MTRkYTg4ZTZmMDBmNjc1ZGJiMWQ3MWIwNzEwNWM3Yjk5YTI5NDAyZjg1MDY0MDM1MmIyM2E5NmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhMDJmYmNiNzgxYzY0MzA4YjBiOTE2ZjBkMmQ4NGYyZGE0NzU4YTVmNTgzNjJhNDI3OTIxZDcyNTg0N2Y2MTAifQ"
+        },
+        {
+          "resource": "repo://AGENTS.md#L33-L36",
+          "version": "repo-lines-v1:sha256:6e1a3a2a481389e748411783c9958650772f5f17666fa96e14fbd80a9e6b912e:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ViNzAyNTc1OTNkYTA2ZjY4MmEzZGRkYTU0YTlkMjYwZDRmYzUxNGY2NDUyMzdmNWNhNzRiMDhmOGRhNjFhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGFjNDIzZmExMzdiNDgzYzAxNzZhNDAyMzkwZjdjZTFiNTMzNDVkN2Q2MGFlMGU5MDdiYzBjOTE4NzAwYzZmMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODVjNTZhMWNjZjBmOTAwYzA4MzNmNjUyMjU1NTBiMTQ5YTVmYmMzNWQyNmU1YjkzOWFhM2ViMWE4ODg4MzczZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTg4ODFmYTk4NmRlNTBmOWUxYzdkZDc0NmEzYmFjMmZiZWI3OWQ3ZDAzZWE2N2M2YjRhYjYxYzBiZDgyZTE2MCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e18c58da08d7401ca7079cb293526e66",
+      "statement": "全仓唯一的 if __name__ == \"__main__\": main() 入口守卫是被整段注释掉的，脚本的入口改由调用方（Console 或上层脚本）显式调用 main()。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/my03.py#L541-L542",
+          "version": "repo-lines-v1:sha256:0ae1b289b44ee7dd96695dcfebcfa82ba06e881e430d2414e5f2fe356a705759:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWRiYTYxYzE5ZjRiZGI2NWJmNjY4MjZmYjMyY2QwZjNlYzZkMWFmODA3MjBlZThiMTY4YTg3NTY3NDZmMzlmMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmJjMzc4ZGNiYjIwZWNkN2FjMGUyZDkwOGFlZmI4N2NiZWNlOWQ4M2Q5N2ViNDNjMjZiYWI1YTI0OTdlOTA1ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGE4ODcwNjc3NjM0ZWY1YzQyMWQwMjNmOTc3OTM3YTU2NTAwN2UyYTU4NTdmMDdhZTBmMDBhZWRiMTYxYTdiNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzNiZGM5NTMzYjJlNDg0NDU3ZjM0OTI0OGM2YmVlM2RiZDYzY2IyMmY0OTU1NjgzMDZlN2NlNGVlNzljZjg0NyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_a50fb42d84954293b0344c5e69894bd9",
+      "statement": "utils/ 没有 __init__.py，helpers 靠运行时 sys.path.append(r\"...\\PythonLearning\") 再 from utils.helpers import * 导入；该要求在课程正文里并不总能满足（material_instances.py 直接导入会 ModuleNotFoundError），而修复方式不是补 sys.path，而是把逻辑内联展开成 EditorActorSubsystem.get_all_level_actors() 的列表推导，理由是本仓库要求每个课程脚本都能独立运行。",
+      "evidence": [
+        {
+          "resource": "repo://06_MaterialAndTexture/02_material_instances.py#L325-L337",
+          "version": "repo-lines-v1:sha256:37f6c02f48d17bd6d199c400c93ad733ebcf933a81aadf6c49e2f5d60769f6b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwYWRmMWJhNjUzNzk0ZjA3YTkwMDA3NmRmZTM2YjFmYjEyODIyYzYyNWM5ZThlODcwMzRkNjRmNjA2ODU4Y2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhZmYwODBhMzQ2NzU5NjVmYzZiODFkYmUzMmE3ODcwOTY1Yjc3M2Y1MGY2NjUzMzY1NjNlM2EwZGI0NzBkNzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUyMDE0ZjA2ZjAwYTdmOGJhMTgwZDExZjlmZjU0ZjAzMmQ0YjVjODJmMzY0MDU0OGZhMzA5OTliYzQxNmVhNTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1ZThiNjM5OTkyZDU2YzBiYjExYmY5Mzc4ZDE2YzdiMTZjYTk4MTQxOTliYzM1MGRjZThjOGJhZWM3NmQzNzcifQ"
+        },
+        {
+          "resource": "repo://AGENTS.md#L26-L28",
+          "version": "repo-lines-v1:sha256:ad064957fffbb41bb588061f0167b64147f60229552b5f4ea2f2162e1cdea24b:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzY0OWY0NDlkZTBmMmFjYTBjMWU1NTVhOGU5YzdkMjAxMmM1ZmEwOTFhY2VlZDExZWI5ZGIxMjk3ZWE4ZmRhYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjkyMDBlNjg0OTFiNmE0NWQ4YzVkZDg1MWZhYjQzNjE5ODE2OWJhOGQ2MDQxNWM4ZmJmNjJjZDVmZDY4ZWU2MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjUxOWNkMWE0NGIxNzVhYmQ2OTA1MmE5NjFiOWVmZTQ3M2RiNGE3ZThkYmYzZjkzNTFkY2E1MmM5MDUyNmJmNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWY2NDJiYTM2NDFkMThiMGZiZDUyM2EzY2Q0ZGM5YTk3OTI2NjJiNTg3Y2E4NGM2YTczN2I0MGRmMTQ1MWVjNCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_41d3a8d38f1f46189b4e1136d6f35b9a",
+      "statement": "命令行/CI 运行需要在 UnrealEditor.exe 后接 -ExecutePythonScript 与 -nullrhi -nosplash -unattended -stdout -fullstdoutlogoutput 四个开关（分别是无头、不显启动画面、不弹对话框、日志到 stdout 且不截断），测试结果写到 Saved/TestResults/；配套约定是 run_all_tests() 必须把 suite.run_all(tests) 的布尔结果 return 出去，否则 CI 永远拿到 None 等于永远成功。",
+      "evidence": [
+        {
+          "resource": "repo://08_AdvancedTopics/03_automation_testing.py#L439-L462",
+          "version": "repo-lines-v1:sha256:19bbb04596fc72dc66eaeff2855beb76756c718b61f00ad60e95b74b7cabb2ff:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0MzlmYjNiYjViZjI0MTQwMDhjZTQ1YWRhY2ViMzBkNTNhYzVkOTk4OGYzYzZiZGRiZDE5Y2NlZDU2ZDZjMjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVmMjM2MmNiZWE1NDIzYjRiZjBmODkzMzY4YzNiYmQ4MjRkZDc1YzU5ODgzNDllMjYxYmJkMGFkZDkzYTI4NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRiYzllZTUzZDJiYmYwZjM3ZjlmOGIxNzk1MjhjZWI0OGQxNmU2Njk0NGY2OGZmOGYxNmJmNjQ4OTE2ZGU4YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6323947e1f1d493884c3777bfd2a1992",
+      "statement": "仓乐里没有任何菜单或工具栏注册代码；「编辑器 UI 触发」的实际做法是先 make_directory 建目录，再用 EditorUtilityWidgetBlueprintFactory 与 asset_tools.create_asset(..., unreal.EditorUtilityWidgetBlueprint, factory) 创建 EUW 资产，用 SCRIPT_REGISTRY 登记可重复执行的脚本，Python 只作为被按钮调用的后端（EditorToolBackend 用 on_button_click(button_id) 字典路由）。",
+      "evidence": [
+        {
+          "resource": "repo://04_EditorScripting/02_menu_extension.py#L119-L127",
+          "version": "repo-lines-v1:sha256:798d8e9549fc668879efe2403e2f1f0a1adcbba245df33f69cf5013643928ccb:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTNhMjA2NDlmZWNmZjM2YjY4N2FmYWE4NzEyY2RjZDc1ODZiYzVmNTUzMzk2N2U1ODdmNWY3ZmE1ZDU5OTdhZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzc0YzliZmE3NDBiMGQ0MWU2Yzg4MGE2MDllNTRiYjMwODFmZWEwZGRmYTEyM2IxYTc1ODU4ODhkZWYzNjRlZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmU5MGY4YTA5YTc1NmM3YWZmN2VmMDhiYzRjMjZlNTA0ZThhYWFiZmM4OGM5NDc1MDljZDE0MTVjZjQyYTE3ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjZjMDhkNTQxY2M1OThhNjVmMjIwYzI4OTJhNjc4NzA2OTM0ZDEyOGIxNjNjZGViOGNjYTM3ZDUxNzA2YWUxMiJ9"
+        },
+        {
+          "resource": "repo://04_EditorScripting/02_menu_extension.py#L196-L211",
+          "version": "repo-lines-v1:sha256:080e17d29c541ffca2cefde4d00a4478174c7e8cc45205cfe4c924aaa05ba74e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliODMwMTAxZWE3N2E5YWI4MzMwNzA2YjFlMzJjMTRlNjcwZTQxOTI1NTQxMzY0MGRhYmMzNmU2MDkxNTliZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMGNkYjk3MmE3YmZiN2VkMjQ2ZjlmZjY3MjM4NWU1NWY0OTY4ZmMxMTA0M2RjNWI2ODRkNTFkZmEzMWRiY2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJhNjMyMGRkNWY3MmE0NzE1ZDA2NWJlODExNmU1OGNkMTUwNzQ5MDI2MmMwYTEwODFkZjZkZWU5MWFiN2NkYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1YWE1NWU3NzFlZmNhMTM0ZmJiMjE3YWQ3ZTBlYWFhMDU5YzllM2Q1MTcyNGRmZjNlMzllMjAxNmYxZTg5ODIifQ"
+        },
+        {
+          "resource": "repo://04_EditorScripting/02_menu_extension.py#L56-L100",
+          "version": "repo-lines-v1:sha256:9ee2e497adc431ab1eec7f1b18c884faa07143af946c9ee3156f0cc67856c5da:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmMDAxOGJhNGFjZGQxNGExNTI2YTAwZjMwYzBmNjU0YmNlN2U2ZTVmM2UzNTIyYjkyYThiMWU1MTJkODE5NjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5MDExZTVlYTBlYmZkMTM3ZjdkYTgxNGVkZWJlMDI5ODE0NTMxNDliMzI5MzJkZjNjNDgwYTc3MjcyZTlmZDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhhNGQxMDA5MjNhMzdiOWVmNWIxMWY0M2U4ZWU1YzhhNjE0OGIxMGNmYjBmZGU5ODZlMDg1NjhkM2VmZmRjODMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZmZWU2MzE4YjcyYWYzYWY4ZTVmM2Y5NWNhMDE5NTkwMGNiNjU2YmMxY2ViNWFjMWE4ODkyM2ZjNDJiMzk3ZmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_319a29edfabf40c7ba63ea9dd267fccf",
+      "statement": "输出渠道分为四类且行为不同：unreal.log* 进 Output Log；print() 只在 Console 命令行里出现、不进日志也不上视口（故仓库不用它）；print_string 画到视口但第一个参数 world_context_object 必须是有效 World，传 None 会静默失败，所以要先从 UnrealEditorSubsystem 取编辑器 World，取不到则降级为 unreal.log；EditorDialog.show_message 是会阻塞脚本的模态弹窗。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/02_logging.py#L50-L62",
+          "version": "repo-lines-v1:sha256:4bab2584be2f6aae46e0a6a6dcaed8d1103c8adfe82195d43a54cdc11a7ed2b8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1ZGJjNmJmZmY5Yjk3ZmQzMTU1MzkyNDViMjVhOWRhMzYwZGFlMDJiNDk0M2NkYTFlZDE2OTg1OGQ0NzJjZDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczZGY5ODAyYTY1YzMyY2ZlMjQzYjYyYmY1ZjgzYjA2ZjA2NWRiNmJlNDMxMTMxZWQyNGZiMzc3OWE5YTdmYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg0YTIyYmRmNTVlY2U2ODg0NThlN2E1YTExZmI5OTA2OTYwOTYxYjQ3YzM5NjFmY2JhNDNmNTdhYzVjN2E3MGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3Zjg2NzE0YzJmYWNhYmNlNmU0ZGJhYWVjZTA5ZDlmYjdmMThkN2IyYzYzODkwMDFiZGNlNGU1ZmZlMjBiMGIifQ"
+        },
+        {
+          "resource": "repo://01_Basics/my02.py#L49-L60",
+          "version": "repo-lines-v1:sha256:482f86a56835010c2e246a324e3b41ac2bfd9c2d2856e1710cc7fd833a658c1f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhZGZmYzllMWY0YzA1OGI2YzdlNGZlMDA1MDBiZmEyYmYwMjBjNWI0ZDQ5ZWMxZjllZTk5YmRjODAxYzI2YmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI2Y2UyOWI1OGI5MDI1YTZkMGU2MDdiNzE2ZmFkNWY1N2Y1ODU1YjkxOGUyZDk5ODJjY2FhZjQzYzhhZDAyN2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYwMmY2NGNlNTM3YTM4NjM5NmI1YTNhYWRkYzk1ZmQ3ODUzMjRkNTU3MzlkMDk4Y2ZjNDM4NDM1NWFkZTNmMTEifQ"
+        },
+        {
+          "resource": "repo://utils/helpers.py#L62-L70",
+          "version": "repo-lines-v1:sha256:d940e5d7fa716d15ab4d70a067a3aead39b825edcbfa6b748b3570a5a477f0ae:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDllNDIzNDVjMjU1ZWY0NGMwOTQyNmEyMzI4NTM2ZGNiMzkzOWU4ZGYwODJhZjA1YTNiNGI4ZmU3NjdkMGIzMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWYyMDNkYzlhZWFkOWFiM2E3NzY2ODI0ZTg3NjdjNTczMDIyMmY5MTZlMTQyMmI4ODIxZDNkM2ViZDEzODAxYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTI4ZjlhMDBjZTUxMmZlZTI4MTFlYjFiODgyN2EwMjA3MmRhZjhiOWY5N2ZiYzI1MGY0YjA5N2Q3MGNjZmM4NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODg1ODc2MjA3MTE4MzdmY2Y3YjdjOWUwOGJlNzAxOTZmNDBjMjQyNjc5Mjg5NmMxYzAxYTZiZDNjMzFiNTFjYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_93227ef059644adeb12d0856194f5784",
+      "statement": "仓库里唯一的工作流只做文档更新（cron \"0 8 * * *\" 触发 openwiki code --update --print 并开一个 openwiki/update 分支的 PR），不执行任何脚本；因为 unreal 模块只在编辑器内存在，脚本无法在本地解释器里被导入或验证，因此正确性只能靠在运行中的编辑器里实测。",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/openwiki-update.yml#L1-L36",
+          "version": "repo-lines-v1:sha256:41237f6df61d5ee5246b9ee2da2eebef56d6dee761f7e80564767d59b4daa790:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2MDI3ODdhZjZkY2MwODM0ZGUxMjFjYmIxY2I5NWY5NDU5YjcyMWVhYjAzNDlmMTA1MDFiOTk2YzFjNzdmZmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0MWM2MGQ4MzU5N2M3NmNjYTY5NmFhYzc0ZGZiN2FjNWRjMzM2MmZlNjUxZjhjYWI1YTMwNDk5NjMwMTdkNDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM5MjQ3NzIxNDRhNmNhNTFhMjljNjljYjg0OTU4ZWY1MmZjOGQ0YThmMzdmOGExNTk5ZTVkNzRmOTk5NGY2MDUifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/openwiki-update.yml#L64-L70",
+          "version": "repo-lines-v1:sha256:64fb9ea3779ea6a3a8a87ea373b4ee1c6a6bdb77174535fe769449cf5cb4dac4:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDFjZmY0YWQzM2JhOTFiMTQ4ZTFiMWI4MjkwYjhmZmYyN2IyMDNmYWJmZWU1ODcwMjgyZGUzNjczODNiMWJlMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjE2M2IxZDg3OWExNDlhMTgxMDYyMzk4MmVlZGI5ZjE4N2NmYWRkMmMwZGU2MTIwMTdiNTFkYTNkMDZjMTcxNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGJlMWFkYWRhMTdhZTJmNGYzZDhkNDc5N2RiMzZkNTI2NzU4YmY0OWE4YzRhNzQ5ODk4NjRhNDNjY2IxOGUxNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzYzNmYzOWQzMDdhOTAxMDU3MjM4MjIwZDc2MmE4OTQ0MTk5MTExZDJkODI3ZjYyZjhlMmZiY2VmNTgyZTc1NSJ9"
+        },
+        {
+          "resource": "repo://AGENTS.md#L5-L13",
+          "version": "repo-lines-v1:sha256:d0be1b07ac70e9093b17f29a5fcb60cc64746cdb80681f019d262f3085d0b043:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQ4YjhjZGEwMzIzNmY2MmRkYWVhY2Y3ZTFkMjQzNmUxNDAzMWJiMjc4YzEwYzc4YWRmZjczMzQ1YzMzYjkyYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2MyMWZkYmFhMzVhMDg0NmNlNTRkMmNmOTk3MDBiNzFjOTcwNDIwMDYwMzNhYzBkNmY4YWNkMmIyYjZkZTllYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzRkZTk4OWRlOTk5Mjk3ZThkMzJjNzJkMmE0YzA4YmZiYzNmNzVhNTE0MDIyM2Y2OTE0YmQ4Njg1ZmQ2YTc1ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjYyOGI0MzBjOGExZDZmMTg5N2JkZmI4ZWVlNzA1ZjFlNTEzYjUzZmUyMzBkODJjZjBjMDc4YjNkZDc5ZDlmYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_aca2fdc962c745e78adf0a29bff86ade",
+      "statement": "运行期自查 API 的正当做法是 dir()：仓库给出的例子是 print([m for m in dir(unreal.Paths) if 'norm' in m])，因为猜 API 名会踩坑；但注释中的『已验证』只对某个时点的引擎版本成立（例如断言 EditorAssetLibrary 没有 get_tag_values 已与 UE 5.8 肚文件不符），因此动手前应重新核对而非只读注释。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/03_editor_basics.py#L114-L121",
+          "version": "repo-lines-v1:sha256:381060590a408f9f6cc6a17e0bd8aaf6b55cc491a2c8a2e132f05f2a6b4669a5:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTYzN2JhMTY4NzBlNDcyZDU0ZDY1YzlhYTkyNDRiOWVhZjEyZjc3OTQ4Mzc2NDBkZDliZjQyZTBkMGEyYzAwMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWNjZGM1OGJmMjE5N2RjYWFmYzA0NjUxMDkyZDliOWQ0NGEwNmZjZjUzMGE1MWJlZDY4NTFlNjlkMDlkYjg0NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDRiNDFmNjhhYWQ5NmM0ZjE5OTRlYWY0N2M5ZWVkZWM0YmIyM2UzNmIwZDM0ZDA0ZGY1ODM5NzNlZGJiNDAxYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTE5YjFmMjA3MzI5ZGM3OWJiYTYzODNiODc1NjViMzVlZGI1OTQxNDYyMTY4Njg5MTkyNjBhNTdmMzFmM2Q0YyJ9"
+        },
+        {
+          "resource": "repo://02_AssetManagement/01_list_assets.py#L20-L21",
+          "version": "repo-lines-v1:sha256:277c828fbc8a3ad183840efed136ab7f0b051efc1f45e3a21eec3c7d947be8e6:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmI0OTBjNjEwYzViY2ViODNhYWQ2MmFiNzhhMGY1ZTU5NzNjYTg1NTcyMGM3MDA0OTA5MTA5OTA3MDVmYjNjZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmVhODc4NjY0NzRhMmMwNDFjOWYyNzVlZTJkNmRkMTQ4YjVjN2E1OGUwZTk5NWZlYTIzMjM3Yjg0MjM2ODgzNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODRhM2VkMzk1YmNiNjc4Mjk2OWUzY2Y2YjZhMjU4Yjc4MDcwNGMxYmJjNWJkOTU5OGQyODlhOTllYWI1MzMzZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmVmM2M4ODVhNGI0ZDM5OGM4MDEyZjIxNjdmMzcxNDFhMzRkZDdlMzQzMjc2ZjQwYjIwMDQ1NGFkOGQzNjkxOSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_6dba1d22c3484b3a881f2fcbae7220a3",
+      "statement": "宿主项目根的 .mcp.json 配置了 unreal-mcp 服务器（type http，endpoint http://127.0.0.1:8000/mcp）；若可达，可通过它在运行中的编器里执行脚本而不必让用户手动粘贴，前提是编辑器已经启动。",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L38-L40",
+          "version": "repo-lines-v1:sha256:cca0af91ffd28ba4fcef559e30525356ef6ba6cb0863de0ab43425b856cc98d8:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ViNzAyNTc1OTNkYTA2ZjY4MmEzZGRkYTU0YTlkMjYwZDRmYzUxNGY2NDUyMzdmNWNhNzRiMDhmOGRhNjFhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODQwNzE4MzI4MmZiYjFmNDU3ZGVkYjQ0YzYxMjQ3ZWQ0YmYzM2ZiYTE5YWMxNzcxMDE5OTkxODI2ZGZhMWMwOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWFiYTJiNGI3MTI2OGIzNDFkMGQzMDNkM2M1OWU5NTVmZThlZjRkYzlkYzEyNjIyNjk5OTQ2ZDgxNzk5MjMyOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjRjYTg4NDZlYzBlYTM3MGYwM2EzOTJiMDMwMjg3ODMxYzlmNjE2YjVlYThhNzdhNzUxMDY2OGJkYzgyZTNlZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_900241a68f1f4a4bb9caef3027d5caec",
+      "statement": "已知摩擦点：示例脚本曾写死别人机器上的路径并一加载就执行（修法是先 os.path.exists 判断、找不到只给提示而不报错），应当用 unreal.Paths.project_dir() 而不是绝对路径；ScopedSlowTask.make_dialog 在 Python 里几乎必定冻结 UI，因为 Python 主线程与编辑器共享同一线程，真异步进度需 C++ 或 Editor Utility Widget。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/my03.py#L13-L20",
+          "version": "repo-lines-v1:sha256:96a630470e531a42353e30fbc6ba037e83e2228984c2eaa0c55039c41938dd19:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjVkYmM2YmZmZjliOTdmZDMxNTUzOTI0NWIyNWE5ZGEzNjBkYWUwMmI0OTQzY2RhMWVkMTY5ODU4ZDQ3MmNkOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTUxYWUzY2UwYTQwNDUzZDk5YTY4ZGRhZDU2ZGUxNjY4MzRmZmU2YmE3OTNiNTY0ODQ1Yjg2MTU5MTQ2NGIzNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzA5NjM3NjNmMDhkYjNlNzAwNWY3ZTEwZGFhNThlY2FiZjBjNTdkMGY2ZGM2MWFmOGZhNGEzYzdjMzdmZDA0YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmE0YzJiODg0OWQ4ZTYzODM1YjgwZDY0YjlkYTVjYWJhMjI2OWVmYjQwYzkwNjdjODFhM2VmMzEzNjQ3NmYwYSJ9"
+        },
+        {
+          "resource": "repo://02_AssetManagement/my01.py#L152-L152",
+          "version": "repo-lines-v1:sha256:e40b599a15e64eb0a5649b8cf0f8bd43d147e831b83509aefc13c885c43814d1:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTQwYjU5OWExNWU2NGViMGE1NjQ5YjhjZjBmOGJkNDNkMTQ3ZTgzMWI4MzUwOWFlZmMxM2M4ODVjNDM4MTRkMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTQwYjU5OWExNWU2NGViMGE1NjQ5YjhjZjBmOGJkNDNkMTQ3ZTgzMWI4MzUwOWFlZmMxM2M4ODVjNDM4MTRkMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWU3MTg5Y2RhMGFkM2QwMjQyMGI0ZjhkNDhkMGFhZTJlNGM3OTBlZTZiYjg0YWRlYTI4NTljYTE4YjE1ZjMxMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzA1ZTRjNGQ3MjNiZTVlNGFmZDg1Mzc2M2MxYWRmYjI0MzdlNjkxY2Q2ZjcyYjJjYWU2OTcyZTFkMmMwYWU0YSJ9"
+        },
+        {
+          "resource": "repo://02_AssetManagement/my02.py#L188-L196",
+          "version": "repo-lines-v1:sha256:5aea1a06430420fa010625c241c5f20ef9a01c197687346322e72e446a4eee04:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDVjZjkyY2ViNmI5ZTE3YTg5NGE4NTBiYzk1N2Q5MTdkZGE1OTJjZWFhZDViYTIzMDhhMjZmYjVjZWM2MDFlNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWU5MzEwOTM2ZjlkYWUyZGU0YTNmYWIwNmIzMDVkMjEwZDhjMjA5NzE4NDhkMWVjYzhkYzZjZDdmMzFkNzQxNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDJlNDQzY2I4MTEyMGU2NmFkYWZkYjQ0OWM4YTk5MDU4ZTUyYWYxZGViZGJmMTBiMmM5NmZiNjQ2YTYyYWVkNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDAyNjcyYTQ4MzgyMDdiMTUwNWRmZTk2MTgwM2QzZWY4ODQ0ZjIxODgyN2Q4ZjNhNTM3NWNiMTFlZWNlZDc4YSJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.1",
+    "at": "2026-10-07T08:34:04.254Z"
+  }
+}

@@ -40,25 +40,25 @@ If an `unreal-mcp` MCP server is configured (see `../.mcp.json`, endpoint
 `http://127.0.0.1:8000/mcp`) and reachable, you can execute scripts in the running
 editor through it instead of asking the user. The editor must already be running.
 
-## UE Python API — 查证规则（强制）
+## UE Python API — verification rule (mandatory)
 
-**回答任何 UE5 Python API 问题前，必须先查 `..\Intermediate\PythonStub\unreal.py`。**
-这个文件是引擎自动生成的 Python 桩文件，包含所有类、方法、属性的**真实签名**。
-不要凭记忆、不要凭文档、不要编造——只信桩文件。
+**Before answering any UE5 Python API question, always check `..\Intermediate\PythonStub\unreal.py` first.**
+That file is the engine's auto-generated Python stub and holds the **real signatures** of every class, method, and property.
+Do not rely on memory, documentation, or guesses — trust only the stub file.
 
-验证方法：
+Verification method:
 ```
-# 搜索类名
+# Search for a class name
 Select-String -Path "..\Intermediate\PythonStub\unreal.py" -Pattern "class AssetData"
 
-# 搜索方法名
+# Search for a method name
 Select-String -Path "..\Intermediate\PythonStub\unreal.py" -Pattern "disk_size"
 
-# 查看类的属性
+# List a class's properties
 Select-String -Path "..\Intermediate\PythonStub\unreal.py" -Pattern "class AssetData" -Context 0,50
 ```
 
-如果桩文件里找不到某个 API，**不要回答"应该是 XXX"**，直接说"桩文件里没有这个 API"。
+If an API cannot be found in the stub file, **do not answer "it should be XXX"** — say plainly "that API is not in the stub file".
 
 ## UE Python API gotchas (verified)
 
@@ -70,14 +70,31 @@ Select-String -Path "..\Intermediate\PythonStub\unreal.py" -Pattern "class Asset
   `find_asset_data` — do not `load_asset` to enumerate; loading every asset is slow
   and can return `None` for broken assets. In UE5 the asset class name is
   `asset_data.asset_class_path.asset_name` (UE4's `asset_class` is gone).
-- `AssetData` 没有 `disk_size` 属性。获取文件大小需要转磁盘路径：
-  `content_dir = unreal.Paths.project_content_dir()`，然后
-  `disk_path = content_dir + asset_path.replace("/Game/", "") + ".uasset"`，
-  再用 `os.path.getsize(disk_path)`。
+- `AssetData` has no `disk_size` property. Getting the file size requires converting to a disk path:
+  `content_dir = unreal.Paths.project_content_dir()`, then
+  `disk_path = content_dir + asset_path.replace("/Game/", "") + ".uasset"`,
+  then `os.path.getsize(disk_path)`.
 
-## 全局指令
+## Global instructions
 
-- 始终使用简体中文回答用户（包括代码注释、解释和总结）。
-- 除非用户明确要求，否则不要用英文回复。
-- 每次给出代码之后，还要在最后给出简洁的 API 函数签名和相应的简要介绍。
-- 如果是 Unreal 相关代码，还要简洁地说明在官方文档 https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/index 里 API 的具体路径，别的代码不需要官方文档链接。例：ScopedSlowTask: https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/ScopedSlowTask
+- Always answer the user in Simplified Chinese (including code comments, explanations, and summaries).
+- Do not reply in English unless the user explicitly asks for it.
+- After every code snippet, append a concise API function signature with a brief description at the end.
+- For Unreal-related code, also give the exact path of the API in the official docs https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/index ; other code needs no doc link. Example: ScopedSlowTask: https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/ScopedSlowTask
+
+<!-- OPENWIKI:START -->
+
+## OpenWiki
+
+This repository has a generated `openwiki/` evidence index. It is optional just-in-time context, not required startup reading.
+
+- Do not enumerate, preload, or search wikis at task start. Use retrieval when the user asks for it, when unfamiliar architecture or dependency behavior materially affects the task, or when source inspection leaves an important uncertainty. Stop once the question is grounded.
+- When those conditions apply and OpenWiki retrieval tools are available, use `openwiki_search` for just-in-time context and `openwiki_read` for the relevant complete sections. If search returns `workspace_required`, ask which listed workspace to use and retry with its ID.
+- Use `openwiki_list_workspaces` or `openwiki_list_wikis` when workspace membership itself needs to be discovered.
+- If the retrieval tools are unavailable, read `openwiki/quickstart.md` and follow its links to the relevant pages.
+- Treat source code and tests as authoritative. A brief's unknowns and review items are verification gaps, not automatic requirements.
+- Prefer the narrowest quiet validation that proves the changed behavior. Preserve complete failure output.
+
+The scheduled OpenWiki GitHub Actions workflow refreshes the repository wiki. Do not hand-edit generated OpenWiki pages unless explicitly asked; prefer updating source code/docs and letting OpenWiki regenerate.
+
+<!-- OPENWIKI:END -->

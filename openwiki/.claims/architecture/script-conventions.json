@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:eefbddad79c431491d0536bdd227764efa4c40b1deeb91cc241166fd0f49aeee",
+  "claims": [
+    {
+      "id": "claim_58ca06ad2f734725bede5c3a4f5e58e1",
+      "statement": "仓库里没有测试、lint 或代码 CI，unreal 模块只在编辑器进程内存在，因此脚本正确性只能靠在编辑器中运行验证，并辅以『先查引擎桩文件』的人工核验。",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L5-L13",
+          "version": "repo-lines-v1:sha256:d0be1b07ac70e9093b17f29a5fcb60cc64746cdb80681f019d262f3085d0b043:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQ4YjhjZGEwMzIzNmY2MmRkYWVhY2Y3ZTFkMjQzNmUxNDAzMWJiMjc4YzEwYzc4YWRmZjczMzQ1YzMzYjkyYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2MyMWZkYmFhMzVhMDg0NmNlNTRkMmNmOTk3MDBiNzFjOTcwNDIwMDYwMzNhYzBkNmY4YWNkMmIyYjZkZTllYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzRkZTk4OWRlOTk5Mjk3ZThkMzJjNzJkMmE0YzA4YmZiYzNmNzVhNTE0MDIyM2Y2OTE0YmQ4Njg1ZmQ2YTc1ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjYyOGI0MzBjOGExZDZmMTg5N2JkZmI4ZWVlNzA1ZjFlNTEzYjUzZmUyMzBkODJjZjBjMDc4YjNkZDc5ZDlmYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_2c6a7b8bf8b444fe8fb7c0b33060a227",
+      "statement": "每个官方课是一个模块级顺序执行的脚本，顶部是带『学习目标』与『习题可能用到的 API』字段的框式 docstring，中间用 # ───── 分节线编号，末尾是 🎯 练习题注释块；这两个字段是所有官方课最稳定的骨架锤点。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/01_hello_unreal.py#L1-L30",
+          "version": "repo-lines-v1:sha256:1f15128e69a7998d36cdc6cee2b8df0a979a45f962ef1c5a26c7ad1eefcf075d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzMDNlY2RkNGE0ZDEwZjE5YzczZmQ0MmZkMTI0MzdmZDMzNTRhODI2ODE2MDVkYTUyNTVhOTdhMzkwNjhkYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzMDNlY2RkNGE0ZDEwZjE5YzczZmQ0MmZkMTI0MzdmZDMzNTRhODI2ODE2MDVkYTUyNTVhOTdhMzkwNjhkYmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI5NTI1NTcwYTQxOTQ0YWFlMTU0Mzc2ZDVmYWI0YjA4ZjhhNjBiMzk4MTRhZjZlNWE5OTQwY2Y1MmNkNzZiZTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_09b7e4a2554f4ac0b69157aca2d070ac",
+      "statement": "docstring 里的 API 清单把桩文件中的真实签名（含参数名、默认值与返回类型）连同一条用途说明逐行列出，并会直接标注反例，例如 get_tag_values 只在 EditorAssetSubsystem 上、EditorAssetLibrary 没有这个方法。",
+      "evidence": [
+        {
+          "resource": "repo://02_AssetManagement/01_list_assets.py#L17-L24",
+          "version": "repo-lines-v1:sha256:4495d020835fb669368582917d8510efef6173aae1d8384f1a7c9a9a3cc0fe20:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMThhMmM1ZGIzMmQxMjNkYmQ2ZWJlZTZlNWQ5ODFjMzAxY2MyNDI0ZTBjNzNlNjRmODlhNmJmNDUwOTBlMTQ3MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWI1MjEzMTdkMDgzNTU3NGUwOTM5MjI5NWQ5MjQ2MzcwYWJkZGEyYmVmMWY5ZTlkOTU3MjY2N2ZkMGNmYTMyNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjU3ZjEwYzRiNzlkMThlZjgxNTE5N2VkMDYwNWE1NmVkZWYzNTcxMTdmY2JhMTA0YmUyMzdhZTIxYTkxM2E0NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODY4MWIxMTNjOTcxZGUzYjYwNDgwYjE1NDE0ZjlkZjUwMzhlMTE3N2Q4MzUxNTE5NDkxNzlhZjY4ZjA1ODBhNSJ9"
+        },
+        {
+          "resource": "repo://03_BlueprintAutomation/02_blueprint_components.py#L24-L33",
+          "version": "repo-lines-v1:sha256:95696bc1da3801aa3a0a0d1b93e94affbf4e231c5a390a77625bd20b1f2aec08:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiNThhNzk3YzBmNmJkNzBkMzBmOTZiMzFlMjYyN2FlZjVmZTM5NzA5ZTQ2ZDZmOGVjZDBmODE5MjMzMDlmOTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzZTFjZGIyZjkyZmQ3NzhmZjhjZjc5ZWFiM2RhMjk4YjVjODc2OTNkYThlZGVkZTU4ZDM0OWI4ZWEwMDgyMmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc1OWE4ZTk1MDg1YjEyOGY5MTI4YmI4ZTYyMDUxMzJlOGNiMzdhN2E3NzEwYWY2OTEyYzZmZTg4MGExMDVlNTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE0MmM0NWYyYjhmN2E4MzQ5ZDE1MmNiNDI3ZTA4MjhhM2IxNjM3NTAwMGJmOThlYzZkN2QxMDdkMGJlODM5ODcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d3f68874b3cc4c619ce15f7e205d8fc5",
+      "statement": "脚本统一用 unreal.log 输出而不使用 print，因为编辑器 Python Console 里 print 不走 UE 日志；全仓有 657 处 unreal.log 调用而没有一条真实的 print() 语句，仅存被注释掉的 print 作为对照。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/01_hello_unreal.py#L39-L43",
+          "version": "repo-lines-v1:sha256:b5ea17542604e6a808f7474098b93ae22df06915a14cf56d8668e568fe1cdebc:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjQxYmNlOGZkNzZkYzM4MDM1YzdhMDJjOThlYmJlM2M5NzFmZjJjN2E2NDQ0NDQ1NTk5Y2VlMzU4YWZhM2Y5NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGY4ZTY0ZDU1YjE4MGIzMWQzMDU0NjJiMDViZmRkNGFiN2Y4ZmM5YTlkNWI1OTE2Yzk5OTViNWI1MGM4Y2VkMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTc2NDk4NDVjMjk4ZjFlNGNiMWYxYjBmMDcxZjUzNGE5MTYzZTRkMWJlZDJmZmZhY2MxNzNmOWFjNDkxMGYxZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODA0NGE2MzY4ZGZiYWZjN2MwNmNhMjNhOGE3ZDY4ODc5MmVhMzQ5ZDEzNWFmMjJhNWMzNjQxZTIzZmFmY2M1ZSJ9"
+        },
+        {
+          "resource": "repo://01_Basics/my01.py#L7-L9",
+          "version": "repo-lines-v1:sha256:6c74bb1ce49602c81b6a74b313e2a00f98e37f9572ee5e9f083fb7d58b6d252d:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDc4Y2U4MTFiYzdmNzdmMGVhNTgzZDE3ZWQ4NzdkYzA2MGVmMDNhMzQ0ZjliYjRkMDlhNzU4ODA3YmNjOTc4OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDc4Y2U4MTFiYzdmNzdmMGVhNTgzZDE3ZWQ4NzdkYzA2MGVmMDNhMzQ0ZjliYjRkMDlhNzU4ODA3YmNjOTc4OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGY3ODc1YWQ0NDBkYmIxMGVmNDIxZThkNWQzNDQyYjZmOGQ4NjllYTk5ODNmZDIwZDZhZDRjOTM5MzJkODA1MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGUxYjNiNmQ2MGE2YzQxODRhOTRmNDk3YjkyMGFkOGY3NDI5MjkyYjFjMzRjNWRkZDZmNmM5ZTIxNzhjYjM4ZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_245b2fd61df34950afd0a25b130777e5",
+      "statement": "回答或编写任何 UE5 Python API 之前必须查阅引擎自动生成的桩文件 Intermediate/PythonStub/unreal.py（相对本仓库为 ..\\Intermediate\\PythonStub\\unreal.py），不得依赖记忆或文档；查不到时必须直接声明该 API 不在桩文件里。",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L43-L61",
+          "version": "repo-lines-v1:sha256:edbafa2b55d2a9c2088be4065bb6b2e2fcac76159993e747182c13968552d96a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2NzgzMzhiZjkzMmQ3YzIxNjg0M2MzYmRlN2Y2NmUzZTZmNGRiNDE2OWQ1NTJlM2E2YTU5NmY4YThjZWM4YWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YmZmYjEwYTkwMmY1Y2VjN2Y3MmVlMzUxMGU2MTQ5YTJmOTA2MGMxZTg5ODE0ODNjNDRhY2QyYzA1Y2Y0YjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3MjA1OTJiMDk0NDc5NjQ2YjY4Yzc3ODExNDA2Nzg3MmU3YTlmNDE5Y2U0MmUzODI5MWM5NWFkZDg0OTQ1MjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFjMDU4MTg5Y2IwNzFhODE2Mzc3YTlmYTZjNDRkMTJlYmE0MGYzMWJhZTAwNjc2MjlhMTljYzJjNjE5ODY0NWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_16cd9ad4c4ca4731abdd289d68eb2786",
+      "statement": "仓库用『【修改前】错误实现 + 【问题分析】查证结论』的取证式注释模式记录踩坑：类名不存在的 unreal.Transactions 被更正为 SystemLibrary 上的 begin_transaction/end_transaction/cancel_transaction，EditorUtilityLibrary.show_notification 被证实整个 unreal 模块都不存在（通知走纯 C++ 的 Slate FNotificationInfo）。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/03_editor_basics.py#L219-L233",
+          "version": "repo-lines-v1:sha256:ef7b3b6a840c82e491cdfbb25a308f340a8b11b0154605acf0750d55e1edf90e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyYzQ4NThlMjJjYzJjOTY3YjQyMTUwZmE1NTA1NjJhMmM4MzljMmNlYmNhYWI5MWNhYmRmNmY0ZGEwMjAwMjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI0MjllMjliMWE0MzhmMjU3ZGI3ODY3ZjE4YTU3MDJiY2UwOThkMTZmZGY0MmYwZWI3NDJkYzMwZTUzMGU0OWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUwZTYxMjM0ODI2OWNjMjhhOTdhN2VlNzUxZmJjOTcyYWZhYzUzMDVhOWEyOGVkZWRjYjZmOGQ5ZmQzMzU5YmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1N2M4MGNhMWI3ZjRlYWJiM2EzYTMzOGU5NGZkNDI3ZjcxZGYzNmI4NTU3NzQ3Nzc4NzA4YTYwOTY1ZGUzMzkifQ"
+        },
+        {
+          "resource": "repo://utils/helpers.py#L213-L227",
+          "version": "repo-lines-v1:sha256:756982ac2f72e00d372c715a0c93713d87f470a419efd4c81e8e3899fd190ce7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmZmUyODhkMjgzMzRlMmVhZGVjMzVjNzliYjFjYWUwM2IwZGY0NjAzZDkzNDMzOTNiZGI1MGJhMzlmM2Y1NGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxNTYyNjEwYmM4ZTNjMjdhYjEyNTVlMzFjZTQyZWYzYTI3ZTMyYTIwMGM1NDg3ZjlmMmI1ODc4YTM4YmEwZjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ4Njg3ZTY4MWM0ZGFmM2FiYjAxNzA5ZjhkNTAwMmI0ODRkODQyOTgwMDllM2FhYjEwMzE2NTk5ZDg4YTMxOWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlYzE0ZmZmNDA0YWEyMjgwMTEwNjA4ZGY3YmY2YmMzNDg5MDUxNTEzYzljZmJiZTY0Yjg3YTY4ZTBhYTU3ZWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_30017f0754ae4c06bbea016b2e411e86",
+      "statement": "协作约定要求始终用简体中文回答，每个代码片段后附简明 API 签名与说明，Unreal 相关代码还要给出官方 Python API 文档的确切链接；但脚本正文不包含官方文档 URL，README 里那三条参考链接仍是已过时的 docs.unrealengine.com/5.0 地址。",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L80-L83",
+          "version": "repo-lines-v1:sha256:73357ca65d82a8373782947518fd71409ab14f1ffe459e068654555b8db6fb22:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDI3NDFkZTFhZWZmMjNkYmMxMjZjODZmYmY1ZDRiZWZkMTZlNjM0ZjBiZWRjNDJiYTM1ZjIwMjA2OGFkNzI3NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmEyZWY2MDgzZTAzNjM4ZTM0OTNkNTAwNDA4YjAxY2JhNjg2YjE1ZmI3NTU3ZThiZDg5YWM2NTgxYzJjMjUyNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGU5NWY1NDEyZThlMGUzYWJhNWQ1ZDk2MmMwY2Y2MzE5YzQ3YzU3NmE1MTcxZWI0NTdiMTc2MzY1YzUyNTY4NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWIxYmM1YmM0YTIzN2Y1NzhlNmFmNGE0MTVkMDY0N2Y5OTEwYjAzYjM2NGUxZTI3YzFmMWRiYWE3NDNkMDNiYSJ9"
+        },
+        {
+          "resource": "repo://README.md#L104-L106",
+          "version": "repo-lines-v1:sha256:2323944c628a038067fb9f0afee3df713724b16f4063839799217e43c77ab2ad:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODhkNDA3MjE4Y2Y5ZTAzZGMzMjRhMDA1YjNkNTc5OTRiZTc4MTk3ZTExZDk0YjRkZGZlODUyMzdlYjQzMDE0YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzA3MmQxZTM0MzA4YmU5YjUwZWIwMjE3NGU2ZjNmNTA2Zjk0NzdhY2Q3YjhjODE5YTk0MjQxOGFhZmExOTY4ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGJmNWQ1OTQ4YjE1Njc2ZTYwZWZjOTViMWMzMTc1N2E4MDg1YmRhNDQ5ODFjMDEwZWU5NzQ2NmY5M2YyNGMyNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2JlY2Y4OGIwNGU1NDU1MzhjYjhlYjYyNjZmNTYyMDg2M2Q5NWZlNDk4NDRhZmQ2NTM0NmE4NWY2MjJiOWRlNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_7502640905b64c9fb333190cd32c281f",
+      "statement": "01_Basics/my03.py 偏离了官方课骨架：import unreal 写在文件第一行，而 docstring 被挪到其后并当成多行块注释使用，因此该文件的 docstring 不具有语义；AGENTS.md 已声明 my*.py 不是规范范例。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/my03.py#L1-L10",
+          "version": "repo-lines-v1:sha256:ecff26d9d4bc1c8f51af223a8eaf212ca1de8d8a925faf1c14a53df8c151cb17:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1ZTUwMmEyYWExMWIwMGQyZDExYjYzY2RjMTUzODMyNmUwNjQyZjI4ZWVmZmVjNzQwZjczN2RhMWFhMDkwMzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxNmFhOGZiMDliZDVkOTg1ZjE1N2MxM2M0MThmMzYyYjFjYjJkZWM3NGI0OGI4YTkwYjMwMDRjYTBlNThlYmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_175bded611ef4e059ff7d895cce00f95",
+      "statement": "03_BlueprintAutomation/02_blueprint_components.py 是全仓唯一带 UTF-8 BOM 的脚本文件（多余但不影响功能）。",
+      "evidence": [
+        {
+          "resource": "repo://03_BlueprintAutomation/02_blueprint_components.py#L1-L1",
+          "version": "repo-lines-v1:sha256:953b0c3ee6c212ae70343d4e840acd9f911a4fab0a259ed1640b426d314452a8:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTUzYjBjM2VlNmMyMTJhZTcwMzQzZDRlODQwYWNkOWY5MTFhNGZhYjBhMjU5ZWQxNjQwYjQyNmQzMTQ0NTJhOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTUzYjBjM2VlNmMyMTJhZTcwMzQzZDRlODQwYWNkOWY5MTFhNGZhYjBhMjU5ZWQxNjQwYjQyNmQzMTQ0NTJhOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTZmMmUwMTQ5YzhiMzYyOWNhMTRjNTk2OWVhZmYyZjk2ODUzYTMyZDMxNzI0OTRkMTNhNjNmMjQ2MDVlMGUzMyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_09f56ae32cc344fc82512150b1c3f1b5",
+      "statement": "尾部练习题块允许用【跳过】标记并写明放弃原因，例如 ScopedSlowTask.make_dialog 在 Python 里几乎必定卡死 UI，因为 Python 主线程与 UE 编辑器共享同一线程。",
+      "evidence": [
+        {
+          "resource": "repo://01_Basics/my03.py#L13-L20",
+          "version": "repo-lines-v1:sha256:96a630470e531a42353e30fbc6ba037e83e2228984c2eaa0c55039c41938dd19:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjVkYmM2YmZmZjliOTdmZDMxNTUzOTI0NWIyNWE5ZGEzNjBkYWUwMmI0OTQzY2RhMWVkMTY5ODU4ZDQ3MmNkOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTUxYWUzY2UwYTQwNDUzZDk5YTY4ZGRhZDU2ZGUxNjY4MzRmZmU2YmE3OTNiNTY0ODQ1Yjg2MTU5MTQ2NGIzNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzA5NjM3NjNmMDhkYjNlNzAwNWY3ZTEwZGFhNThlY2FiZjBjNTdkMGY2ZGM2MWFmOGZhNGEzYzdjMzdmZDA0YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmE0YzJiODg0OWQ4ZTYzODM1YjgwZDY0YjlkYTVjYWJhMjI2OWVmYjQwYzkwNjdjODFhM2VmMzEzNjQ3NmYwYSJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.1",
+    "at": "2026-10-07T08:34:04.254Z"
+  }
+}
