@@ -11,19 +11,32 @@
 运行方式：
   - 在 UE Python Console 中逐段执行
 
-本课可能用到的 API：
-  unreal.log(arg) -> None  —— 输出普通日志到日志窗口
-  unreal.log_warning(arg) -> None  —— 输出警告日志
-  unreal.log_error(arg) -> None  —— 输出错误日志
-  unreal.SystemLibrary.print_string(world_context_object: Object, string: str = "Hello", print_to_screen: bool = True, print_to_log: bool = True, text_color: LinearColor = [0.000000, 0.660000, 1.000000, 1.000000], duration: float = 2.000000) -> None  —— 在屏幕上显示文本消息
-  unreal.SystemLibrary.get_engine_version() -> str  —— 获取当前引擎版本号
-  unreal.Paths.project_dir() -> str  —— 获取项目根目录路径
-  unreal.Paths.get_project_file_path() -> str  —— 获取项目文件（.uproject）路径
-  unreal.Paths.get_base_filename(path: str, remove_path: bool = True) -> str  —— 获取路径末尾的文件名
-  unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  —— 列出指定目录下的资产路径
-  unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool  —— 检查资产是否存在
-  unreal.EditorAssetLibrary.load_asset(asset_path: str) -> Object  —— 加载资产并返回对象
-  unreal.Vector(x: float = 0.0, y: float = 0.0, z: float = 0.0)  —— 创建一个三维向量对象
+习题可能用到的 API：
+  ── unreal ──
+    unreal.log(arg) -> None
+        —— 输出普通日志到日志窗口
+    unreal.log_warning(arg) -> None
+        —— 输出警告日志
+    unreal.log_error(arg) -> None
+        —— 输出错误日志
+    unreal.SystemLibrary.print_string(world_context_object: Object, string: str = "Hello", print_to_screen: bool = True, print_to_log: bool = True, text_color: LinearColor = [0.000000, 0.660000, 1.000000, 1.000000], duration: float = 2.000000) -> None
+        —— 在屏幕上显示文本消息
+    unreal.SystemLibrary.get_engine_version() -> str
+        —— 获取当前引擎版本号
+    unreal.Paths.project_dir() -> str
+        —— 获取项目根目录路径
+    unreal.Paths.get_project_file_path() -> str
+        —— 获取项目文件（.uproject）路径
+    unreal.Paths.get_base_filename(path: str, remove_path: bool = True) -> str
+        —— 获取路径末尾的文件名
+    unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]
+        —— 列出指定目录下的资产路径
+    unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool
+        —— 检查资产是否存在
+    unreal.EditorAssetLibrary.load_asset(asset_path: str) -> Object
+        —— 加载资产并返回对象
+    unreal.Vector(x: float = 0.0, y: float = 0.0, z: float = 0.0)
+        —— 创建一个三维向量对象
 =============================================================
 """
 
@@ -53,33 +66,53 @@ unreal.log_error("这是一条错误消息 - 用于报告错误")
 # 【易错点】print_string 的第一个参数 world_context_object 必须是有效的 World。
 #   传 None 时引擎不知道该"往哪个世界"画 —— 屏幕上什么都不会出现，而且不报错（静默失败）。
 #   编辑器脚本里先通过 UnrealEditorSubsystem 拿到编辑器 World，再作为上下文传进去。
-editor_world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+#   注意 get_editor_subsystem 的返回类型是 Optional，所以要先判空再取 World。
+unreal_subsystem = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem)
+editor_world = unreal_subsystem.get_editor_world() if unreal_subsystem else None
 
-# 显示一条白色消息，持续3秒
-unreal.SystemLibrary.print_string(
-    world_context_object=editor_world,   # 世界上下文（编辑器 World）
-    string="Hello from Python!",         # 消息内容
-    print_to_screen=True,                # 是否显示在屏幕上
-    print_to_log=True,                   # 是否同时输出到日志
-    text_color=[1.0, 1.0, 1.0, 1.0],    # RGBA 颜色 (白色)
-    duration=3.0                         # 持续时间
-)
+# 【易错点】text_color 要传 unreal.LinearColor 对象，不能直接传 Python 列表。
+#   [1.0, 1.0, 1.0, 1.0] 虽然运行时引擎能自动转换，但静态检查会报类型不匹配，
+#   而且没有 IDE 补全。养成习惯：结构体一律用 unreal.LinearColor(r, g, b, a) 构造。
+if editor_world:
+    # 显示一条白色消息，持续3秒
+    unreal.SystemLibrary.print_string(
+        world_context_object=editor_world,          # 世界上下文（编辑器 World）
+        string="Hello from Python!",                # 消息内容
+        print_to_screen=True,                       # 是否显示在屏幕上
+        print_to_log=True,                          # 是否同时输出到日志
+        text_color=unreal.LinearColor(1.0, 1.0, 1.0, 1.0),  # RGBA 颜色（白色）
+        duration=3.0,                               # 持续时间
+    )
 
-# 不同颜色的屏幕消息
-unreal.SystemLibrary.print_string(
-    editor_world, "红色警告消息", True, True,
-    [1.0, 0.0, 0.0, 1.0], 5.0   # 红色
-)
+    # 不同颜色的屏幕消息
+    unreal.SystemLibrary.print_string(
+        editor_world,
+        "红色警告消息",
+        True,
+        True,
+        unreal.LinearColor(1.0, 0.0, 0.0, 1.0),  # 红色
+        5.0,
+    )
 
-unreal.SystemLibrary.print_string(
-    editor_world, "绿色成功消息", True, True,
-    [0.0, 1.0, 0.0, 1.0], 5.0   # 绿色
-)
+    unreal.SystemLibrary.print_string(
+        editor_world,
+        "绿色成功消息",
+        True,
+        True,
+        unreal.LinearColor(0.0, 1.0, 0.0, 1.0),  # 绿色
+        5.0,
+    )
 
-unreal.SystemLibrary.print_string(
-    editor_world, "蓝色信息消息", True, True,
-    [0.0, 0.5, 1.0, 1.0], 5.0   # 蓝色
-)
+    unreal.SystemLibrary.print_string(
+        editor_world,
+        "蓝色信息消息",
+        True,
+        True,
+        unreal.LinearColor(0.0, 0.5, 1.0, 1.0),  # 蓝色
+        5.0,
+    )
+else:
+    unreal.log_warning("取不到编辑器 World，屏幕消息跳过（此时只能用日志输出）")
 # ─────────────────────────────────────────────────────────
 # 4. 格式化输出
 # ─────────────────────────────────────────────────────────
@@ -128,19 +161,25 @@ def log_err(message) -> None:
     unreal.log_error(f"[ERROR] {message}")
 
 def show_screen(message, color=None, duration=3.0) -> None:
-    """在屏幕上显示调试消息"""
+    """在屏幕上显示调试消息
+
+    【易错点】world_context_object 不能传 None —— 引擎不知道往哪个世界画，
+    屏幕上什么都不会出现，而且不报错（静默失败）。必须传编辑器 World。
+    """
     if color is None:
-        color = [1.0, 1.0, 1.0, 1.0]  # 默认白色
-    unreal.SystemLibrary.print_string(
-        None, message, True, True, color, duration
-    )
+        color = unreal.LinearColor(1.0, 1.0, 1.0, 1.0)  # 默认白色
+    world = editor_world if editor_world else None
+    if world:
+        unreal.SystemLibrary.print_string(world, message, True, True, color, duration)
+    else:
+        unreal.log_warning(f"取不到编辑器 World，改用日志输出: {message}")
 
 # 使用自定义函数
 log_section("调试工具演示")
 log_info("这是信息消息")
 log_warn("这是警告消息")
 log_err("这是错误消息")
-show_screen("屏幕消息测试!", [0.0, 1.0, 1.0, 1.0], 5.0)
+show_screen("屏幕消息测试!", unreal.LinearColor(0.0, 1.0, 1.0, 1.0), 5.0)
 
 # ─────────────────────────────────────────────────────────
 # 6. 对象信息调试
@@ -163,8 +202,11 @@ def inspect_object(obj, max_attrs=20) -> None:
         try:
             value = getattr(obj, prop)
             log_info(f"  .{prop} = {value}")
-        except:
-            log_info(f"  .{prop} = <无法读取>")
+        except Exception as e:  # noqa: BLE001 —— 引擎抛什么异常无法穷举，且检查属性只为尽量多读出来
+            # 有些属性在被 Python 读取时会抛异常（引擎内部状态不允许访问），
+            # 这里捕获 Exception 而不是具体类型：引擎抛什么异常无法穷举，
+            # 而检查对象属性的目的是“尽量多读出来”，不该因为一个属性失败就中断
+            log_info(f"  .{prop} = <无法读取: {e}>")
 
     log_info(f"\n方法数量: {len(methods)}")
     for method in methods[:max_attrs]:
@@ -195,7 +237,7 @@ def safe_load_asset(asset_path) -> None | unreal.Object:
         log_info(f"成功加载资产: {asset_path} (类型: {type(asset).__name__})")
         return asset
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 —— 加载失败的原因无法穷举，交给用户看日志
         log_err(f"加载资产时发生异常: {e}")
         return None
 

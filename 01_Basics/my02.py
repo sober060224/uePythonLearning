@@ -32,7 +32,14 @@ def get_editor_world():
     - 子系统必须用 get_editor_subsystem() 获取单例，
       直接 unreal.UnrealEditorSubsystem() 构造是 UE5.2 起废弃的写法。
     """
-    return unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+    # get_editor_subsystem 声明为返回 Optional（拿不到时是 None），
+    # 直接链式 .get_editor_world() 会被 Pylance 报「None 没有这个属性」，
+    # 而且真拿到 None 时运行时会 AttributeError。所以先赋值、再判空。
+    subsystem = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem)
+    if subsystem is None:
+        unreal.log_error("拿不到 UnrealEditorSubsystem（不在编辑器环境？）")
+        return None
+    return subsystem.get_editor_world()
 
 
 # ═════════════════════════════════════════════════════════
@@ -56,6 +63,10 @@ def get_editor_world():
 #    Python 的列表 [1, 1, 1, 1] 需要转换一下，显式构造最稳妥。
 def log_level(color):
     world = get_editor_world()
+    # get_editor_world() 现在会返回 None（拿不到子系统时），先兜住
+    if world is None:
+        unreal.log_error("拿不到编辑器世界，无法显示屏幕消息")
+        return
     level_name = world.get_name()
 
     # 把 [r, g, b, a] 列表解包成 LinearColor(r=..., g=..., b=..., a=...)
@@ -122,7 +133,11 @@ def inspect_all_assets(path):
 # 在编辑器里运行很可能什么都不显示（不报错，静默失败，最难查的那种）。
 # 传编辑器的 world 即可 —— 正好复用上面的 get_editor_world()。
 def log_screen(text):
-    unreal.SystemLibrary.print_string(get_editor_world(), text)
+    world = get_editor_world()
+    if world is None:
+        unreal.log_error("拿不到编辑器世界，无法显示屏幕消息")
+        return
+    unreal.SystemLibrary.print_string(world, text)
 
 
 # ─────────────────────────────────────────────────────────

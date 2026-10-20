@@ -15,14 +15,34 @@
   - Python 脚本可以作为后端逻辑
 
 习题可能用到的 API：
-  unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools  —— 获取资产工具实例，用于创建/导入/导出资产
-  asset_tools.create_asset(asset_name: str, package_path: str, asset_class: Class, factory: Factory) -> Object  —— 用指定工厂创建新资产
-  unreal.EditorAssetLibrary.make_directory(directory_path: str) -> bool  —— 在内容浏览器中创建目录
-  unreal.EditorUtilityLibrary.get_selected_asset_data() -> Array[AssetData]  —— 获取内容浏览器中选中的资产数据
-  unreal.Paths.project_saved_dir() -> str  —— 获取项目 Saved 目录的绝对路径（用于存储配置文件）
-  unreal.ScopedSlowTask(work: float, desc: str)  —— 创建进度任务以显示进度对话框
-  scoped_slow_task.make_dialog(can_cancel: bool) -> None  —— 显示进度对话框
-  scoped_slow_task.enter_progress_frame(work: float, desc: str) -> None  —— 推进一帧进度并更新描述
+  ── unreal ──
+    unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools
+        —— 获取资产工具实例，用于创建/导入/导出资产
+    asset_tools.create_asset(asset_name: str, package_path: str, asset_class: Class, factory: Factory) -> Object
+        —— 用指定工厂创建新资产
+    unreal.EditorAssetLibrary.make_directory(directory_path: str) -> bool
+        —— 在内容浏览器中创建目录
+    unreal.EditorUtilityLibrary.get_selected_asset_data() -> Array[AssetData]
+        —— 获取内容浏览器中选中的资产数据
+    unreal.Paths.project_saved_dir() -> str
+        —— 取项目 Saved 目录（练习2 配置文件放这里）
+        ★ 实测返回的是**相对路径**，形如 "../../../../../../<项目>/Saved/"，
+          不是绝对路径。直接喂给 open()/os.path.join() 能用（编辑器进程 CWD 是
+          Engine/Binaries/Win64，相对路径就是从这里解析的）；要打印给用户看或
+          跨进程比较，先用 unreal.Paths.convert_relative_path_to_full() 转绝对。
+    unreal.ScopedSlowTask(total_amount_of_work: float, desc: str)
+        —— 创建进度任务（练习4）。⚠️ 光构造它**不会弹窗**，
+          必须再调 make_dialog(True) 才显示进度条并接受用户取消；
+          实测不调 make_dialog 时 should_cancel() 永远返回 False，取消分支进不去
+    scoped_slow_task.make_dialog(can_cancel: bool) -> None
+        —— 显示进度对话框
+    scoped_slow_task.enter_progress_frame(work: float, desc: str) -> None
+        —— 推进一帧进度并更新描述
+  ── Python 标准库 ──
+    json.dump / json.load
+        —— 练习2 把用户偏好存成 JSON 配置文件并读回
+    os.makedirs(path, exist_ok=True) / os.path.join / os.path.exists
+        —— 练习2 写文件前先建 Config 目录（Saved/Config 默认不存在）
 =============================================================
 """
 
@@ -93,8 +113,10 @@ def create_editor_utility_widget(name, destination="/Game/EditorUtilities"):
     widget = asset_tools.create_asset(
         name,
         destination,
-        unreal.EditorUtilityWidgetBlueprint,  # 资产类型
-        factory
+        # 资产类型。要写成 .static_class()：create_asset 的 asset_class
+        # 参数要的是「类对象」，而不是 Python 里的类
+        unreal.EditorUtilityWidgetBlueprint.static_class(),
+        factory,
     )
 
     if widget:
@@ -248,7 +270,10 @@ def run_script(script_id):
 
     if os.path.exists(script_path):
         unreal.log(f"正在运行: {info['description']}")
-        exec(open(script_path).read())
+        # 用 with 保证文件句柄及时关闭；exec 是 UE Python Console 的标准执行方式，
+        # 整门课从头到尾都靠它跑脚本，所以这里刻意使用
+        with open(script_path, encoding="utf-8") as f:
+            exec(f.read())  # noqa: S102
     else:
         unreal.log_error(f"脚本文件不存在: {script_path}")
 
@@ -264,6 +289,7 @@ def run_script(script_id):
 
 import json
 import os
+
 
 class ToolConfig:
     """
@@ -340,8 +366,47 @@ unreal.log("提示：创建 Editor Utility Widget 来制作可视化界面")
 # ─────────────────────────────────────────────────────────
 # 🎯 练习题
 # ─────────────────────────────────────────────────────────
-# 1. 创建一个 Editor Utility Widget，包含 3 个按钮，
-#    每个按钮调用不同的 Python 工具函数
-# 2. 实现一个配置系统，让工具记住用户的偏好设置
-# 3. 创建一个 "最近使用的工具" 列表
-# 4. 设计一个工具面板，包含进度条和状态文本
+# 【练习 1】一个 EUW，三个按钮，各跑一个 Python 函数
+#   输入： 无需选中任何东西；目标目录写死 "/Game/EditorUtilities"
+#   任务： 用 create_editor_utility_widget("EUW_ToolPanel") 建 widget 资产，
+#          里面三个按钮分别调 list_available_scripts()、run_script("project_report")、
+#          run_script("cleanup")；三条分支写成一个 dispatch(action_name) 函数
+#   输出： 资产出现在 /Game/EditorUtilities；点按钮时 Output Log 出现对应脚本的输出
+#   验收： 点第三个按钮 → 日志出现「批量清理工具」相关行；把 action_name 传成
+#          不存在的字符串 → 走 else 分支打印警告，不抛 KeyError
+
+# 【练习 2】把用户偏好存成 JSON，重启编辑器后还在
+#   输入： 一个字典 {"last_tool": str, "grid_size": float, "theme": str}
+#   任务： 用 unreal.Paths.project_saved_dir() 取目录，拼 Config/editor_tools.json；
+#          写用 json.dump（ensure_ascii=False, indent=2），读用 json.load；
+#          文件不存在或 JSON 坏了就返回默认字典，不要抛异常
+#   输出： Saved/Config/editor_tools.json 可读、用文本编辑器打开中文不乱码
+#   验收： 写 {"grid_size": 50.0} → 重启编辑器 → load_prefs() 读回 50.0；
+#          手工把文件改成 "{坏的" → load_prefs() 返回默认值并打 log_warning；
+#          文件不存在 → 返回默认字典（实测 FileNotFoundError 分支可用）；
+#          写 {"last_tool": "清理"} 后用文本编辑器打开，中文必须是可读的汉字
+#          而不是转义码（实测 ensure_ascii=False 生效）
+
+# 【练习 3】「最近使用的工具」列表（最多 5 条，重复使用要提到最前）
+#   输入： 复用练习 2 的配置文件，加一个 "recent": ["工具ID", ...] 字段
+#   任务： 每次 run_script(id) 成功后调用 push_recent(id)：
+#          已存在就删掉旧位置，再 insert(0, id)，最后切片 [:5]；
+#          存回 JSON 时不能丢掉 last_tool / grid_size 等其它键
+#   输出： 配置文件里 recent 是一个字符串列表，长度永远 <= 5
+#   验收： 依次跑 A、B、A → recent 变成 ["A","B"]（A 提到最前，没有重复，
+#          编辑器实测一致）；连跑 7 个不同工具 → 只剩最后 5 个且最新的在最前
+#          （实测 T0..T6 → ["T6","T5","T4","T3","T2"]）
+
+# 【练习 4】带进度条和状态文本的工具面板
+#   输入： 一个待处理列表（比如 list_assets("/Game") 的结果，可能上千条）
+#   任务： 用 unreal.ScopedSlowTask(len(items), "处理资产...") 建任务，
+#          **紧接着调 task.make_dialog(True)**（不调就没有进度条、should_cancel()
+#          恒为 False —— 实测确认）；循环里每处理一条就 enter_progress_frame(1)；
+#          每 50 条更新一次状态文本 f"已处理 i/total"；
+#          用户点取消（task.should_cancel() 为真）时立刻跳出循环并保留已完成部分
+#   输出： 处理期间编辑器不假死、进度条走到头；中途取消时日志说明「已处理 N/M 条」
+#   验收： 拿 2000 条待处理项跑（本机 list_assets("/Game") 实测 354 条，不够就把
+#          每个资产的依赖列表也算一项凑够 2000）→ 进度条平滑推进；
+#          处理到一半点取消 → 函数正常返回（不抛异常），且返回的统计里 N < 2000。
+#          不点取消时 N == 2000；漏调 make_dialog 则取消按钮根本不出现，
+#          这条验收永远通过不了

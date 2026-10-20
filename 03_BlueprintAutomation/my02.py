@@ -21,11 +21,15 @@ def third():
         if asset_data.asset_class_path.asset_name != "Blueprint":
             continue
 
-        object = unreal.EditorAssetLibrary.load_asset(asset_data.package_name)
+        # package_name 是 Name 类型，load_asset 要 str，先转一次
+        object = unreal.EditorAssetLibrary.load_asset(str(asset_data.package_name))
         if not isinstance(object, unreal.Blueprint):
             continue
 
-        unreal.BlueprintEditorLibrary.reparent_blueprint(object, unreal.Character)
+        # reparent_blueprint 的 new_parent_class 是 Class，要传「类对象」
+        unreal.BlueprintEditorLibrary.reparent_blueprint(
+            object, unreal.Character.static_class()
+        )
 
 
 # 4. 研究：如何在 Python 中通过编辑器工具调用蓝图组件的增删
@@ -43,8 +47,9 @@ def fourth(package_path="/Game/Test"):
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
     factory = unreal.BlueprintFactory()
     factory.set_editor_property("parent_class", unreal.Actor)
+    # Class 参数要「类对象」而非 Python 类
     bp = asset_tools.create_asset(
-        "BP_ComponentDemo", package_path, unreal.Blueprint, factory
+        "BP_ComponentDemo", package_path, unreal.Blueprint.static_class(), factory
     )
     if not isinstance(bp, unreal.Blueprint):
         unreal.log_error("创建蓝图失败")
@@ -61,7 +66,10 @@ def fourth(package_path="/Game/Test"):
         return None
 
     # 增：给蓝图挂一个 StaticMeshComponent
-    params = unreal.AddNewSubobjectParams(root_handle, unreal.StaticMeshComponent, bp)
+    # AddNewSubobjectParams 的 new_class 同样是 Class
+    params = unreal.AddNewSubobjectParams(
+        root_handle, unreal.StaticMeshComponent.static_class(), bp
+    )
     handle, err_text = subsystem.add_new_subobject(params)
     if not handle:
         unreal.log_error(f"新增组件失败:{err_text}")

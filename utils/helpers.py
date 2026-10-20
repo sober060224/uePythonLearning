@@ -13,11 +13,11 @@
 =============================================================
 """
 
-import unreal
 import math
-import time
 import os
+import time
 
+import unreal
 
 # ─────────────────────────────────────────────────────────
 # 日志工具
@@ -47,15 +47,32 @@ def log_err(message):
     unreal.log_error(f"[ERROR] {message}")
 
 
+def editor_world():
+    """取当前编辑会话所在的 World；不在编辑器环境（或 World 未就绪）时返回 None。
+
+    【为什么要包一层】get_editor_subsystem 的返回类型是 Optional —— 它可能返回 None。
+    直接写 unreal.get_editor_subsystem(X).method() 就是在 None 上取属性。
+    """
+    subsystem = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem)
+    return subsystem.get_editor_world() if subsystem else None
+
+
+def actor_subsystem():
+    """取 EditorActorSubsystem（Actor 查询/生成/复制的统一入口）；可能返回 None。"""
+    return unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+
+
 def show_screen(message, color=None, duration=3.0):
     """在屏幕上显示消息（编辑器内 print_string 需要有效的 world_context）"""
     if color is None:
-        color = [1.0, 1.0, 1.0, 1.0]
+        # 结构体一律用 unreal.LinearColor 构造，不要传 Python 列表：
+        # 列表运行时能自动转换，但类型不匹配、静态检查报错，也没有补全
+        color = unreal.LinearColor(1.0, 1.0, 1.0, 1.0)
     # 【修改前】print_string 第一个参数传 None —— 编辑器里会静默无输出。
     # 【问题分析】print_string 的签名是 (world_context_object, string, ...)，
     #   这里先从 UnrealEditorSubsystem 取编辑器 World 作为 world_context；
     #   取不到 World 时退化为 unreal.log 输出，保证 helper 不崩。
-    world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+    world = editor_world()
     if world:
         unreal.SystemLibrary.print_string(world, message, True, True, color, duration)
     else:
@@ -102,19 +119,20 @@ def asset_exists(asset_path):
 
 
 def get_all_actors():
-    """获取关卡中所有 Actor"""
+    """获取关卡中所有 Actor（普通 list）；不在编辑器环境时返回空列表"""
     # 【UE5】EditorLevelLibrary 属于已废弃的 Editor Scripting Utilities 插件，
     #   Actor 查询统一走 EditorActorSubsystem（调用旧 API 会打 DeprecationWarning）。
-    return unreal.get_editor_subsystem(
-        unreal.EditorActorSubsystem
-    ).get_all_level_actors()
+    # 转成普通 list 有两个好处：子系统为 None 时有明确的空列表兜底；
+    # 而桩里 Array 只有 __getitem__(index: int)、没有 slice 重载，
+    # 调用方拿它做切片会被类型检查器误判成「取元素」。
+    subsystem = actor_subsystem()
+    return list(subsystem.get_all_level_actors()) if subsystem else []
 
 
 def get_selected_actors():
-    """获取选中的 Actor"""
-    return unreal.get_editor_subsystem(
-        unreal.EditorActorSubsystem
-    ).get_selected_level_actors()
+    """获取选中的 Actor（普通 list）；不在编辑器环境时返回空列表"""
+    subsystem = actor_subsystem()
+    return list(subsystem.get_selected_level_actors()) if subsystem else []
 
 
 def get_actors_by_label(label_contains):
@@ -232,9 +250,11 @@ def begin_transaction(name, primary_object=None):
         primary_object: 被修改的主对象；不传就用编辑器 world 顶上
     """
     if primary_object is None:
-        primary_object = unreal.get_editor_subsystem(
-            unreal.UnrealEditorSubsystem
-        ).get_editor_world()
+        primary_object = editor_world()
+    if primary_object is None:
+        # 传 None 给 begin_transaction 会让编辑器静默失败或崩溃（见上面的签名说明），
+        # 与其留下一个"半开"的事务，不如在这里就把原因抛出来。
+        raise RuntimeError("不在编辑器环境，取不到 World，无法开始事务")
     return unreal.SystemLibrary.begin_transaction("Python脚本", name, primary_object)
 
 

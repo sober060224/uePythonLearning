@@ -14,14 +14,29 @@
   - unreal.MaterialExpression* - 各种材质节点
 
 习题可能用到的 API：
-  unreal.log(arg: Any) -> None  —— 输出信息到输出日志
-  unreal.EditorAssetLibrary.make_directory(directory_path: str) -> bool  —— 创建资产目录
-  unreal.EditorAssetLibrary.load_asset(asset_path: str) -> Object  —— 加载资产对象
-  unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  —— 列出目录下所有资产路径
-  unreal.EditorAssetLibrary.save_asset(asset_to_save: str, only_if_is_dirty: bool = True) -> bool  —— 保存指定资产
-  unreal.MaterialEditingLibrary.create_material_expression(material: Material, expression_class: Class, node_pos_x: int = 0, node_pos_y: int = 0) -> MaterialExpression  —— 在材质中添加表达式节点
-  unreal.MaterialEditingLibrary.connect_material_property(from_expression: MaterialExpression, from_output_name: str, property_: MaterialProperty) -> bool  —— 连接节点输出到材质属性输入
-  unreal.MaterialEditingLibrary.recompile_material(material: Material) -> Array[str]  —— 重新编译材质
+  ── unreal ──
+    unreal.log(arg: Any) -> None
+        —— 输出信息到输出日志
+    unreal.EditorAssetLibrary.make_directory(directory_path: str) -> bool
+        —— 创建资产目录
+    unreal.EditorAssetLibrary.load_asset(asset_path: str) -> Object
+        —— 加载资产对象
+    unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]
+        —— 列出目录下所有资产路径
+    unreal.EditorAssetLibrary.save_asset(asset_to_save: str, only_if_is_dirty: bool = True) -> bool
+        —— 保存指定资产
+    unreal.MaterialEditingLibrary.create_material_expression(material: Material, expression_class: Class, node_pos_x: int = 0, node_pos_y: int = 0) -> MaterialExpression
+        —— 在材质中添加表达式节点
+    unreal.MaterialEditingLibrary.connect_material_property(from_expression: MaterialExpression, from_output_name: str, property_: MaterialProperty) -> bool
+        —— 连接节点输出到材质属性输入
+    unreal.MaterialEditingLibrary.recompile_material(material: Material) -> Array[str]
+        —— 重新编译材质
+    unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool
+        —— 创建前判重（练习1、练习4 重跑不应重复创建）
+    unreal.MaterialEditingLibrary.get_material_expressions(material: Material) -> Array[MaterialExpression]
+        —— 读出材质里的全部节点（练习2 验收要数节点数；桩 447294）
+    unreal.ScopedSlowTask(work: float, desc: str) / task.enter_progress_frame(work: float) -> None
+        —— 批量建材质时显示进度（练习4）
 =============================================================
 """
 
@@ -30,6 +45,7 @@ import unreal
 # ─────────────────────────────────────────────────────────
 # 1. 创建基本材质
 # ─────────────────────────────────────────────────────────
+
 
 def create_basic_material(name, destination="/Game/Materials"):
     """
@@ -59,8 +75,9 @@ def create_basic_material(name, destination="/Game/Materials"):
     material = asset_tools.create_asset(
         name,
         destination,
-        unreal.Material,  # 资产类型——材质类
-        factory
+        # 资产类型——材质类。Class 参数要「类对象」，所以要 .static_class()
+        unreal.Material.static_class(),
+        factory,
     )
 
     if material:
@@ -69,13 +86,19 @@ def create_basic_material(name, destination="/Game/Materials"):
         # 新创建的资产在内存中是「脏」的（dirty），需要 save_asset 才会写入磁盘。
         # 不保存的话，关闭编辑器后资产会丢失。
         unreal.EditorAssetLibrary.save_asset(path)
-        return material
+        # 收窄类型：create_asset 在桩里声明返回 Object（unreal.py:330504），
+        # 而下游的 MaterialEditingLibrary 都要求 Material，
+        # 这个 isinstance 同时也是「创建失败」的运行时防线
+        if isinstance(material, unreal.Material):
+            return material
 
     return None
+
 
 # ─────────────────────────────────────────────────────────
 # 2. 创建纯色材质
 # ─────────────────────────────────────────────────────────
+
 
 def create_solid_color_material(name, color, destination="/Game/Materials"):
     """
@@ -88,7 +111,7 @@ def create_solid_color_material(name, color, destination="/Game/Materials"):
     """
     # 先调用上面的函数创建一个空白材质——代码复用的好习惯
     material = create_basic_material(name, destination)
-    if not material:
+    if not isinstance(material, unreal.Material):
         return None
 
     # Constant3Vector 节点：输出一个三维向量（RGB 三通道）。
@@ -98,9 +121,9 @@ def create_solid_color_material(name, color, destination="/Game/Materials"):
     #   负数在左边，正数在右边，这只是编辑器里的视觉位置，不影响运行时逻辑。
     color_node = unreal.MaterialEditingLibrary.create_material_expression(
         material,
-        unreal.MaterialExpressionConstant3Vector,  # 三维常量节点（颜色）
+        unreal.MaterialExpressionConstant3Vector.static_class(),  # 三维常量节点（颜色）
         -400,  # X 位置（放在左侧，方便连线）
-        0      # Y 位置
+        0,  # Y 位置
     )
 
     # set_editor_property 用于修改对象在编辑器中的属性。
@@ -108,8 +131,7 @@ def create_solid_color_material(name, color, destination="/Game/Materials"):
     # 注意：颜色必须用 unreal.LinearColor 对象，不能直接传元组。
     # LinearColor 的四个分量范围都是 0.0~1.0，最后一个 a 是透明度。
     color_node.set_editor_property(
-        "constant",
-        unreal.LinearColor(color[0], color[1], color[2], 1.0)
+        "constant", unreal.LinearColor(color[0], color[1], color[2], 1.0)
     )
 
     # connect_material_property 将节点的输出引脚连接到材质的某个属性。
@@ -118,8 +140,8 @@ def create_solid_color_material(name, color, destination="/Game/Materials"):
     # MP_BASE_COLOR 是材质的「基础颜色」属性——PBR 材质最核心的输入。
     unreal.MaterialEditingLibrary.connect_material_property(
         color_node,
-        "RGB",                        # 源输出引脚名
-        unreal.MaterialProperty.MP_BASE_COLOR  # 目标：基础颜色
+        "RGB",  # 源输出引脚名
+        unreal.MaterialProperty.MP_BASE_COLOR,  # 目标：基础颜色
     )
 
     # recompile_material 触发材质重新编译。
@@ -134,9 +156,11 @@ def create_solid_color_material(name, color, destination="/Game/Materials"):
 
     return material
 
+
 # ─────────────────────────────────────────────────────────
 # 3. 创建带纹理的材质
 # ─────────────────────────────────────────────────────────
+
 
 def create_textured_material(name, texture_path, destination="/Game/Materials"):
     """
@@ -156,7 +180,7 @@ def create_textured_material(name, texture_path, destination="/Game/Materials"):
         return None
 
     material = create_basic_material(name, destination)
-    if not material:
+    if not isinstance(material, unreal.Material):
         return None
 
     # TextureSample 节点：采样一张纹理并输出颜色值。
@@ -164,9 +188,9 @@ def create_textured_material(name, texture_path, destination="/Game/Materials"):
     # 还有一个 "sampler_type" 属性决定采样方式（通常保持默认即可）。
     tex_node = unreal.MaterialEditingLibrary.create_material_expression(
         material,
-        unreal.MaterialExpressionTextureSample,  # 纹理采样节点
+        unreal.MaterialExpressionTextureSample.static_class(),  # 纹理采样节点
         -400,
-        0
+        0,
     )
 
     # 把加载好的纹理资产赋给节点的 texture 属性
@@ -174,9 +198,7 @@ def create_textured_material(name, texture_path, destination="/Game/Materials"):
 
     # 将纹理采样结果的 RGB 输出连接到基础颜色
     unreal.MaterialEditingLibrary.connect_material_property(
-        tex_node,
-        "RGB",
-        unreal.MaterialProperty.MP_BASE_COLOR
+        tex_node, "RGB", unreal.MaterialProperty.MP_BASE_COLOR
     )
 
     # 编译并保存——这是创建材质的标准收尾操作
@@ -187,9 +209,11 @@ def create_textured_material(name, texture_path, destination="/Game/Materials"):
     unreal.log(f"已创建纹理材质: {name}")
     return material
 
+
 # ─────────────────────────────────────────────────────────
 # 4. 添加各种材质节点
 # ─────────────────────────────────────────────────────────
+
 
 def add_material_nodes(material):
     """演示添加各种材质表达式节点"""
@@ -198,8 +222,9 @@ def add_material_nodes(material):
     # 常用于控制 Roughness、Metallic 等标量属性。
     const_node = unreal.MaterialEditingLibrary.create_material_expression(
         material,
-        unreal.MaterialExpressionConstant,  # 单值常量节点
-        -400, -200  # 位置放在上方
+        unreal.MaterialExpressionConstant.static_class(),  # 单值常量节点
+        -400,
+        -200,  # 位置放在上方
     )
     # "r" 属性存储常量值（虽然叫 r，但它就是单通道的值）
     const_node.set_editor_property("r", 0.5)
@@ -210,8 +235,9 @@ def add_material_nodes(material):
     # 这是材质系统的核心概念：基础材质定义参数 → 材质实例调节参数。
     scalar_param = unreal.MaterialEditingLibrary.create_material_expression(
         material,
-        unreal.MaterialExpressionScalarParameter,  # 标量参数节点
-        -400, -100
+        unreal.MaterialExpressionScalarParameter.static_class(),  # 标量参数节点
+        -400,
+        -100,
     )
     # parameter_name 是参数的显示名，在材质实例编辑器中会看到这个名字
     scalar_param.set_editor_property("parameter_name", "Roughness")
@@ -222,14 +248,14 @@ def add_material_nodes(material):
     # 可以在材质实例中通过颜色选择器调节。
     vector_param = unreal.MaterialEditingLibrary.create_material_expression(
         material,
-        unreal.MaterialExpressionVectorParameter,  # 向量参数节点
-        -400, 100
+        unreal.MaterialExpressionVectorParameter.static_class(),  # 向量参数节点
+        -400,
+        100,
     )
     vector_param.set_editor_property("parameter_name", "TintColor")
     # 默认白色（1,1,1,1），在材质实例中可以改成任意颜色
     vector_param.set_editor_property(
-        "default_value",
-        unreal.LinearColor(1.0, 1.0, 1.0, 1.0)
+        "default_value", unreal.LinearColor(1.0, 1.0, 1.0, 1.0)
     )
 
     # Multiply 节点：将两个输入相乘。
@@ -237,8 +263,9 @@ def add_material_nodes(material):
     # 它有两个输入引脚 "A" 和 "B"，一个输出引脚 "Result"。
     multiply = unreal.MaterialEditingLibrary.create_material_expression(
         material,
-        unreal.MaterialExpressionMultiply,  # 乘法节点
-        -200, 0
+        unreal.MaterialExpressionMultiply.static_class(),  # 乘法节点
+        -200,
+        0,
     )
 
     # connect_material_expressions 连接两个表达式节点之间的引脚。
@@ -247,10 +274,10 @@ def add_material_nodes(material):
     # Multiply 节点的输入引脚名是 "A"（第一个乘数）和 "B"（第二个乘数）。
     # 注意：输出引脚名和输入引脚名都是字符串，写错会静默失败不报错！
     unreal.MaterialEditingLibrary.connect_material_expressions(
-        const_node,   # 源节点
-        "R",          # 源输出引脚名（Constant 只有一个输出 "R"）
-        multiply,     # 目标节点
-        "A"           # 目标输入引脚名（Multiply 的第一个输入）
+        const_node,  # 源节点
+        "R",  # 源输出引脚名（Constant 只有一个输出 "R"）
+        multiply,  # 目标节点
+        "A",  # 目标输入引脚名（Multiply 的第一个输入）
     )
 
     # 【修改前】只连了 const -> multiply.A，另外三个节点全是"孤岛"：
@@ -259,28 +286,32 @@ def add_material_nodes(material):
     #   输出引脚名传 "" 表示"该节点的默认输出"（Epic 官方 Python 示例的写法）。
     unreal.MaterialEditingLibrary.connect_material_expressions(
         vector_param,  # 源节点：颜色参数
-        "",            # 默认输出（VectorParameter 是一个 4 分量向量）
-        multiply,      # 目标节点
-        "B"            # Multiply 的第二个输入
+        "",  # 默认输出（VectorParameter 是一个 4 分量向量）
+        multiply,  # 目标节点
+        "B",  # Multiply 的第二个输入
     )
 
     # 最后一步最关键：把 Multiply 的结果接到材质的 Base Color 属性上。
     # 只有连到 MaterialProperty，材质才会有实际效果。
     connected = unreal.MaterialEditingLibrary.connect_material_property(
-        multiply,                            # 源节点
-        "",                                  # 默认输出
-        unreal.MaterialProperty.MP_BASE_COLOR  # 目标材质属性
+        multiply,  # 源节点
+        "",  # 默认输出
+        unreal.MaterialProperty.MP_BASE_COLOR,  # 目标材质属性
     )
     if not connected:
         unreal.log_warning("连接 Base Color 失败，请在材质编辑器里手动检查")
 
-    unreal.log(f"已添加材质节点（共 {len(unreal.MaterialEditingLibrary.get_material_expressions(material))} 个）")
+    unreal.log(
+        f"已添加材质节点（共 {len(unreal.MaterialEditingLibrary.get_material_expressions(material))} 个）"
+    )
     # 每次修改材质图后都要重新编译，否则视口不会更新
     unreal.MaterialEditingLibrary.recompile_material(material)
+
 
 # ─────────────────────────────────────────────────────────
 # 5. 创建常用材质模板
 # ─────────────────────────────────────────────────────────
+
 
 def create_pbr_material(name, destination="/Game/Materials"):
     """
@@ -295,7 +326,7 @@ def create_pbr_material(name, destination="/Game/Materials"):
       - Metallic：金属度（0=非金属，1=金属）
     """
     material = create_basic_material(name, destination)
-    if not material:
+    if not isinstance(material, unreal.Material):
         return None
 
     # TextureSampleParameter2D：带参数名的纹理采样节点。
@@ -303,8 +334,9 @@ def create_pbr_material(name, destination="/Game/Materials"):
     # 这样一个基础材质就能派生出无数纹理变体。
     base_color_tex = unreal.MaterialEditingLibrary.create_material_expression(
         material,
-        unreal.MaterialExpressionTextureSampleParameter2D,  # 可参数化的纹理采样
-        -600, -200
+        unreal.MaterialExpressionTextureSampleParameter2D.static_class(),  # 可参数化的纹理采样
+        -600,
+        -200,
     )
     base_color_tex.set_editor_property("parameter_name", "BaseColorTexture")
     unreal.MaterialEditingLibrary.connect_material_property(
@@ -317,8 +349,9 @@ def create_pbr_material(name, destination="/Game/Materials"):
     # 实际项目中通常也用 TextureSampleParameter2D 以便实例中替换。
     normal_tex = unreal.MaterialEditingLibrary.create_material_expression(
         material,
-        unreal.MaterialExpressionTextureSample,  # 普通纹理采样（不可实例替换）
-        -600, 0
+        unreal.MaterialExpressionTextureSample.static_class(),  # 普通纹理采样（不可实例替换）
+        -600,
+        0,
     )
     # 法线贴图的输出要连到 MP_NORMAL 属性，引擎会自动将其解释为法线数据
     unreal.MaterialEditingLibrary.connect_material_property(
@@ -328,9 +361,7 @@ def create_pbr_material(name, destination="/Game/Materials"):
     # Roughness 标量参数：控制表面粗糙度
     # 0.0 = 完全光滑（镜面反射），1.0 = 完全粗糙（漫反射）
     roughness = unreal.MaterialEditingLibrary.create_material_expression(
-        material,
-        unreal.MaterialExpressionScalarParameter,
-        -400, 200
+        material, unreal.MaterialExpressionScalarParameter.static_class(), -400, 200
     )
     roughness.set_editor_property("parameter_name", "Roughness")
     roughness.set_editor_property("default_value", 0.5)  # 默认中等粗糙度
@@ -344,9 +375,7 @@ def create_pbr_material(name, destination="/Game/Materials"):
     # 0.0 = 非金属（塑料、木头等），1.0 = 金属（钢铁、铜等）
     # 注意：金属和非金属的渲染方式完全不同，中间值（0.5）在 PBR 中是不物理正确的！
     metallic = unreal.MaterialEditingLibrary.create_material_expression(
-        material,
-        unreal.MaterialExpressionScalarParameter,
-        -400, 300
+        material, unreal.MaterialExpressionScalarParameter.static_class(), -400, 300
     )
     metallic.set_editor_property("parameter_name", "Metallic")
     metallic.set_editor_property("default_value", 0.0)  # 默认非金属
@@ -362,9 +391,11 @@ def create_pbr_material(name, destination="/Game/Materials"):
     unreal.log(f"已创建 PBR 材质模板: {name}")
     return material
 
+
 # ─────────────────────────────────────────────────────────
 # 6. 修改现有材质
 # ─────────────────────────────────────────────────────────
+
 
 def inspect_material(material_path):
     """检查材质的节点结构"""
@@ -392,6 +423,7 @@ def inspect_material(material_path):
 
     return expressions
 
+
 # ─────────────────────────────────────────────────────────
 # 使用示例
 # ─────────────────────────────────────────────────────────
@@ -409,7 +441,55 @@ unreal.log("材质与纹理第1课完成！")
 # ─────────────────────────────────────────────────────────
 # 🎯 练习题
 # ─────────────────────────────────────────────────────────
-# 1. 创建一组交通灯材质（红、黄、绿）
-# 2. 创建一个发光材质（使用 EmissiveColor）
-# 3. 创建一个材质，使用世界位置偏移实现顶点动画
-# 4. 批量为所有纹理创建对应的材质
+# 【练习 1】一组交通灯材质（红、黄、绿）
+#   输入： 目标目录 "/Game/Materials/TrafficLight"
+#   任务： 用 create_solid_color_material 造三份，名称分别是 M_TrafficRed /
+#          M_TrafficYellow / M_TrafficGreen，颜色取 (1,0,0) / (1,0.8,0) / (0,1,0)
+#   输出： 三个材质资产，在内容浏览器里缩略图就是红黄绿三色
+#   验收： 三个资产都能双击打开且编译无警告；重跑一次不会重复创建
+#          （实测 create_asset 撞名时确实返回 None，函数要能识别并说明）
+
+# 【练习 2】自发光材质
+#   输入： 目标名称、自发光颜色、强度 emissive_strength=5.0
+#   任务： 添加一个 VectorParameter 命名为 "EmissiveColor"（默认值=传进来的颜色），
+#          再添加一个 ScalarParameter 命名为 "EmissiveStrength"（默认值=强度），
+#          用 Multiply 把两者相乘后接到材质的 EmissiveColor 输入；
+#          接完调用 recompile_material 让改动生效
+#   输出： 材质在视口里能自己发光（不需要灯光照也看得见）
+#   验收： 把 strength 调到 20 → 肉眼可见明显变亮；设为 0 → 完全不发光；
+#          用 get_material_expressions 数一下，恰好 3 个节点
+#          （实测：MaterialExpressionVectorParameter + ScalarParameter + Multiply）；
+#          再用 get_material_property_input_node(material, MP_EMISSIVE_COLOR)
+#          反查 → 拿到的必须是 MaterialExpressionMultiply（不是任一参数节点），
+#          这才证明乘法确实接在 EmissiveColor 上
+
+# 【练习 3】用世界位置偏移（WPO）做顶点动画
+#   输入： 基础材质名、摆动幅度 amplitude=20.0、频率 frequency=1.0
+#   任务： 添加 Time 节点 → 乘 frequency → 取 Sin → 乘 amplitude →
+#          接到 World Position Offset；只偏 Z 轴的话需要在中间用
+#          AppendVector 或 ComponentMask 把 X/Y 归零
+#   输出： 用在任何网格体上，物体会上下轻微摆动
+#   验收： 挂在立方体上看视口预览 → 立方体整体上下浮动、不变形；
+#          把 frequency 调成 5 → 明显摆得更快；amplitude=0 → 完全静止。
+#          ⚠️ WPO 输入要的是 float3，而 Sin 输出是标量：
+#          实测必须用 **两个** AppendVector 拼成 (0, 0, sin)——
+#          AppendVector(Constant0, Constant0) → AppendVector(上面结果, 标量) → WPO，
+#          直接连标量会接不上。整套 9 个节点；
+#          get_material_property_input_node(material, MP_WORLD_POSITION_OFFSET)
+#          应返回 MaterialExpressionAppendVector
+
+# 【练习 4】给所有纹理批量配一个材质
+#   输入： search_path 下所有 Texture2D 资产
+#   任务： 每张纹理调用 create_textured_material(f"M_{纹理名}", 纹理路径)，
+#          已存在就跳过（先 does_asset_exist 判断）；
+#          整段用 ScopedSlowTask 显示进度，并统计「新建 N 个 / 跳过 M 个」
+#   输出： 每张纹理旁边都有一个对应材质
+#   验收： 跑完后再跑一次 → 「新建 0 个 / 跳过 N 个」；
+#          法线贴图生成的材质里 TextureSample 的 SamplerType 应是 Normal，
+#          而不是默认的 Color。
+#          实测口径：TextureSample 节点默认是 SAMPLERTYPE_COLOR，
+#          用 node.set_editor_property("sampler_type",
+#          unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL) 可以改，
+#          读回是 "<MaterialSamplerType.SAMPLERTYPE_NORMAL: 3>"；
+#          枚举类名是 MaterialSamplerType，成员名带 SAMPLERTYPE_ 前缀
+#          （不是 SamplerType.Normal 这种写法）

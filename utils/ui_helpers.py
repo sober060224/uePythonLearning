@@ -14,6 +14,21 @@ UI 辅助工具库
 
 import unreal
 
+# ─────────────────────────────────────────────────────────
+# 子系统取用（get_editor_subsystem 返回 Optional，必须判空）
+# ─────────────────────────────────────────────────────────
+
+
+def editor_world():
+    """取编辑器 World；不在编辑器环境（或 World 未就绪）时返回 None。"""
+    subsystem = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem)
+    return subsystem.get_editor_world() if subsystem else None
+
+
+def actor_subsystem():
+    """取 EditorActorSubsystem；不在编辑器环境时返回 None。"""
+    return unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+
 
 # ─────────────────────────────────────────────────────────
 # 屏幕消息
@@ -43,7 +58,11 @@ def show_message(text, color="white", duration=5.0):
     # 2. 颜色传 Python 列表 [r,g,b,a] —— 某些版本能自动转换，但显式构造
     #    LinearColor 结构体最稳妥，不会因版本差异翻车。
     c = COLORS.get(color, COLORS["white"])
-    world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+    world = editor_world()
+    if world is None:
+        # world context 为 None 时屏幕什么都不画，退化为 Output Log 输出
+        unreal.log(f"[{color}] {text}")
+        return
     unreal.SystemLibrary.print_string(
         world,
         text,
@@ -213,9 +232,8 @@ def require_selected_actors(min_count=1, message=None):
     # 【修改前】unreal.EditorLevelLibrary.get_selected_level_actors()
     # 【问题分析】EditorLevelLibrary 属于废弃的 Editor Scripting Utilities 插件，
     # 会报 DeprecationWarning；选 Actor 的操作已搬到 EditorActorSubsystem。
-    actors = unreal.get_editor_subsystem(
-        unreal.EditorActorSubsystem
-    ).get_selected_level_actors()
+    subsystem = actor_subsystem()
+    actors = list(subsystem.get_selected_level_actors()) if subsystem else []
     if len(actors) < min_count:
         msg = message or f"请至少选中 {min_count} 个 Actor"
         show_warning(msg)

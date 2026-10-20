@@ -15,14 +15,26 @@
   - 操作前先备份或使用版本控制
 
 习题可能用到的 API：
-  unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  —— 列出指定路径下的资产路径数组
-  unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData  —— 获取资产的元数据（类型、名称等）
-  unreal.EditorAssetLibrary.rename_asset(source_asset_path: str, destination_asset_path: str) -> bool  —— 重命名/移动资产并自动更新引用
-  unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool  —— 判断指定资产是否存在
-  unreal.EditorAssetLibrary.delete_asset(asset_path_to_delete: str) -> bool  —— 删除指定资产
-  unreal.EditorAssetLibrary.make_directory(directory_path: str) -> bool  —— 创建指定内容目录
-  unreal.EditorAssetLibrary.find_package_referencers_for_asset(asset_path: str, load_assets_to_confirm: bool = False) -> Array[str]  —— 查找引用该资产的所有包
-  unreal.EditorAssetLibrary.save_directory(directory_path: str, only_if_is_dirty: bool = True, recursive: bool = True) -> bool  —— 保存目录下的所有资产
+  ── unreal ──
+    unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]
+        —— 列出指定路径下的资产路径数组
+    unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData
+        —— 获取资产的元数据（类型、名称等）
+    unreal.EditorAssetLibrary.rename_asset(source_asset_path: str, destination_asset_path: str) -> bool
+        —— 重命名/移动资产并自动更新引用
+    unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool
+        —— 判断指定资产是否存在
+    unreal.EditorAssetLibrary.delete_asset(asset_path_to_delete: str) -> bool
+        —— 删除指定资产
+    unreal.EditorAssetLibrary.make_directory(directory_path: str) -> bool
+        —— 创建指定内容目录
+    unreal.EditorAssetLibrary.find_package_referencers_for_asset(asset_path: str, load_assets_to_confirm: bool = False) -> Array[str]
+        —— 查找引用该资产的所有包
+    unreal.EditorAssetLibrary.save_directory(directory_path: str, only_if_is_dirty: bool = True, recursive: bool = True) -> bool
+        —— 保存目录下的所有资产
+  ── Python 标准库 ──
+    os.path / time.strftime
+        —— 练习3 归档目录按日期命名、练习4 跨项目迁移时拼路径
 =============================================================
 """
 
@@ -381,7 +393,10 @@ def consolidate_assets(asset_to_keep, asset_to_replace):
     #   它会把所有引用 replace_obj 的地方自动改成引用 keep_obj，
     #   然后删除 replace_obj。比手动查找引用再替换高效得多。
     #   常用于清理重复导入的资产（比如同一张纹理被导入了两次）。
-    success = unreal.EditorAssetLibrary.consolidate_assets(keep_obj, [replace_obj])
+    # assets_to_consolidate 要引擎 Array[Object]，用 unreal.Array.cast 从 list 转换
+    success = unreal.EditorAssetLibrary.consolidate_assets(
+        keep_obj, unreal.Array.cast(unreal.Object, [replace_obj])
+    )
 
     if success:
         unreal.log(f"整合成功: {asset_to_replace} → {asset_to_keep}")
@@ -420,7 +435,11 @@ def save_current_level():
     #   普通资产用 EditorAssetLibrary.save_asset，
     #   【UE5】关卡操作用 LevelEditorSubsystem：EditorLevelLibrary 属于已废弃的
     #   Editor Scripting Utilities 插件，调用会打 DeprecationWarning。
-    unreal.get_editor_subsystem(unreal.LevelEditorSubsystem).save_current_level()
+    level_subsystem = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
+    if level_subsystem is None:
+        unreal.log_error("取不到 LevelEditorSubsystem，保存关卡未执行")
+        return
+    level_subsystem.save_current_level()
     unreal.log("关卡已保存")
 
 

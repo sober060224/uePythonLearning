@@ -13,28 +13,32 @@
   - unreal.BlueprintVariable - 蓝图变量
 
 习题可能用到的 API：
-  unreal.EditorAssetLibrary.list_assets(directory_path, recursive=True, include_folder=False) -> Array[str]
-      —— 递归列出资产，练习3/4遍历所有蓝图生成文档或审计
-  unreal.EditorAssetLibrary.load_asset(asset_path) -> Object
-      —— 加载蓝图到内存，练习1/2/3/4 都需要
-  unreal.EditorAssetLibrary.save_asset(asset_to_save, only_if_is_dirty=True) -> bool
-      —— 保存修改后的蓝图，练习1修改属性值后必须保存
-  unreal.BlueprintEditorLibrary.list_member_variable_names(blueprint, include_inherited_members=True) -> Array[str]
-      —— 列出蓝图成员变量名，练习2比较差异、练习1读取变量的核心 API
-  bp.generated_class -> Class
-      —— 蓝图编译后生成的类，通过它获取 CDO 修改默认值
-  cls.get_default_object() -> Object
-      —— 获取类的默认对象 CDO，练习1修改蓝图属性值时使用
-  obj.set_editor_property(name, value)
-      —— 设置对象的编辑器属性，练习1修改默认值的核心操作
-  unreal.AssetRegistryHelpers.get_asset_registry() -> AssetRegistry
-      —— 获取资产注册表单例，练习3/4 查资产元数据
-  registry.get_dependencies(package_name, dependency_options) -> Optional[Array[Name]]
-      —— 查询资产依赖，练习3生成文档时可列出依赖关系
-  unreal.AssetRegistryDependencyOptions(...)
-      —— 依赖类型选项，含软/硬引用开关
-  unreal.ScopedSlowTask(work, desc="", enabled=True)
-      —— 进度条工具，批量操作时给用户显示进度并允许取消
+  ── unreal ──
+    unreal.EditorAssetLibrary.list_assets(directory_path, recursive=True, include_folder=False) -> Array[str]
+        —— 递归列出资产，练习3/4遍历所有蓝图生成文档或审计
+    unreal.EditorAssetLibrary.load_asset(asset_path) -> Object
+        —— 加载蓝图到内存，练习1/2/3/4 都需要
+    unreal.EditorAssetLibrary.save_asset(asset_to_save, only_if_is_dirty=True) -> bool
+        —— 保存修改后的蓝图，练习1修改属性值后必须保存
+    unreal.BlueprintEditorLibrary.list_member_variable_names(blueprint, include_inherited_members=True) -> Array[str]
+        —— 列出蓝图成员变量名，练习2比较差异、练习1读取变量的核心 API
+    bp.generated_class -> Class
+        —— 蓝图编译后生成的类，通过它获取 CDO 修改默认值
+    cls.get_default_object() -> Object
+        —— 获取类的默认对象 CDO，练习1修改蓝图属性值时使用
+    obj.set_editor_property(name, value)
+        —— 设置对象的编辑器属性，练习1修改默认值的核心操作
+    unreal.AssetRegistryHelpers.get_asset_registry() -> AssetRegistry
+        —— 获取资产注册表单例，练习3/4 查资产元数据
+    registry.get_dependencies(package_name, dependency_options) -> Optional[Array[Name]]
+        —— 查询资产依赖，练习3生成文档时可列出依赖关系
+    unreal.AssetRegistryDependencyOptions(...)
+        —— 依赖类型选项，含软/硬引用开关
+    unreal.ScopedSlowTask(work, desc="", enabled=True)
+        —— 进度条工具，批量操作时给用户显示进度并允许取消
+  ── Python 标准库 ──
+    open() / os.makedirs
+        —— 练习3 把生成的 Markdown 文档写到磁盘
 =============================================================
 """
 
@@ -48,7 +52,8 @@ import unreal
 def list_blueprint_variables(blueprint_path):
     """列出蓝图中所有用户定义的变量"""
     bp = unreal.EditorAssetLibrary.load_asset(blueprint_path)
-    if not bp:
+    # load_asset 返回的是 Object，list_member_variable_names 要 Blueprint，先收窄
+    if not isinstance(bp, unreal.Blueprint):
         unreal.log_error(f"无法加载蓝图: {blueprint_path}")
         return
 
@@ -162,7 +167,7 @@ def modify_blueprint_defaults(blueprint_path, property_updates):
         try:
             cdo.set_editor_property(prop_name, prop_value)
             unreal.log(f"  {prop_name} = {prop_value}")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 —— 属性名/类型错误的异常类型无法穷举
             # 常见失败原因：属性名拼写错误、属性类型不匹配、属性不存在
             unreal.log_warning(f"  设置 {prop_name} 失败: {e}")
 
@@ -208,10 +213,10 @@ def inspect_blueprint_properties(blueprint_path):
             # callable() 判断是否是方法/函数，只显示属性值
             if not callable(val):
                 unreal.log(f"  .{attr} = {val}")
-        except Exception as e:
-            unreal.log_error(e)
+        except Exception as e:  # noqa: BLE001 —— 属性读取失败的异常类型无法穷举
+            # log_error 的参数是 str，异常对象要先转成字符串
+            unreal.log_error(f"读取属性 {attr} 失败: {e}")
             # 有些属性读取时会抛异常（如需要特定上下文），静默跳过
-            pass
 
 
 # ─────────────────────────────────────────────────────────
@@ -292,7 +297,7 @@ def set_blueprint_description(blueprint_path, description):
             bp.set_editor_property("blueprint_description", description)
             unreal.EditorAssetLibrary.save_asset(blueprint_path)
             unreal.log(f"已设置描述: {description}")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 —— 编辑器属性写入失败的异常类型无法穷举
             unreal.log_warning(f"设置描述失败: {e}")
 
 
@@ -305,7 +310,7 @@ def set_blueprint_category(blueprint_path, category):
             bp.set_editor_property("blueprint_category", category)
             unreal.EditorAssetLibrary.save_asset(blueprint_path)
             unreal.log(f"已设置分类: {category}")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 —— 编辑器属性写入失败的异常类型无法穷举
             unreal.log_warning(f"设置分类失败: {e}")
 
 
@@ -364,14 +369,14 @@ def audit_blueprints(search_path="/Game"):
 
     # 输出审计报告
     unreal.log(f"\n{'=' * 50}")
-    unreal.log(f"  蓝图审计报告")
+    unreal.log("  蓝图审计报告")
     unreal.log(f"{'=' * 50}")
     unreal.log(f"  总蓝图数: {results['total']}")
     unreal.log(f"  命名不规范: {results['no_prefix']}")
     unreal.log(f"  依赖过多 (>20): {results['high_dependency']}")
 
     if results["issues"]:
-        unreal.log(f"\n  问题详情:")
+        unreal.log("\n  问题详情:")
         for issue in results["issues"][:20]:
             unreal.log(f"    ⚠️ {issue}")
 

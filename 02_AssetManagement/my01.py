@@ -76,9 +76,10 @@ def inspect_asset(asset_path):
     # 获取标签
     # 【易错点】get_tag_values 在 EditorAssetSubsystem 上，EditorAssetLibrary 没有这个方法。
     #   返回类型是 Map[Name, str]，即字典。
-    tag_values = unreal.get_editor_subsystem(
-        unreal.EditorAssetSubsystem
-    ).get_tag_values(asset_path)
+    # 先取出子系统并判空：get_editor_subsystem 返回 Optional，
+    # 链式调用会被 Pylance 报「None 没有 get_tag_values」
+    asset_subsystem = unreal.get_editor_subsystem(unreal.EditorAssetSubsystem)
+    tag_values = asset_subsystem.get_tag_values(asset_path) if asset_subsystem else {}
     if tag_values:
         unreal.log(f"标签数量: {len(tag_values)}")
         for tag_name, tag_value in tag_values.items():

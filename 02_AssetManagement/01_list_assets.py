@@ -13,14 +13,22 @@
   - 适合批量操作和项目管理工具
 
 习题可能用到的 API：
-  unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  —— 列出指定路径下的所有资产路径
-  unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData  —— 获取资产的元数据（类型、名称、路径等）
-  unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool  —— 判断指定资产是否存在
-  unreal.EditorAssetLibrary.find_package_referencers_for_asset(asset_path: str, load_assets_to_confirm: bool = False) -> Array[str]  —— 查找引用该资产的所有包
-  unreal.get_editor_subsystem(unreal.EditorAssetSubsystem).get_tag_values(asset_path: str) -> Map[Name, str]  —— 获取资产的所有标签值
-    （注意：get_tag_values 只在 EditorAssetSubsystem 上，EditorAssetLibrary 没有这个方法）
-  unreal.ScopedSlowTask(work: float, desc: Union[Text, str] = "", enabled: bool = True)  —— 创建耗时任务的进度条上下文
-  task.enter_progress_frame(work: float = 1.0, desc: Union[Text, str] = "") -> None  —— 推进进度条并更新说明文字
+  ── unreal ──
+    unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]
+        —— 列出指定路径下的所有资产路径
+    unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData
+        —— 获取资产的元数据（类型、名称、路径等）
+    unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool
+        —— 判断指定资产是否存在
+    unreal.EditorAssetLibrary.find_package_referencers_for_asset(asset_path: str, load_assets_to_confirm: bool = False) -> Array[str]
+        —— 查找引用该资产的所有包
+    unreal.get_editor_subsystem(unreal.EditorAssetSubsystem).get_tag_values(asset_path: str) -> Map[Name, str]
+        —— 获取资产的所有标签值
+        （注意：get_tag_values 只在 EditorAssetSubsystem 上，EditorAssetLibrary 没有这个方法）
+    unreal.ScopedSlowTask(work: float, desc: Union[Text, str] = "", enabled: bool = True)
+        —— 创建耗时任务的进度条上下文
+    task.enter_progress_frame(work: float = 1.0, desc: Union[Text, str] = "") -> None
+        —— 推进进度条并更新说明文字
 =============================================================
 """
 
@@ -174,7 +182,9 @@ def inspect_asset(asset_path):
     #   标签是 Name 类型（不是 str），所以打印时需要转成字符串。
     # 【易错点】get_tag_values 定义在 EditorAssetSubsystem 上，不在 EditorAssetLibrary 上，
     #   调 EditorAssetLibrary.get_tag_values 会直接 AttributeError。
-    tags = unreal.get_editor_subsystem(unreal.EditorAssetSubsystem).get_tag_values(asset_path)
+    # get_editor_subsystem 返回 Optional，先判空再调方法
+    asset_subsystem = unreal.get_editor_subsystem(unreal.EditorAssetSubsystem)
+    tags = asset_subsystem.get_tag_values(asset_path) if asset_subsystem else None
     if tags:
         unreal.log(f"标签数量: {len(tags)}")
         for tag_name, tag_value in tags.items():
@@ -189,7 +199,9 @@ def inspect_asset(asset_path):
         asset_path
     )
     unreal.log(f"被 {len(references)} 个资产引用:")
-    for ref in references[:5]:
+    # 引擎 Array 的桩只声明了 __getitem__(index: int)，没有 slice 重载，
+    # 所以先转成普通 list 再切片
+    for ref in list(references)[:5]:
         unreal.log(f"  ← {ref}")
 
 

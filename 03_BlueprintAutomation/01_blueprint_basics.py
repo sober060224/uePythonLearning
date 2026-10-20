@@ -18,22 +18,23 @@
   - 启用 Editor Scripting Utilities 插件
 
 习题可能用到的 API：
-  unreal.EditorAssetLibrary.list_assets(directory_path, recursive=True, include_folder=False) -> Array[str]
-      —— 递归列出路径下全部资产，练习1/2/4都需要用它遍历蓝图
-  unreal.EditorAssetLibrary.find_asset_data(asset_path) -> AssetData
-      —— 按路径查资产元数据，不加载资产，练习4检查编译状态时需要
-  unreal.EditorAssetLibrary.load_asset(asset_path) -> Object
-      —— 加载蓝图到内存以便读取父类信息，练习3需要
-  unreal.BlueprintEditorLibrary.compile_blueprint(blueprint) -> bool
-      —— 编译蓝图，练习4检查编译错误后可尝试重新编译
-  unreal.BlueprintEditorLibrary.get_blueprint_parent_class(blueprint) -> Class
-      —— 读取蓝图父类，练习1创建蓝图后验证父类、练习3绘制关系图都需要
-  asset_tools.create_asset(asset_name, package_path, asset_class, factory, ...) -> Object
-      —— 用工厂创建新蓝图资产，练习1/2的核心操作
-  unreal.BlueprintFactory() 配合 set_editor_property("parent_class", cls)
-      —— 蓝图工厂，指定新蓝图的父类，练习1/2创建蓝图时必须
-  unreal.ScopedSlowTask(work, desc="", enabled=True)
-      —— 批量操作时显示进度条并允许用户取消，练习2/4需要
+  ── unreal ──
+    unreal.EditorAssetLibrary.list_assets(directory_path, recursive=True, include_folder=False) -> Array[str]
+        —— 递归列出路径下全部资产，练习1/2/4都需要用它遍历蓝图
+    unreal.EditorAssetLibrary.find_asset_data(asset_path) -> AssetData
+        —— 按路径查资产元数据，不加载资产，练习4检查编译状态时需要
+    unreal.EditorAssetLibrary.load_asset(asset_path) -> Object
+        —— 加载蓝图到内存以便读取父类信息，练习3需要
+    unreal.BlueprintEditorLibrary.compile_blueprint(blueprint) -> bool
+        —— 编译蓝图，练习4检查编译错误后可尝试重新编译
+    unreal.BlueprintEditorLibrary.get_blueprint_parent_class(blueprint) -> Class
+        —— 读取蓝图父类，练习1创建蓝图后验证父类、练习3绘制关系图都需要
+    asset_tools.create_asset(asset_name, package_path, asset_class, factory, ...) -> Object
+        —— 用工厂创建新蓝图资产，练习1/2的核心操作
+    unreal.BlueprintFactory() 配合 set_editor_property("parent_class", cls)
+        —— 蓝图工厂，指定新蓝图的父类，练习1/2创建蓝图时必须
+    unreal.ScopedSlowTask(work, desc="", enabled=True)
+        —— 批量操作时显示进度条并允许用户取消，练习2/4需要
 =============================================================
 """
 
@@ -159,8 +160,11 @@ def create_blueprint(name, parent_class, destination_path="/Game/Blueprints"):
     #   asset_name: 资产文件名（不含扩展名，蓝图会自动加 .uasset）
     #   package_path: 保存目录路径
     #   asset_class: 资产类（unreal.Blueprint 是蓝图资产的类）
+    #     要写成 .static_class()：Class 参数要的是「类对象」而非 Python 类
     #   factory: 工厂对象，负责创建资产的具体逻辑
-    new_bp = asset_tools.create_asset(name, destination_path, unreal.Blueprint, factory)
+    new_bp = asset_tools.create_asset(
+        name, destination_path, unreal.Blueprint.static_class(), factory
+    )
     if not isinstance(new_bp, unreal.Blueprint):
         return
 
@@ -266,7 +270,8 @@ def create_blueprint_set(blueprint_defs, destination="/Game/Blueprints"):
 def compile_blueprint(blueprint_path):
     """编译蓝图"""
     bp = unreal.EditorAssetLibrary.load_asset(blueprint_path)
-    if not bp:
+    # load_asset 返回的是 Object，compile_blueprint 要 Blueprint，先收窄
+    if not isinstance(bp, unreal.Blueprint):
         unreal.log_error(f"无法加载蓝图: {blueprint_path}")
         return False
 

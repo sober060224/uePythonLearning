@@ -1,0 +1,7 @@
+# Ruff 配置：保持默认规则集，不额外开 preview 规则。
+# 存在的意义是让 IDE（charliermarsh.ruff）与命令行读到同一份配置。
+target-version = "py311"
+
+# my*.py 是学习者个人练习稿（见 AGENTS.md），不作为教材验收范围，
+# 与 pyrightconfig.json 的 exclude 保持一致。
+extend-exclude = ["my*.py", "__pycache__"]

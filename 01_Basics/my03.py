@@ -40,6 +40,11 @@ for asset_data in selected_assets:
 def print_static_mesh_positions():
     """打印当前关卡中所有 StaticMeshActor 的位置"""
     actor_subsystem = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+    # get_editor_subsystem 返回 Optional，先判空再用；否则 Pylance 报
+    # 「None 没有 get_all_level_actors」，运行时也会 AttributeError
+    if actor_subsystem is None:
+        unreal.log_error("拿不到 EditorActorSubsystem")
+        return
     all_actors = actor_subsystem.get_all_level_actors()
 
     count = 0
@@ -78,6 +83,9 @@ def print_static_mesh_positions():
 def print_selected_actor_info():
     """打印选中 Actor 的详细信息（名称、位置、旋转、缩放）"""
     actor_subsystem = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+    if actor_subsystem is None:
+        unreal.log_error("拿不到 EditorActorSubsystem")
+        return
     selected_actors = actor_subsystem.get_selected_level_actors()
 
     if not selected_actors:

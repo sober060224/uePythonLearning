@@ -22,22 +22,23 @@
   创建蓝图、指定/修改父类、编译、查询信息。
 
 习题可能用到的 API：
-  unreal.BlueprintEditorLibrary.reparent_blueprint(blueprint, new_parent_class) -> None
-      —— 重新指定蓝图父类，练习3批量改父类的核心 API
-  unreal.BlueprintEditorLibrary.get_blueprint_parent_class(blueprint) -> Class
-      —— 读取蓝图父类，练习1统计父类、练习2列出父类关系都需要
-  unreal.EditorAssetLibrary.list_assets(directory_path, recursive=True, include_folder=False) -> Array[str]
-      —— 递归列出资产，练习1/2遍历蓝图的入口
-  unreal.EditorAssetLibrary.find_asset_data(asset_path) -> AssetData
-      —— 查询资产元数据，快速判断是否为蓝图
-  unreal.BlueprintEditorLibrary.compile_blueprint(blueprint) -> bool
-      —— 编译蓝图，修改父类后必须重新编译，练习3需要
-  unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools
-      —— 获取资产工具单例，创建蓝图时使用
-  unreal.BlueprintFactory() 配合 set_editor_property("parent_class", cls)
-      —— 蓝图工厂，练习1批量创建蓝图时使用
-  unreal.ScopedSlowTask(work, desc="", enabled=True)
-      —— 进度条工具，批量操作时给用户显示进度
+  ── unreal ──
+    unreal.BlueprintEditorLibrary.reparent_blueprint(blueprint, new_parent_class) -> None
+        —— 重新指定蓝图父类，练习3批量改父类的核心 API
+    unreal.BlueprintEditorLibrary.get_blueprint_parent_class(blueprint) -> Class
+        —— 读取蓝图父类，练习1统计父类、练习2列出父类关系都需要
+    unreal.EditorAssetLibrary.list_assets(directory_path, recursive=True, include_folder=False) -> Array[str]
+        —— 递归列出资产，练习1/2遍历蓝图的入口
+    unreal.EditorAssetLibrary.find_asset_data(asset_path) -> AssetData
+        —— 查询资产元数据，快速判断是否为蓝图
+    unreal.BlueprintEditorLibrary.compile_blueprint(blueprint) -> bool
+        —— 编译蓝图，修改父类后必须重新编译，练习3需要
+    unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools
+        —— 获取资产工具单例，创建蓝图时使用
+    unreal.BlueprintFactory() 配合 set_editor_property("parent_class", cls)
+        —— 蓝图工厂，练习1批量创建蓝图时使用
+    unreal.ScopedSlowTask(work, desc="", enabled=True)
+        —— 进度条工具，批量操作时给用户显示进度
 =============================================================
 """
 
@@ -72,9 +73,12 @@ def create_blueprint(name, parent_class, destination="/Game/Blueprints"):
     factory.set_editor_property("parent_class", parent_class)
 
     # create_asset 创建新蓝图，返回蓝图 UObject 或 None（失败时）
-    new_bp = asset_tools.create_asset(name, destination, unreal.Blueprint, factory)
+    new_bp = asset_tools.create_asset(
+        name, destination, unreal.Blueprint.static_class(), factory
+    )
 
-    if not new_bp:
+    # create_asset 的返回类型在桩里是 Object，先收窄成 Blueprint 再往下用
+    if not isinstance(new_bp, unreal.Blueprint):
         unreal.log_error(f"创建蓝图失败: {name}")
         return None
 

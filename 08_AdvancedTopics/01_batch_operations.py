@@ -11,24 +11,70 @@
 本课将创建多个生产级别的批量处理工具
 
 习题可能用到的 API：
-  unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  —— 递归列出目录下全部资产/文件夹
-  unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData  —— 获取资产元数据（类、名称等）
-  unreal.EditorAssetLibrary.find_package_referencers_for_asset(asset_path: str, load_assets_to_confirm: bool = False) -> Array[str]  —— 查找引用该资产的全部包路径
-  unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool  —— 判断资产路径是否已存在
-  unreal.Paths.project_saved_dir() -> str  —— 获取项目 Saved 目录的绝对路径
-  unreal.ScopedSlowTask(work: float, desc: Text = "", enabled: bool = True)  —— 创建慢任务进度条对象
-  unreal.log(arg: Any) -> None  —— 输出一般消息到日志
-  unreal.log_warning(arg: Any) -> None  —— 输出警告消息到日志
+  ── unreal ──
+    unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]
+        —— 递归列出目录下全部资产。★ 实测返回的是**对象路径**，末尾带 .对象名：
+           "/Game/_T/M_T.M_T"；要拿包路径必须先 r.split(".")[0]
+    unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData
+        —— 取资产元数据（asset_name / package_name / asset_class_path）
+           ★ AssetData 里**没有**文件大小、时间戳、依赖等字段
+    unreal.EditorAssetLibrary.find_package_referencers_for_asset(asset_path: str, load_assets_to_confirm: bool = False) -> Array[str]
+        —— 查谁引用这个资产（练习2）。两个参数都实测过，结果一致
+           ★ 刚创建的资产查出来是空列表（注册表缓存落后），
+             要先 reg.scan_paths_synchronous([目录], force_rescan=True) 才准
+    unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool
+        —— 判断资产路径是否已存在
+    unreal.AssetRegistryHelpers.get_asset_registry() -> AssetRegistry
+        —— 拿资产注册表（练习2 批量查依赖；桩 243757）
+    unreal.AssetRegistry.get_dependencies(package_name: Name, dependency_options: AssetRegistryDependencyOptions) -> Optional[Array[Name]]
+        —— 查某个包依赖谁（练习2 反查 MI→M；★ 选项对象必须设 include_hard_package_references=True 才不返回 None）
+    unreal.AssetRegistry.get_referencers(package_name: Name, reference_options: AssetRegistryDependencyOptions) -> Optional[Array[Name]]
+        —— ★ 实测：用默认构造的 AssetRegistryDependencyOptions()（全 False）
+           会直接返回 **None**，必须把 include_hard_package_references=True
+           （要连软引用再加 include_soft_package_references=True）设上；
+           设好之后 get_dependencies(MI) → [M]、get_referencers(M) → [MI] 都正确
+    unreal.AssetRegistry.get_assets(filter: ARFilter) -> Optional[Array[AssetData]]
+        —— 按过滤条件批量取资产（比 list_assets 多返回 asset_class_path）
+    unreal.ARFilter(package_paths: Array[Name], recursive_paths: bool, class_names: Array[Name], ...)
+        —— ★ 实测：ARFilter 是**冻结结构体**，不能先 new 再改字段
+           （报 "Property 'PackagePaths' ... cannot be edited on instances"），
+           必须全部用构造参数传，且 package_paths 要 Array[Name] 不是 Array[str]
+    unreal.AssetRegistry.scan_paths_synchronous(paths: Array[str], force_rescan: bool = False) -> None
+        —— 强制重扫目录，让依赖/引用信息立刻可用（练习2 的前置动作）
+    unreal.Paths.project_content_dir() -> str
+        —— 项目 Content 目录（★ 实测返回相对路径，拼磁盘路径前必须 os.path.abspath）
+    unreal.Paths.project_saved_dir() -> str
+        —— ★ 实测返回**相对路径**（"../../../../..//.../Content/"），
+           用之前必须 os.path.abspath()，否则从编辑器工作目录解析会跑偏
+    unreal.Paths.convert_relative_path_to_full(path: str, base_path: str = "") -> str
+        —— ★ 它**不会**把 /Game/X 换成磁盘路径（传 "/Game/X" 原样返回）；
+           它只是把相对路径按基准目录补全。别指望它做 /Game→Content 映射
+    unreal.ScopedSlowTask(work: float, desc: Text = "", enabled: bool = True)
+        —— 创建慢任务进度条对象
+    unreal.log(arg: Any) -> None
+        —— 输出到 Output Log（练习1 报告、练习3 增量日志都靠它）
+    unreal.log_warning(arg: Any) -> None
+        —— 输出消息到日志
+  ── Python 标准库 ──
+    os.path.abspath / os.path.join / os.path.getsize / os.path.getmtime
+        —— 练习1 拼磁盘路径并取文件大小；练习3 取修改时间做增量
+        ★ 正确的 /Game → 磁盘映射（实测可用）：
+          os.path.join(os.path.abspath(unreal.Paths.project_content_dir()),
+                       pkg.replace("/Game/", "")) + ".uasset"
+    time.strftime / time.time
+        —— 练习1 打时间、练习3 记录上次运行时刻、练习4 判断"今天是否已生成"
 =============================================================
 """
 
-import unreal
-import time
 import os
+import time
+
+import unreal
 
 # ═════════════════════════════════════════════════════════
 # 框架：通用批量处理器
 # ═════════════════════════════════════════════════════════
+
 
 class BatchProcessor:
     """
@@ -88,7 +134,7 @@ class BatchProcessor:
             item_name = str(item).split("/")[-1] if isinstance(item, str) else str(item)
             # enter_progress_frame 推进进度条，显示当前处理的是哪个项目
             # 格式 [1/100] 表示第1个，共100个
-            task.enter_progress_frame(1.0, f"[{i+1}/{len(items)}] {item_name}")
+            task.enter_progress_frame(1.0, f"[{i + 1}/{len(items)}] {item_name}")
 
             try:
                 # 调用用户提供的处理函数
@@ -100,14 +146,11 @@ class BatchProcessor:
                     self.results["failed"] += 1
                 else:
                     self.results["skipped"] += 1
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 —— 单个项目失败不应中断整批处理
                 # 捕获异常，记录错误但不中断整个流程
                 # 为什么这样设计？批量处理中单个项目失败不应影响其他项目
                 self.results["failed"] += 1
-                self.results["errors"].append({
-                    "item": str(item),
-                    "error": str(e)
-                })
+                self.results["errors"].append({"item": str(item), "error": str(e)})
                 # 使用 log_warning 而不是 log_error，因为这是预期中的错误
                 unreal.log_warning(f"处理失败: {item} - {e}")
 
@@ -117,11 +160,15 @@ class BatchProcessor:
     def _print_summary(self):
         """打印处理结果摘要"""
         # 计算总耗时
-        elapsed = time.time() - self.start_time
+        # start_time 在 __init__ 里被置为 None（只有真正跑过批处理才有值），
+        # 直接相减会在 None 上做运算，所以要先判空。
+        elapsed = (
+            time.time() - self.start_time if self.start_time is not None else 0.0
+        )
 
         # 使用分隔线和对齐格式输出，让日志更易读
         unreal.log(f"\n{'─' * 60}")
-        unreal.log(f"  处理完成！")
+        unreal.log("  处理完成！")
         unreal.log(f"{'─' * 60}")
         unreal.log(f"  成功: {self.results['success']}")
         unreal.log(f"  失败: {self.results['failed']}")
@@ -131,15 +178,17 @@ class BatchProcessor:
 
         # 如果有错误，输出详细信息（最多显示10条，避免日志过多）
         if self.results["errors"]:
-            unreal.log(f"\n  错误详情:")
+            unreal.log("\n  错误详情:")
             for err in self.results["errors"][:10]:
                 unreal.log(f"    ❌ {err['item']}: {err['error']}")
 
         return self.results
 
+
 # ═════════════════════════════════════════════════════════
 # 工具 1: 项目资产清理器
 # ═════════════════════════════════════════════════════════
+
 
 class ProjectCleaner:
     """项目清理工具集"""
@@ -155,9 +204,7 @@ class ProjectCleaner:
         """
         # list_assets 返回指定目录下所有资产的路径列表
         # recursive=True 表示递归搜索子目录
-        all_assets = unreal.EditorAssetLibrary.list_assets(
-            search_path, recursive=True
-        )
+        all_assets = unreal.EditorAssetLibrary.list_assets(search_path, recursive=True)
 
         def check_unused(asset_path):
             # does_directory_exist 检查路径是否为文件夹
@@ -211,9 +258,7 @@ class ProjectCleaner:
             "SoundWave": "S_",
         }
 
-        all_assets = unreal.EditorAssetLibrary.list_assets(
-            search_path, recursive=True
-        )
+        all_assets = unreal.EditorAssetLibrary.list_assets(search_path, recursive=True)
 
         def fix_name(asset_path):
             # list_assets 默认 include_folder=False，返回的都是资产路径，
@@ -262,10 +307,9 @@ class ProjectCleaner:
         # 为什么？因为删除空文件夹时，必须先删除子文件夹，再删除父文件夹
         # 例如：/Game/A/B/C 必须先删 C，再删 B，最后删 A
         folders = sorted(
-            [p for p in all_paths
-             if unreal.EditorAssetLibrary.does_directory_exist(p)],
+            [p for p in all_paths if unreal.EditorAssetLibrary.does_directory_exist(p)],
             # key=lambda x: -len(x.split("/")) 按路径深度降序排列
-            key=lambda x: -len(x.split("/"))
+            key=lambda x: -len(x.split("/")),
         )
 
         deleted = 0
@@ -282,9 +326,11 @@ class ProjectCleaner:
 
         unreal.log(f"已删除 {deleted} 个空文件夹")
 
+
 # ═════════════════════════════════════════════════════════
 # 工具 2: 资产迁移和重组
 # ═════════════════════════════════════════════════════════
+
 
 class AssetOrganizer:
     """资产重组工具"""
@@ -315,9 +361,7 @@ class AssetOrganizer:
             "BlendSpace": "Animation",
         }
 
-        all_assets = unreal.EditorAssetLibrary.list_assets(
-            source_path, recursive=True
-        )
+        all_assets = unreal.EditorAssetLibrary.list_assets(source_path, recursive=True)
 
         def organize_asset(asset_path):
             if unreal.EditorAssetLibrary.does_directory_exist(asset_path):
@@ -353,9 +397,7 @@ class AssetOrganizer:
             if unreal.EditorAssetLibrary.does_asset_exist(dest_path):
                 return None
 
-            success = unreal.EditorAssetLibrary.rename_asset(
-                asset_path, dest_path
-            )
+            success = unreal.EditorAssetLibrary.rename_asset(asset_path, dest_path)
             if success:
                 unreal.log(f"  → {dest_path}")
             return success
@@ -370,9 +412,7 @@ class AssetOrganizer:
 
         当项目结构调整时，需要将资产从旧路径迁移到新路径
         """
-        assets = unreal.EditorAssetLibrary.list_assets(
-            old_base, recursive=True
-        )
+        assets = unreal.EditorAssetLibrary.list_assets(old_base, recursive=True)
 
         def redirect(asset_path):
             # 计算相对路径，然后拼接新基础路径
@@ -390,9 +430,11 @@ class AssetOrganizer:
         processor = BatchProcessor("批量重定向")
         processor.process(assets, redirect, "重定向中...")
 
+
 # ═════════════════════════════════════════════════════════
 # 工具 3: 项目健康报告
 # ═════════════════════════════════════════════════════════
+
 
 class ProjectHealthReport:
     """项目健康报告生成器"""
@@ -409,12 +451,10 @@ class ProjectHealthReport:
         report_lines.append("  UE 项目健康报告")
         report_lines.append("=" * 60)
 
-        all_assets = unreal.EditorAssetLibrary.list_assets(
-            search_path, recursive=True
-        )
+        all_assets = unreal.EditorAssetLibrary.list_assets(search_path, recursive=True)
 
         # 1. 基本统计：按类型分类计数
-        report_lines.append(f"\n--- 资产统计 ---")
+        report_lines.append("\n--- 资产统计 ---")
         report_lines.append(f"总资产数: {len(all_assets)}")
 
         type_counts = {}
@@ -433,7 +473,7 @@ class ProjectHealthReport:
 
         # 2. 命名规范检查：检查资产名称是否包含空格
         # 空格在资产名称中可能导致路径问题，是常见的命名违规
-        report_lines.append(f"\n--- 命名规范 ---")
+        report_lines.append("\n--- 命名规范 ---")
         naming_issues = 0
         for asset_path in all_assets:
             if unreal.EditorAssetLibrary.does_directory_exist(asset_path):
@@ -445,7 +485,7 @@ class ProjectHealthReport:
         report_lines.append(f"命名问题总数: {naming_issues}")
 
         # 3. 目录结构：统计顶级目录下的资产数量
-        report_lines.append(f"\n--- 顶级目录 ---")
+        report_lines.append("\n--- 顶级目录 ---")
         top_dirs = set()
         for asset_path in all_assets:
             parts = asset_path.split("/")
@@ -466,14 +506,14 @@ class ProjectHealthReport:
         # project_saved_dir() 返回项目的 Saved 目录路径
         # 为什么保存到这里？因为 Saved 目录不会被版本控制，适合存放生成的文件
         report_path = os.path.join(
-            unreal.Paths.project_saved_dir(),
-            "ProjectHealthReport.txt"
+            unreal.Paths.project_saved_dir(), "ProjectHealthReport.txt"
         )
         with open(report_path, "w", encoding="utf-8") as f:
             f.write("\n".join(report_lines))
         unreal.log(f"\n报告已保存到: {report_path}")
 
         return report_lines
+
 
 # ─────────────────────────────────────────────────────────
 # 使用示例
@@ -499,7 +539,62 @@ unreal.log("高级主题第1课完成！")
 # ─────────────────────────────────────────────────────────
 # 🎯 练习题
 # ─────────────────────────────────────────────────────────
-# 1. 扩展健康报告：添加文件大小统计
-# 2. 创建一个 "资产迁移检查器"：在移动资产前预览影响
-# 3. 实现增量处理：只处理上次运行后修改过的资产
-# 4. 创建一个定时任务：每天自动生成项目报告
+# 【练习 1】给健康报告加上文件大小统计
+#   输入： search_path 下所有资产的资产路径
+#   任务： AssetData 里没有大小字段（桩里查过，只有 name / class / path 这些），
+#          所以要把 /Game/... 的资产路径映射成磁盘路径：
+#          /Game/X -> <项目>/Content/X.uasset，再用 os.path.getsize 取字节数；
+#          按大小降序输出前 10 个，并给出总大小（MB，保留 1 位小数）
+#   输出： 报告里多一段「体积最大的 10 个资产」，格式如「12.3 MB  /Game/...」
+#   验收： 总和 == 逐个相加（允许 0.1 MB 舍入误差）；
+#          路径对应的文件不存在时跳过并计数，不抛 FileNotFoundError
+#          ★ 实测两个必踩的坑：
+#          ① list_assets 返回的是「对象路径」，带 .资产名 后缀（/Game/A/B.B），
+#            不 split(".")[0] 就直接拼磁盘路径 → 全部判不存在、总大小恒为 0；
+#          ② convert_relative_path_to_full("/Game/A") 原样返回 "/Game/A"
+#            （它只做相对→绝对，不做 /Game → 磁盘的映射）；
+#            正确映射是 Paths.project_content_dir() + 相对部分再 os.path.abspath，
+#            注意 project_content_dir() 返回的是**相对路径**，必须 abspath
+
+# 【练习 2】资产迁移检查器：移动前先看影响面
+#   输入： 要移动的资产路径列表、目标目录
+#   任务： 对每个资产用 find_package_referencers_for_asset 查有多少东西引用它，
+#          再用 get_dependencies 查它自己依赖谁；
+#          输出三栏：①外部引用（引用方不在移动清单里，移动后会断）
+#          ②内部依赖（也在移动清单里，会跟着一起走）
+#          ③完全不受影响的资产；
+#          最后给出结论「可以安全移动 / 需要一并移动 N 个 / 有 M 处会断」
+#   输出： 一张迁移前的影响评估表
+#   验收： 移动一张被材质引用的纹理 → 结论必须是「有 1 处会断」（那个材质）；
+#          把材质和纹理一起放进清单 → 结论变成「可以安全移动」
+#          ★ 实测两个坑：① get_dependencies(pkg, AssetRegistryDependencyOptions())
+#            传默认构造的空选项会直接返回 **None**（后续 len()/遍历必崩），
+#            必须 include_hard_package_references=True（软引用再加 include_soft_*）；
+#          ② find_package_referencers_for_asset 对刚创建的资产常返回空，
+#            要先 asset_registry.scan_paths_synchronous([目录], force_rescan=True)；
+#            另外 AssetRegistry 上没有 get_dependencies_of_package 这个方法
+
+# 【练习 3】增量处理：只碰上次运行后改过的资产
+#   输入： 一个目录、上次运行的时间戳（存在 Saved/last_run.json 里）
+#   任务： 用 os.path.getmtime 对比每个资产文件的修改时间，
+#          只处理 mtime > 上次时间的那些；处理完把当前时间写回 JSON；
+#          首次运行（没有 JSON）就全量处理，并在日志里说明「首次运行，全量处理」
+#   输出： 第二次运行时待处理数量大幅下降
+#   验收： 连续跑两次不做任何修改 → 第二次「本次处理 0 个」；
+#          手动编辑保存一个文件 → 第二次只处理 1 个
+#          ★ 实测：unreal.Paths.project_saved_dir() 返回的是**相对路径**
+#            （形如 ../../../../Users/...），直接 open() 会落到 Engine/Binaries 下，
+#            必须先 os.path.abspath 再拼文件名
+
+# 【练习 4】每天自动生成项目报告（UE 里没有 cron，要做降级）
+#   输入： 报告输出目录、上次生成日期
+#   任务： 先查 Saved/report_last.json 里的日期，用 time.strftime("%Y-%m-%d")
+#          和今天对比；同一天就跳过并打日志「今天已生成」，
+#          不同天就跑 ProjectHealthReport.generate_full_report 并写文件；
+#          文件末尾必须注明「UE Python 无定时器 API，需要靠外部计划任务
+#          （Windows 任务计划程序 / CI）每天调一次本脚本」
+#   输出： Saved/Reports/{日期}/report.json，一天只生成一份
+#   验收： 同一天连跑 3 次 → 只有第 1 次真的生成，后两次跳过；
+#          把 JSON 里的日期改成昨天 → 再跑会重新生成
+#          ★ 实测：time.strftime("%Y-%m-%d") 同一天两次调用完全相同、
+#            改成昨天则不同 —— 字符串直接 == 比较即可，不必转 datetime

@@ -81,7 +81,8 @@ def first():
             # 移除前缀\，标准化引擎路径，添加前缀/Game/
             dir = dir.removeprefix(f"{content_dir}\\")  # 引擎路径
             dir = unreal.Paths.normalize_filename(dir)
-            dir = unreal.Paths.combine(["/Game", dir])
+            # combine 参数类型是 Array[str]；普通 list 静态类型不符，Array.cast 转换
+            dir = unreal.Paths.combine(unreal.Array.cast(str, ["/Game", dir]))
             dir = dir.removesuffix(".umap")
             dir = dir.removesuffix(".uasset")
 
@@ -146,7 +147,8 @@ def second():
 
         name = standard_prefix + prefix[1]  # 合成正确名称
         path = "/".join(asset_path.split("/")[:-1]) + f"/{name}"  # 路径名最好就是用包名
-        if unreal.EditorAssetLibrary.rename_asset(asset_data.package_name, path):
+        # package_name 是 Name 类型，rename_asset 要 str，所以显式转一次
+        if unreal.EditorAssetLibrary.rename_asset(str(asset_data.package_name), path):
             unreal.log("success")
 
 
@@ -174,7 +176,8 @@ def third():
         assets_to_export.append(path)
 
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
-    asset_tools.export_assets(assets_to_export, saved_dir)
+    # export_assets 参数类型是 Array[str]；list 静态类型不符，Array.cast 转换
+    asset_tools.export_assets(unreal.Array.cast(str, assets_to_export), saved_dir)
 
 
 # third()
@@ -215,7 +218,10 @@ def aaa():
         # 初始路径 = package_name
         name = asset_data.asset_name
         # 目标路径在_Archive/time文件夹内，/Game/_Archive + time + name
-        file_path = unreal.Paths.combine(["/Game/_Archive", time, name])
+        # asset_name 是 Name，先转 str 再拼；combine 参数是 Array[str]
+        file_path = unreal.Paths.combine(
+            unreal.Array.cast(str, ["/Game/_Archive", time, str(name)])
+        )
         if unreal.EditorAssetLibrary.rename_asset(package_name, file_path):
             unreal.log(f"{file_path} ----> success")
 
@@ -258,7 +264,10 @@ def fourth(dest_path: str):
             q.put(i)
 
     asset_tools = unreal.AssetToolsHelpers().get_asset_tools()
-    asset_tools.export_assets(selected_package, dest_path)
+    # selected_package 的元素可能是 Name，统一转 str 后包成 Array[str]
+    asset_tools.export_assets(
+        unreal.Array.cast(str, [str(p) for p in selected_package]), dest_path
+    )
 
 
 # path = r"C:\Users\sober\Documents\Unreal Projects\LyraStarterGame\Content"

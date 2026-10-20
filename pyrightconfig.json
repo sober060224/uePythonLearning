@@ -1,0 +1,9 @@
+{
+  "include": ["."],
+  "exclude": ["**/__pycache__", "**/my*.py"],
+  "extraPaths": ["../Intermediate/PythonStub"],
+  "typeCheckingMode": "standard",
+  "useLibraryCodeForTypes": true,
+  "reportMissingImports": "none",
+  "reportMissingModuleSource": "none"
+}

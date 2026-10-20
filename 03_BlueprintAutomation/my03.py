@@ -1,4 +1,7 @@
+import datetime
+import json
 import os
+
 import unreal
 
 
@@ -110,6 +113,12 @@ def same_value(value_1, value_2):
 def subobject_path(lib, data):
     """组件的层级路径键：从自身一路回溯父级，拼成「父/子」路径
 
+    【lib 为什么不能标类型】调用方有传类（LIB = SubobjectDataBlueprintFunctionLibrary）
+    也有传实例的，而桩里这些函数全都声明成 cls 参数、类型却写成实例
+    （桩 485659 起：def get_data(cls, data_handle) -> SubobjectData）。
+    标成 SubobjectDataBlueprintFunctionLibrary 会让「传类」的调用点全部报错，
+    所以这里不标类型，运行时两种写法都能用（全是 classmethod）。
+
     【为什么不能用变量名当键】test01 的输出证明了三点：
       1. 根 Actor 那条的 variable_name 是 None；
       2. 同一个 SCS 组件节点会被 k2_gather 输出两条（SCS 节点视图 + 实例化视图），
@@ -191,11 +200,11 @@ def read_component_config(comp):
     # 资产引用(UObject)显示成路径信息量更大，枚举/变换保持原样
     if isinstance(comp, unreal.StaticMeshComponent):
         config["static_mesh"] = asset_path_text(comp.get_editor_property("static_mesh"))
-    if isinstance(comp, unreal.SkeletalMeshComponent):
+    elif isinstance(comp, unreal.SkeletalMeshComponent):
         config["skeletal_mesh"] = asset_path_text(
             comp.get_editor_property("skeletal_mesh")
         )
-    if isinstance(comp, unreal.SceneComponent):
+    elif isinstance(comp, unreal.SceneComponent):
         # mobility 和相对变换都在 SceneComponent 上：
         # 相对变换决定组件在层级里的位置/大小/朝向，属于同一个组件的一部分
         config["mobility"] = comp.get_editor_property("mobility")
@@ -519,9 +528,11 @@ def object_path(value):
 def test02(selected_asset):
     object = unreal.EditorAssetLibrary.load_asset(selected_asset[0].package_name)
     unreal.log(object.get_path_name())
-    unreal.log(object.get_name)
-    unreal.log(object.get_package)
-    unreal.log(object.get_full_name)
+    # 这三个是方法不是属性，漏了括号会把方法对象本身打出来
+    unreal.log(object.get_name())
+    # get_package() 返回 Package 对象，log 只吃 str
+    unreal.log(str(object.get_package()))
+    unreal.log(object.get_full_name())
     unreal.log(object.get_class().get_name())
 
 
@@ -558,7 +569,8 @@ def third():
         name = asset_data.asset_name
         cls = asset_data.asset_class_path.asset_name
         package_name = asset_data.package_name
-        unreal.log(name)
+        # asset_name 是 Name 类型，log 只接受 str，先转一次
+        unreal.log(str(name))
 
         with open(path, "a", encoding="utf-8") as f:
             f.write(f"|{name}|{cls}|{package_name}\n")
@@ -575,6 +587,207 @@ def third():
 # with open(path, "a", encoding="utf-8") as f:
 #     f.write("abc")
 
+
 # 4. 实现蓝图版本管理工具，记录每次修改的属性变化
-def fourth():
-    all_assets = unreal.EditorAssetLibrary.list_assets("/Game")
+#
+# 【这题真正卡人的地方】不是 API，是「修改前」这个状态从哪来。
+#   引擎只保存当前值，不保存历史——没有任何 API 能事后告诉你「刚才改了什么」。
+#   所以「修改前」只存在于你主动拍下快照的那一刻，顺序由你的代码决定：
+#
+#     before = snapshot(bp)   # 这一行执行时，蓝图还没被改
+#     ...随便怎么改...
+#     after  = snapshot(bp)   # 这一行执行时，改完了
+#
+#   是你在代码里把它写在前后，它就是前后，不需要「去读出来是前还是后」。
+#
+# 【跨会话怎么办】每次快照顺手落一个 JSON 到 Saved/BlueprintVersions/<蓝图名>/，
+#   于是「上次」= 目录里最新的那个文件，「这次」= 现在拍的，
+#   即使两次修改发生在两次运行里，也能比出差异。
+
+
+def snapshot(bp):
+    """把蓝图此刻的样子拍成一张纯数据照片：组件树 + 变量表
+
+    【为什么直接复用】第 2 题的 get_components / get_variables 本来就在
+    诚实地描述「蓝图现在长什么样」，那正是快照需要的全部内容，一个字不用重写。
+    对比工具和版本工具共用同一套读逻辑，只是「拿两份去比」的时机不同。
+    """
+    return {
+        "components": get_components(bp),
+        "variables": get_variables(bp),
+    }
+
+
+def json_safe(value):
+    """unreal 对象/枚举/结构体 json.dump 存不了，统一转成字符串
+
+    【为什么必须转换】变量默认值可能是 StaticMesh 之类的 UObject，
+    组件的 relative_transform 是 Transform 结构体，mobility 是枚举——
+    这些东西直接丢给 json.dump 会抛 TypeError。转成字符串丢掉类型，
+    换来的是「任何快照都能落盘 + 两次快照一定能相减」。
+    """
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    if isinstance(value, dict):
+        return {str(key): json_safe(item) for key, item in value.items()}
+    return str(value)
+
+
+def flatten(prefix, data: dict, out):
+    """嵌套字典 → 压平成一列「点分路径: 值」（结果写进 out）
+
+    【为什么先压平】直接比嵌套字典，只要一个属性变了、整块 config 都不相等，
+    结果只能报「config 变了」；压平之后能精确报到
+    components.<路径>.config.mobility 这一层，才算「记录属性变化」。
+    """
+    for key, value in data.items():
+        path = f"{prefix}.{key}" if prefix else str(key)
+        if isinstance(value, dict):
+            flatten(path, value, out)
+        else:
+            out[path] = value
+
+
+def version_dir(bp):
+    """这个蓝图的快照目录，不存在就建
+
+    【为什么放 Saved】Saved 不会被打包进游戏，通常在 gitignore 里，
+    而且 project_saved_dir() 是引擎给的绝对路径，不用自己拼项目根。
+    """
+    path = os.path.join(
+        unreal.Paths.project_saved_dir(), "BlueprintVersions", bp.get_name()
+    )
+    os.makedirs(path, exist_ok=True)
+    return path
+
+
+def save_snapshot(bp, data) -> str:
+    """归档一张快照，返回写入的文件路径
+
+    文件名用带微秒的时间戳，同一秒内连拍两张也不会互相覆盖，
+    而且天然可排序（见 load_latest_snapshot）。
+    """
+    time_stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    path = os.path.join(version_dir(bp), f"{time_stamp}.json")
+    with open(path, "w", encoding="utf-8") as f:
+        # ensure_ascii=False：蓝图名/变量名可能有中文，别写成 \uXXXX
+        json.dump(json_safe(data), f, ensure_ascii=False, indent=2)
+    return path
+
+
+def load_latest_snapshot(bp) -> tuple[str | None, dict | None]:
+    """取目录里最新的一张快照当「上一次的样子」；没有历史就返回 (None, None)
+
+    文件名是可排序的时间戳，sorted() 之后最后一个就是最新——
+    不需要 stat() 去比修改时间，也不受操作系统时间精度影响。
+    """
+    path = version_dir(bp)
+    files = sorted(name for name in os.listdir(path) if name.endswith(".json"))
+    if not files:
+        return None, None
+    latest = os.path.join(path, files[-1])
+    with open(latest, encoding="utf-8") as f:
+        return latest, json.load(f)
+
+
+def test001(path):
+    files = sorted(name for name in os.listdir(path) if name.endswith(".json"))
+    if not files:
+        return None, None
+    latest = os.path.join(path, files[-1])
+    unreal.log(files[-1])
+    unreal.log(latest)
+
+
+path = r"D:\AAA_Software\Code\Code\.vscode"
+# test001(path)
+
+
+def diff_snapshot(before, after):
+    """两份快照的差异，仍然是 second() 里的三段式集合公式
+
+    【同一套路换个方向用】第 2 题比的是「蓝图 A 和蓝图 B」，这里比的是
+    「同一个蓝图的此刻和彼刻」——公式一个字没变：
+      set(after)  - set(before)  新增属性
+      set(before) - set(after)   删除属性
+      set(before) & set(after)   两边都有，才逐项比内容
+    这就是第 2 题值得认真写的原因：换场景复用的就是它。
+    """
+    flat_before, flat_after = {}, {}
+    for part in ("components", "variables"):
+        # json_safe 的返回类型是「任意可 JSON 化值」，不一定是 dict；
+        # 非 dict 时 flatten 会拿不到 .items()，所以先判类型再传
+        for data, out in (
+            (json_safe(before.get(part, {})), flat_before),
+            (json_safe(after.get(part, {})), flat_after),
+        ):
+            if isinstance(data, dict):
+                flatten(part, data, out)
+
+    changes = []
+    for key in sorted(set(flat_after) - set(flat_before)):
+        changes.append(f"[新增] {key} = {flat_after[key]}")
+    for key in sorted(set(flat_before) - set(flat_after)):
+        changes.append(f"[删除] {key}（原值 {flat_before[key]}）")
+    for key in sorted(set(flat_before) & set(flat_after)):
+        if same_value(flat_before[key], flat_after[key]):
+            continue
+        changes.append(f"[修改] {key}: {flat_before[key]} -> {flat_after[key]}")
+    return changes
+
+
+def fourth(selected_asset):
+    """对选中的蓝图：拍 before → 改 → 拍 after → 报差异 → 归档
+
+    【执行顺序就是答案】before 和 after 是同一个 snapshot()，
+    区别只在「它被插在修改代码的哪一边」。
+    这也是为什么这题不能拆成两次运行来写：before 只在本次运行里有效。
+    """
+    for asset_data in selected_asset:
+        bp = unreal.EditorAssetLibrary.load_asset(asset_data.package_name)
+        if not isinstance(bp, unreal.Blueprint):
+            continue
+
+        unreal.log(f"\n===== {bp.get_name()}：版本管理 =====")
+
+        # 【第一步】改之前拍一张。此刻蓝图还没被碰过，这张就是「修改前」的全部依据
+        before = snapshot(bp)
+
+        # ---- 修改区：换成你真正要改的属性 ----
+        bp.set_editor_property("blueprint_description", "由 fourth() 于本次修改")
+        # 【必须保存】不 save_asset，改动只在内存里，磁盘上的 .uasset 还是旧的。
+        #   save_asset 要字符串路径，package_name 是 Name，str() 一下更稳
+        unreal.EditorAssetLibrary.save_asset(str(asset_data.package_name))
+
+        # 【第二步】改之后拍一张。两行 snapshot 之间夹着的，就是「这次修改」
+        after = snapshot(bp)
+
+        # 【本次差异】回答「这一下改动了什么」
+        changes = diff_snapshot(before, after)
+        for line in changes:
+            unreal.log(f"  {line}")
+        if not changes:
+            unreal.log("  本次修改没有产生属性差异")
+
+        # 【历史差异】跟上一次存档比，这才是「版本管理」而不是「只记这一次」。
+        #   第一次跑没有存档，load_latest_snapshot 返回 (None, None)，直接跳过
+        last_path, last = load_latest_snapshot(bp)
+        if last is None:
+            continue
+        if last_path:
+            unreal.log(f"  相对上次存档 {os.path.basename(last_path)}：")
+            old_changes = diff_snapshot(last, after)
+            for line in old_changes:
+                unreal.log(f"    {line}")
+
+        # 【落盘】把这次的 after 归档，供下次运行时当「修改前」用
+        saved = save_snapshot(bp, after)
+        unreal.log(f"  快照已归档：{saved}")
+
+
+# 【怎么跑】把 main() 里的 test04(selected_asset) 换成 fourth(selected_asset)，
+#   内容浏览器选中一个蓝图，然后：
+#     import importlib, my03
+#     importlib.reload(my03)
+#     my03.fourth(unreal.EditorUtilityLibrary.get_selected_asset_data())
+#   第一次跑只报「本次差异」；再改点东西跑第二次，就会多出一段「相对上次存档」。

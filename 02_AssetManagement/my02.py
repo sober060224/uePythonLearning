@@ -33,7 +33,9 @@ def import_single_file(file_path, destination_path):
     #   不能直接实例化，必须通过 AssetToolsHelpers.get_asset_tools() 获取。
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
     # 导入任务列表可以包含多个任务，一次性执行比逐个调用更高效
-    asset_tools.import_asset_tasks([task])
+    # 桩里该参数类型是 Array[AssetImportTask]，普通 list 静态类型不兼容；
+    # unreal.Array.cast 既满足类型检查又能在运行时正确转成引擎数组
+    asset_tools.import_asset_tasks(unreal.Array.cast(unreal.AssetImportTask, [task]))
 
     # 【注意】imported_object_paths 只有在导入成功后才有值。
     #   如果文件格式不支持或导入失败，这个列表会为空。
@@ -118,7 +120,9 @@ def import_fbx(file_path, destination_path, import_type="static_mesh"):
     task.options = options
 
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
-    asset_tools.import_asset_tasks([task])
+    # 桩里该参数类型是 Array[AssetImportTask]，普通 list 静态类型不兼容；
+    # unreal.Array.cast 既满足类型检查又能在运行时正确转成引擎数组
+    asset_tools.import_asset_tasks(unreal.Array.cast(unreal.AssetImportTask, [task]))
 
     return task.imported_object_paths
 
@@ -159,7 +163,9 @@ def import_texture(
     }
 
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
-    asset_tools.import_asset_tasks([task])
+    # 桩里该参数类型是 Array[AssetImportTask]，普通 list 静态类型不兼容；
+    # unreal.Array.cast 既满足类型检查又能在运行时正确转成引擎数组
+    asset_tools.import_asset_tasks(unreal.Array.cast(unreal.AssetImportTask, [task]))
 
     # 【UE 概念】导入纹理后，引擎会用默认设置创建纹理资产。
     #   但很多时候默认设置不够用——比如法线贴图需要特殊压缩，
@@ -402,7 +408,8 @@ def batch_import_fbx_and_create_material(
             mi = asset_tools.create_asset(
                 "MI_" + mesh.get_name(),  # 资产名：MI_ + 网格体名，一眼看出对应关系
                 destination_path + "/Materials",
-                unreal.MaterialInstanceConstant,
+                # Class 参数要「类对象」而非 Python 类，所以要 .static_class()
+                unreal.MaterialInstanceConstant.static_class(),
                 unreal.MaterialInstanceConstantFactoryNew(),
             )
             if not isinstance(mi, unreal.MaterialInstanceConstant):
@@ -412,7 +419,10 @@ def batch_import_fbx_and_create_material(
 
             # 【UE 概念】新建的 MI 是"空壳"，没有父材质就什么都显示不出来。
             #   必须先 set_material_instance_parent，它才知道继承哪些参数。
-            unreal.MaterialEditingLibrary.set_material_instance_parent(mi, parent)
+            # set_material_instance_parent 要求父材质是 MaterialInterface；
+            # 这里传进来的 parent 是从别处取的 Object，先收窄再传
+            if isinstance(parent, unreal.MaterialInterface):
+                unreal.MaterialEditingLibrary.set_material_instance_parent(mi, parent)
 
             # 把 MI 分配到网格体的每一个材质插槽（下标 0, 1, 2 ...）。
             #   static_materials 是这个网格体的插槽列表，长度 = 插槽数量。
@@ -510,7 +520,9 @@ def export_selected_with_dependencies(export_dir):
 
     # 一次性导出所有包。export_assets 会按资产类型自动选导出器
     # （网格体→.psk/.fbx、纹理→.tga 等）。
-    asset_tools.export_assets(sorted(pkgs), export_dir)
+    # sorted(pkgs) 的元素是 str，类型检查器却推成 Unknown；
+    # Array.cast 明确告诉它这是 Array[str]
+    asset_tools.export_assets(unreal.Array.cast(str, sorted(pkgs)), export_dir)
     unreal.log(f"已导出 {len(pkgs)} 个包到 {export_dir}")
     for pkg in sorted(pkgs):
         unreal.log(f"  - {pkg}")

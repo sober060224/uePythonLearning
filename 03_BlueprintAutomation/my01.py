@@ -29,7 +29,10 @@ def first(asset_name, package_path):
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
     factory = unreal.BlueprintFactory()
     factory.set_editor_property("parent_class", unreal.Character)
-    bp = asset_tools.create_asset(asset_name, package_path, unreal.Blueprint, factory)
+    # Class 参数要「类对象」而非 Python 类，所以用 .static_class()
+    bp = asset_tools.create_asset(
+        asset_name, package_path, unreal.Blueprint.static_class(), factory
+    )
     if not isinstance(bp, unreal.Blueprint):
         unreal.log_error(f"创建蓝图失败：{asset_name}")
         return
@@ -48,7 +51,10 @@ def first(asset_name, package_path):
         return
 
     # 组装"加组件请求"：挂在哪个父节点下 + 什么类型的组件 + 属于哪张蓝图
-    params = unreal.AddNewSubobjectParams(root_handle, unreal.StaticMeshComponent, bp)
+    # AddNewSubobjectParams 的 new_class 也是 Class，同样要 static_class()
+    params = unreal.AddNewSubobjectParams(
+        root_handle, unreal.StaticMeshComponent.static_class(), bp
+    )
     # 返回值：(新组件句柄, 错误描述文本)
     new_handle, text = subsystem.add_new_subobject(params)
     if not new_handle:
@@ -85,7 +91,9 @@ def second(package_path):
 
     for i in range(10):
         name = f"BP_MyActor{i}"
-        bp = asset_tools.create_asset(name, package_path, unreal.Blueprint, factory)
+        bp = asset_tools.create_asset(
+            name, package_path, unreal.Blueprint.static_class(), factory
+        )
         if not isinstance(bp, unreal.Blueprint):
             unreal.log_error(f"第{i}个蓝图创建失败：{name}（可能已存在）")
             continue

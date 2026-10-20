@@ -11,38 +11,70 @@
 运行方式：
   - 在 UE Python Console 中逐段执行
 
-本课可能用到的 API：
-  unreal.get_editor_subsystem(subsystem: Class) -> EditorSubsystem  —— 获取指定类型的编辑器子系统
-  unreal.UnrealEditorSubsystem.get_editor_world() -> World  —— 获取编辑器当前打开的世界
-  unreal.EditorActorSubsystem.get_all_level_actors() -> Array[Actor]  —— 获取关卡中的所有 Actor
-  unreal.EditorActorSubsystem.get_selected_level_actors() -> Array[Actor]  —— 获取当前选中的 Actor
-  obj.get_name() -> str  —— 获取对象的名称
-  obj.get_path_name() -> str  —— 获取对象的完整路径名
-  unreal.Paths.project_dir() -> str  —— 获取项目根目录路径
-  unreal.Paths.project_content_dir() -> str  —— 获取项目 Content 目录路径
-  unreal.Paths.project_config_dir() -> str  —— 获取项目 Config 目录路径
-  unreal.Paths.project_saved_dir() -> str  —— 获取项目 Saved 目录路径
-  unreal.Paths.project_plugins_dir() -> str  —— 获取项目插件目录路径
-  unreal.Paths.combine(paths: Array[str]) -> str  —— 将路径数组拼接为一个路径
-  unreal.Paths.normalize_filename(path: str) -> str  —— 标准化路径（统一斜杠、折叠冗余）
-  unreal.Paths.get_project_file_path() -> str  —— 获取项目文件（.uproject）路径
-  unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  —— 列出指定目录下的资产路径
-  unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData  —— 查找资产并返回元数据
-  data.is_valid() -> bool  —— 判断资产数据是否有效
-  data.asset_name -> Name  —— 获取资产名称
-  data.package_path -> Name  —— 获取资产所在包路径
-  data.asset_class_path -> TopLevelAssetPath  —— 获取资产的类路径
-  data.asset_class_path.asset_name -> Name  —— 获取资产的类名
-  unreal.EditorUtilityLibrary.get_selected_asset_data() -> Array[AssetData]  —— 获取内容浏览器中选中的资产
-  unreal.EditorDialog.show_message(title: Text, message: Text, message_type: AppMsgType, default_value: AppReturnType = AppReturnType.NO, message_category: AppMsgCategory = AppMsgCategory.WARNING) -> AppReturnType  —— 弹对话框显示消息并返回用户选择
-  unreal.ScopedSlowTask(work: float, desc: Text = "", enabled: bool = True)  —— 创建进度条任务上下文
-  task.make_dialog(can_cancel: bool = False, allow_in_pie: bool = False) -> None  —— 让进度任务显示为对话框
-  task.should_cancel() -> bool  —— 判断用户是否点击取消
-  task.enter_progress_frame(work: float = 1.0, desc: Text = "") -> None  —— 推进一个进度帧并更新提示
-  unreal.SystemLibrary.print_string(world_context_object: Object, string: str = "Hello", print_to_screen: bool = True, print_to_log: bool = True, text_color: LinearColor = [0.000000, 0.660000, 1.000000, 1.000000], duration: float = 2.000000) -> None  —— 在屏幕上显示文本消息
-  unreal.SystemLibrary.get_engine_version() -> str  —— 获取当前引擎版本号
-  unreal.SystemLibrary.get_command_line() -> str  —— 获取编辑器命令行参数
-  unreal.LinearColor(r: float = 0.0, g: float = 0.0, b: float = 0.0, a: float = 0.0)  —— 创建一个线性颜色对象
+习题可能用到的 API：
+  ── unreal ──
+    unreal.get_editor_subsystem(subsystem: Class) -> EditorSubsystem
+        —— 获取指定类型的编辑器子系统
+    unreal.UnrealEditorSubsystem.get_editor_world() -> World
+        —— 获取编辑器当前打开的世界
+    unreal.EditorActorSubsystem.get_all_level_actors() -> Array[Actor]
+        —— 获取关卡中的所有 Actor
+    unreal.EditorActorSubsystem.get_selected_level_actors() -> Array[Actor]
+        —— 获取当前选中的 Actor
+    obj.get_name() -> str
+        —— 获取对象的名称
+    obj.get_path_name() -> str
+        —— 获取对象的完整路径名
+    unreal.Paths.project_dir() -> str
+        —— 获取项目根目录路径
+    unreal.Paths.project_content_dir() -> str
+        —— 获取项目 Content 目录路径
+    unreal.Paths.project_config_dir() -> str
+        —— 获取项目 Config 目录路径
+    unreal.Paths.project_saved_dir() -> str
+        —— 获取项目 Saved 目录路径
+    unreal.Paths.project_plugins_dir() -> str
+        —— 获取项目插件目录路径
+    unreal.Paths.combine(paths: Array[str]) -> str
+        —— 将路径数组拼接为一个路径
+    unreal.Paths.normalize_filename(path: str) -> str
+        —— 标准化路径（统一斜杠、折叠冗余）
+    unreal.Paths.get_project_file_path() -> str
+        —— 获取项目文件（.uproject）路径
+    unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]
+        —— 列出指定目录下的资产路径
+    unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData
+        —— 查找资产并返回元数据
+    data.is_valid() -> bool
+        —— 判断资产数据是否有效
+    data.asset_name -> Name
+        —— 获取资产名称
+    data.package_path -> Name
+        —— 获取资产所在包路径
+    data.asset_class_path -> TopLevelAssetPath
+        —— 获取资产的类路径
+    data.asset_class_path.asset_name -> Name
+        —— 获取资产的类名
+    unreal.EditorUtilityLibrary.get_selected_asset_data() -> Array[AssetData]
+        —— 获取内容浏览器中选中的资产
+    unreal.EditorDialog.show_message(title: Text, message: Text, message_type: AppMsgType, default_value: AppReturnType = AppReturnType.NO, message_category: AppMsgCategory = AppMsgCategory.WARNING) -> AppReturnType
+        —— 弹对话框显示消息并返回用户选择
+    unreal.ScopedSlowTask(work: float, desc: Text = "", enabled: bool = True)
+        —— 创建进度条任务上下文
+    task.make_dialog(can_cancel: bool = False, allow_in_pie: bool = False) -> None
+        —— 让进度任务显示为对话框
+    task.should_cancel() -> bool
+        —— 判断用户是否点击取消
+    task.enter_progress_frame(work: float = 1.0, desc: Text = "") -> None
+        —— 推进一个进度帧并更新提示
+    unreal.SystemLibrary.print_string(world_context_object: Object, string: str = "Hello", print_to_screen: bool = True, print_to_log: bool = True, text_color: LinearColor = [0.000000, 0.660000, 1.000000, 1.000000], duration: float = 2.000000) -> None
+        —— 在屏幕上显示文本消息
+    unreal.SystemLibrary.get_engine_version() -> str
+        —— 获取当前引擎版本号
+    unreal.SystemLibrary.get_command_line() -> str
+        —— 获取编辑器命令行参数
+    unreal.LinearColor(r: float = 0.0, g: float = 0.0, b: float = 0.0, a: float = 0.0)
+        —— 创建一个线性颜色对象
 =============================================================
 """
 
@@ -73,7 +105,8 @@ if editor_subsystem:
 # 记忆方法：老 API 是一个大而全的静态库（EditorLevelLibrary），
 # 新 API 按职责拆成多个子系统，统一用 get_editor_subsystem() 获取。
 # 复用第 1 节拿到的子系统对象，不必再调一次 get_editor_subsystem
-current_level = editor_subsystem.get_editor_world()
+# 子系统对象可能为 None（不在编辑器环境时），所以取 World 前要判空
+current_level = editor_subsystem.get_editor_world() if editor_subsystem else None
 
 if current_level:
     unreal.log(f"当前关卡: {current_level.get_name()}")
@@ -81,7 +114,7 @@ if current_level:
 
 # 获取关卡中的所有 Actor（EditorActorSubsystem 是新家）
 actor_subsystem = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
-all_actors = actor_subsystem.get_all_level_actors()
+all_actors = list(actor_subsystem.get_all_level_actors()) if actor_subsystem else []
 unreal.log(f"\n当前关卡中有 {len(all_actors)} 个 Actor")
 
 # 按类型统计 Actor
@@ -107,7 +140,13 @@ unreal.log(f"Saved 目录: {unreal.Paths.project_saved_dir()}")
 unreal.log(f"插件目录: {unreal.Paths.project_plugins_dir()}")
 
 # 路径拼接
-combined = unreal.Paths.combine([unreal.Paths.project_dir(), "Content", "Characters"])
+# 【易错点】combine 的参数是引擎的 Array[str]，不是普通 Python list。
+#   用 unreal.Array.cast(str, [...]) 把 list 转成引擎数组：直接传 list 运行时
+#   能自动转换，但类型上不匹配、静态检查会报错
+#   （这是 UE 官方 test_type_hints.py 里给出的标准写法）
+combined = unreal.Paths.combine(
+    unreal.Array.cast(str, [unreal.Paths.project_dir(), "Content", "Characters"])
+)
 unreal.log(f"\n拼接路径示例: {combined}")
 
 # 路径标准化
@@ -231,15 +270,19 @@ else:
 #   - UE5 Python 里"通知用户"只有两条路：
 #     1. EditorDialog.show_message —— 模态弹窗，会阻塞脚本，用户点 OK 才继续
 #     2. SystemLibrary.print_string —— 非阻塞，文字画在视口上，几秒后自动消失
-world = editor_subsystem.get_editor_world()
-unreal.SystemLibrary.print_string(
-    world,
-    "Python 脚本执行完成！",
-    print_to_screen=True,
-    print_to_log=True,
-    text_color=unreal.LinearColor(0.2, 1.0, 0.2, 1.0),  # 绿色
-    duration=3.0,
-)
+world = editor_subsystem.get_editor_world() if editor_subsystem else None
+# 【易错点】print_string 的 world_context_object 不能是 None——取不到 World 就只用日志
+if world:
+    unreal.SystemLibrary.print_string(
+        world,
+        "Python 脚本执行完成！",
+        print_to_screen=True,
+        print_to_log=True,
+        text_color=unreal.LinearColor(0.2, 1.0, 0.2, 1.0),  # 绿色
+        duration=3.0,
+    )
+else:
+    unreal.log("Python 脚本执行完成！（取不到编辑器 World，仅日志输出）")
 unreal.log("通知已显示在屏幕上（print_string 是 UE5 Python 里唯一的非阻塞通知方式）")
 
 # 备选：如果你需要用户"看到并确认"，用模态弹窗（会阻塞脚本执行）
@@ -268,7 +311,9 @@ for asset_data in selected_assets:
 # selected_actors = unreal.EditorLevelLibrary.get_selected_level_actors()
 #
 # 【修改后】直接复用第 2 节创建的 actor_subsystem（EditorActorSubsystem）
-selected_actors = actor_subsystem.get_selected_level_actors()
+selected_actors = (
+    list(actor_subsystem.get_selected_level_actors()) if actor_subsystem else []
+)
 unreal.log(f"\n关卡中选中了 {len(selected_actors)} 个 Actor")
 for actor in selected_actors:
     unreal.log(f"  Actor: {actor.get_name()} ({type(actor).__name__})")

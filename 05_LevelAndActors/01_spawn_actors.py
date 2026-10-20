@@ -13,18 +13,35 @@
   - unreal.Actor - Actor 基类
 
 习题可能用到的 API：
-  - unreal.EditorLevelLibrary.spawn_actor_from_class(cls, actor_class, location, rotation, transient) -> Actor —— 在关卡中生成 Actor
-  - unreal.EditorAssetLibrary.load_blueprint_class(cls, asset_path) -> Class —— 加载蓝图类（练习3棋盘格需要交替两种网格体）
-  - unreal.EditorAssetLibrary.load_asset(cls, asset_path) -> Object —— 加载资产（练习2地形装饰器需要加载岩石/树木资产）
-  - unreal.Vector.length(self) -> float —— 向量长度（练习4泊松圆盘采样需要计算点间距离）
-  - unreal.Vector.__sub__(self, other) -> Vector —— 向量相减（练习4泊松圆盘采样需要计算两点间距）
-  - unreal.EditorLevelLibrary.get_all_level_actors(cls) -> Array[Actor] —— 获取所有 Actor（练习2、4需要检查已放置的 Actor）
-  - math.radians(x) -> float / math.cos(x) -> float / math.sin(x) -> float —— 三角函数（练习1螺旋路径需要数学计算）
+  ── unreal ──
+    unreal.EditorLevelLibrary.spawn_actor_from_class(cls, actor_class, location, rotation, transient) -> Actor
+        —— 在关卡中生成 Actor
+    unreal.EditorAssetLibrary.load_blueprint_class(cls, asset_path) -> Class
+        —— 加载蓝图类（练习3棋盘格需要交替两种网格体）
+        实测：资产叫 BP_Cannon 时拿到的类名是 "BP_Cannon_C"（带 _C 后缀），
+        spawn_actor_from_class 之后 actor.get_class().get_name() 也是 BP_Cannon_C
+    unreal.EditorAssetLibrary.load_asset(cls, asset_path: str) -> Object
+        —— 加载资产（练习2 地形装饰器加载岩石/树木、练习3 棋盘格加载两种网格体）
+        实测：路径不存在时**返回 None**（传 /Game/Nope_Xyz → None），
+           练习3「加载失败就整体放弃」靠这个判断，不用 try/except
+    unreal.Vector.length(self) -> float
+        —— 向量长度（练习4泊松圆盘采样需要计算点间距离）
+    unreal.Vector.__sub__(self, other) -> Vector
+        —— 向量相减（练习4泊松圆盘采样需要计算两点间距）
+    unreal.EditorLevelLibrary.get_all_level_actors(cls) -> Array[Actor]
+        —— 获取所有 Actor（练习2、4需要检查已放置的 Actor）
+  ── Python 标准库 ──
+    math.radians / math.cos / math.sin / math.sqrt / math.pi
+        —— 练习1 螺旋路径的半径与角度计算、练习4 泊松采样的最小间距
+    random.uniform
+        —— 练习2 地形装饰器的随机摆放、练习4 随机撒点
 =============================================================
 """
 
 import contextlib
+
 import unreal
+
 
 # ─────────────────────────────────────────────────────────
 # 工具：编辑器事务上下文
@@ -46,12 +63,26 @@ def editor_transaction(description, context):
         raise
     else:
         unreal.SystemLibrary.end_transaction()
+
+
+def editor_world():
+    """取当前编辑会话所在的 World；不在编辑器环境（或 World 未就绪）时返回 None。
+
+    【为什么不能一行写完】get_editor_subsystem 的返回类型是 Optional —— 它可能返回
+    None。直接写 unreal.get_editor_subsystem(...).get_editor_world() 会在 None 上
+    取属性，类型检查器判为错误，运行时会抛 AttributeError。
+    """
+    subsystem = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem)
+    return subsystem.get_editor_world() if subsystem else None
+
+
 import math
 import random
 
 # ─────────────────────────────────────────────────────────
 # 1. 基础 Actor 生成
 # ─────────────────────────────────────────────────────────
+
 
 def spawn_basic_actor(actor_class, location, rotation=None, label=None):
     """
@@ -63,8 +94,11 @@ def spawn_basic_actor(actor_class, location, rotation=None, label=None):
         rotation: 旋转 Rotator (可选)
         label: Actor 标签 (可选)
     """
-    # Rotator 是 UE 中表示旋转的结构体，参数为 (Pitch, Yaw, Roll)
-    # Pitch = 绕X轴旋转（俯仰），Yaw = 绕Z轴旋转（偏航），Roll = 绕Y轴旋转（翻滚）
+    # Rotator 是 UE 中表示旋转的结构体，Python 构造函数参数顺序是 (Roll, Pitch, Yaw)
+    # —— 实测确认：Rotator(10,0,0) 得到 roll=10；Rotator(0,10,0) 得到 pitch=10；
+    #    Rotator(0,0,10) 得到 yaw=10。所以千万别按 (Pitch, Yaw, Roll) 写，会全错位。
+    # 三个轴的含义：Pitch 绕 Y 轴（抬头低头）、Yaw 绕 Z 轴（左右转）、Roll 绕 X 轴（翻滚）
+    # 建议全部用关键字参数：unreal.Rotator(roll=0, pitch=0, yaw=90)
     # 如果不传 rotation，默认生成一个无旋转的 Actor
     if rotation is None:
         rotation = unreal.Rotator(0, 0, 0)
@@ -73,9 +107,7 @@ def spawn_basic_actor(actor_class, location, rotation=None, label=None):
     # 它会在当前编辑器关卡中创建一个新 Actor 实例
     # 注意：这只是编辑器操作，不是运行时的 SpawnActor
     actor = unreal.EditorLevelLibrary.spawn_actor_from_class(
-        actor_class,
-        location,
-        rotation
+        actor_class, location, rotation
     )
 
     # 生成后要检查 actor 是否成功创建（如果参数错误可能返回 None）
@@ -88,12 +120,13 @@ def spawn_basic_actor(actor_class, location, rotation=None, label=None):
 
     return actor
 
+
 # ─────────────────────────────────────────────────────────
 # 2. 从蓝图生成 Actor
 # ─────────────────────────────────────────────────────────
 
-def spawn_blueprint_actor(blueprint_path, location,
-                           rotation=None, label=None):
+
+def spawn_blueprint_actor(blueprint_path, location, rotation=None, label=None):
     """
     从蓝图类生成 Actor
 
@@ -116,9 +149,7 @@ def spawn_blueprint_actor(blueprint_path, location,
 
     # 拿到蓝图类后，用 spawn_actor_from_class 生成，和普通类一样
     actor = unreal.EditorLevelLibrary.spawn_actor_from_class(
-        bp_class,
-        location,
-        rotation
+        bp_class, location, rotation
     )
 
     if actor and label:
@@ -126,12 +157,13 @@ def spawn_blueprint_actor(blueprint_path, location,
 
     return actor
 
+
 # ─────────────────────────────────────────────────────────
 # 3. 批量生成 - 网格排列
 # ─────────────────────────────────────────────────────────
 
-def spawn_grid(actor_class, rows, cols, spacing,
-               start_location=None, mesh_path=None):
+
+def spawn_grid(actor_class, rows, cols, spacing, start_location=None, mesh_path=None):
     """
     在网格中批量生成 Actor
 
@@ -171,7 +203,11 @@ def spawn_grid(actor_class, rows, cols, spacing,
     if mesh_path and not mesh:
         unreal.log_warning(f"网格体加载失败，将只生成空 Actor: {mesh_path}")
 
-    world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+    world = editor_world()
+    if world is None:
+        unreal.log_error("取不到编辑器 World，网格生成未执行")
+        return []
+
     with editor_transaction("生成网格", world):
         for row in range(rows):
             for col in range(cols):
@@ -188,13 +224,11 @@ def spawn_grid(actor_class, rows, cols, spacing,
                 location = unreal.Vector(
                     start_location.x + col * spacing,
                     start_location.y + row * spacing,
-                    start_location.z
+                    start_location.z,
                 )
 
                 actor = spawn_basic_actor(
-                    actor_class,
-                    location,
-                    label=f"Grid_R{row}_C{col}"
+                    actor_class, location, label=f"Grid_R{row}_C{col}"
                 )
 
                 # 如果指定了网格体路径，就给生成的 Actor 设置网格体
@@ -202,10 +236,17 @@ def spawn_grid(actor_class, rows, cols, spacing,
                 if actor and mesh:
                     # get_component_by_class 获取 Actor 上指定类型的组件
                     # StaticMeshComponent 是负责渲染静态网格体的组件
+                    # 参数写成 .static_class()：它要的是「类对象」而不是 Python 类
                     mesh_comp = actor.get_component_by_class(
-                        unreal.StaticMeshComponent
+                        unreal.StaticMeshComponent.static_class()
                     )
-                    if mesh_comp:
+                    # get_component_by_class 在桩里声明返回基类 ActorComponent，
+                    # 所以要用 isinstance 收窄成具体子类，才能调子类自己的方法
+                    # set_static_mesh 要求 StaticMesh，而 load_asset 返回的是 Object，
+                    # 所以还要把网格体本身也收窄一层
+                    if isinstance(mesh_comp, unreal.StaticMeshComponent) and isinstance(
+                        mesh, unreal.StaticMesh
+                    ):
                         # set_static_mesh 把加载的网格体资产赋给组件
                         # 这就像给 Actor "穿上"一个 3D 模型
                         mesh_comp.set_static_mesh(mesh)
@@ -216,12 +257,13 @@ def spawn_grid(actor_class, rows, cols, spacing,
     unreal.log(f"已生成 {len(spawned)} 个 Actor ({rows}x{cols} 网格)")
     return spawned
 
+
 # ─────────────────────────────────────────────────────────
 # 4. 沿路径生成 Actor
 # ─────────────────────────────────────────────────────────
 
-def spawn_along_path(actor_class, points, count,
-                      randomize_rotation=False):
+
+def spawn_along_path(actor_class, points, count, randomize_rotation=False):
     """
     沿路径点生成 Actor
 
@@ -237,7 +279,11 @@ def spawn_along_path(actor_class, points, count,
         return []
 
     spawned = []
-    world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+    world = editor_world()
+    if world is None:
+        unreal.log_error("取不到编辑器 World，沿路径生成未执行")
+        return []
+
     with editor_transaction("沿路径生成", world):
         for i in range(count):
             # t 是 0~1 之间的归一化参数，表示在整条路径上的百分比位置
@@ -249,7 +295,7 @@ def spawn_along_path(actor_class, points, count,
             # Vector 相减可以得到两点间的向量，.length() 得到向量长度
             segments = []
             for j in range(len(points) - 1):
-                seg_len = (points[j+1] - points[j]).length()
+                seg_len = (points[j + 1] - points[j]).length()
                 segments.append(seg_len)
                 total_length += seg_len
 
@@ -263,15 +309,12 @@ def spawn_along_path(actor_class, points, count,
                     # 用线性插值计算最终位置：A*(1-t) + B*t
                     # 这是最基本的向量插值（Lerp）公式
                     local_t = (target_dist - current_dist) / seg_len
-                    location = (
-                        points[j] * (1 - local_t) +
-                        points[j+1] * local_t
-                    )
+                    location = points[j] * (1 - local_t) + points[j + 1] * local_t
 
                     # 计算朝向：用 atan2 算出方向向量的角度
                     # atan2 返回弧度，用 math.degrees 转换为角度
                     # 这样 Actor 会面朝路径的前进方向
-                    direction = points[j+1] - points[j]
+                    direction = points[j + 1] - points[j]
                     yaw = math.degrees(math.atan2(direction.y, direction.x))
                     # 【易错点】Rotator 位置参数顺序是 (roll, pitch, yaw)，用关键字参数避免串位。
                     rotation = unreal.Rotator(
@@ -281,8 +324,7 @@ def spawn_along_path(actor_class, points, count,
                     )
 
                     actor = spawn_basic_actor(
-                        actor_class, location, rotation,
-                        label=f"Path_{i}"
+                        actor_class, location, rotation, label=f"Path_{i}"
                     )
                     spawned.append(actor)
                     break
@@ -291,12 +333,15 @@ def spawn_along_path(actor_class, points, count,
     unreal.log(f"沿路径生成了 {len(spawned)} 个 Actor")
     return spawned
 
+
 # ─────────────────────────────────────────────────────────
 # 5. 在区域中随机散布
 # ─────────────────────────────────────────────────────────
 
-def spawn_in_area(actor_class, center, radius, count,
-                   min_distance=0, height_range=(0, 0)):
+
+def spawn_in_area(
+    actor_class, center, radius, count, min_distance=0, height_range=(0, 0)
+):
     """
     在圆形区域中随机散布 Actor
 
@@ -312,7 +357,11 @@ def spawn_in_area(actor_class, center, radius, count,
     spawned_actors = []
     max_attempts = count * 10
 
-    world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+    world = editor_world()
+    if world is None:
+        unreal.log_error("取不到编辑器 World，随机散布未执行")
+        return []
+
     with editor_transaction("随机散布", world):
         attempts = 0
         while len(spawned_actors) < count and attempts < max_attempts:
@@ -346,50 +395,45 @@ def spawn_in_area(actor_class, center, radius, count,
 
             rotation = unreal.Rotator(pitch=0, yaw=random.uniform(0, 360), roll=0)
             actor = spawn_basic_actor(
-                actor_class, location, rotation,
-                label=f"Scatter_{len(spawned_actors)}"
+                actor_class, location, rotation, label=f"Scatter_{len(spawned_actors)}"
             )
 
             if actor:
                 spawned_actors.append(actor)
                 spawned_locations.append(location)
-    unreal.log(
-        f"在半径 {radius} 区域内散布了 {len(spawned_actors)} 个 Actor"
-    )
+    unreal.log(f"在半径 {radius} 区域内散布了 {len(spawned_actors)} 个 Actor")
     return spawned_actors
+
 
 # ─────────────────────────────────────────────────────────
 # 6. 生成带碰撞的触发器
 # ─────────────────────────────────────────────────────────
 
+
 def spawn_trigger_volume(location, extent, label="TriggerVolume"):
     """生成一个触发器体积"""
     # TriggerBox 是 UE 内置的触发器 Actor
     # 它自带一个 BoxComponent 用于碰撞检测
-    actor = spawn_basic_actor(
-        unreal.TriggerBox,
-        location,
-        label=label
-    )
+    actor = spawn_basic_actor(unreal.TriggerBox, location, label=label)
 
     if actor:
         # BoxComponent 是 TriggerBox 的碰撞组件
         # set_box_extent 设置碰撞盒的半尺寸（从中心到边缘的距离）
         # 比如 extent=100 表示碰撞盒总大小是 200x200x200
-        box_comp = actor.get_component_by_class(
-            unreal.BoxComponent
-        )
-        if box_comp:
+        box_comp = actor.get_component_by_class(unreal.BoxComponent.static_class())
+        # 同样要收窄类型：桩里返回的是基类 ActorComponent
+        if isinstance(box_comp, unreal.BoxComponent):
             box_comp.set_box_extent(unreal.Vector(extent, extent, extent))
 
     return actor
+
 
 # ─────────────────────────────────────────────────────────
 # 7. 实用：生成灯光阵列
 # ─────────────────────────────────────────────────────────
 
-def spawn_light_array(center, radius, count, height=300.0,
-                       intensity=5000.0):
+
+def spawn_light_array(center, radius, count, height=300.0, intensity=5000.0):
     """在圆形区域生成灯光阵列"""
     spawned = []
     # 【易错点】count 为 0 时 360.0 / count 会抛 ZeroDivisionError，
@@ -401,7 +445,11 @@ def spawn_light_array(center, radius, count, height=300.0,
     # 360度除以灯光数量，得到每个灯光之间的角度间隔
     angle_step = 360.0 / count
 
-    world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+    world = editor_world()
+    if world is None:
+        unreal.log_error("取不到编辑器 World，灯光阵列未执行")
+        return []
+
     with editor_transaction("生成灯光阵列", world):
         for i in range(count):
             # math.radians 将角度转为弧度（UE的三角函数用弧度制）
@@ -411,9 +459,10 @@ def spawn_light_array(center, radius, count, height=300.0,
             z = center.z + height
 
             # PointLight 是点光源 Actor，会向四周均匀发光
+            # spawn_actor_from_class 的 actor_class 参数要「类对象」，故用 .static_class()
             actor = unreal.EditorLevelLibrary.spawn_actor_from_class(
-                unreal.PointLight,
-                unreal.Vector(x, y, z)
+                unreal.PointLight.static_class(),
+                unreal.Vector(x, y, z),
             )
 
             if actor:
@@ -422,13 +471,15 @@ def spawn_light_array(center, radius, count, height=300.0,
                 # set_intensity 设置光照强度（单位：流明）
                 # 数值越大越亮，典型室内灯 500-2000，阳光 10000+
                 light_comp = actor.get_component_by_class(
-                    unreal.PointLightComponent
+                    unreal.PointLightComponent.static_class()
                 )
-                if light_comp:
+                # 同样要收窄类型：桩里返回的是基类 ActorComponent
+                if isinstance(light_comp, unreal.PointLightComponent):
                     light_comp.set_intensity(intensity)
                 spawned.append(actor)
     unreal.log(f"已生成 {len(spawned)} 个点光源")
     return spawned
+
 
 # ─────────────────────────────────────────────────────────
 # 使用示例
@@ -460,7 +511,50 @@ unreal.log("关卡与Actor第1课完成！")
 # ─────────────────────────────────────────────────────────
 # 🎯 练习题
 # ─────────────────────────────────────────────────────────
-# 1. 沿螺旋路径生成 Actor
-# 2. 创建一个 "地形装饰器"：在山坡上随机放置岩石和树木
-# 3. 生成一个棋盘格图案（交替使用两种网格体）
-# 4. 实现泊松圆盘采样算法来获得更自然的随机分布
+# 【练习 1】沿螺旋线生成 Actor
+#   输入： 起点 Vector(0,0,0)、圈数 turns=3、每圈半径增量 radius_step=200.0、
+#          总数 count=60
+#   任务： 第 i 个点：角度 = i * (turns*360/count) 度，
+#          半径 = i * (turns*radius_step/count)，
+#          x = 半径*cos(角度)、y = 半径*sin(角度)、z 恒为起点 Z
+#          （i 从 0 数到 count-1，所以首点落在圆心、末点半径 = turns*radius_step - 一档）
+#   输出： 视口里一条由 count 个 Actor 组成的螺旋线
+#   验收： count=60、turns=3、radius_step=200 → 相邻两点半径差恰好 10.0；
+#          末点（i=59）的水平半径 = 59*10 = 590.0（用 Vector.length2d() 验证）；
+#          相邻两点到圆心的半径差恒定 ⇒ 是等距螺旋，不是越绕越松
+
+# 【练习 2】山坡上的地形装饰器
+#   输入： 要用的岩石/树木资产路径、撒点中心 center、半径 radius、
+#          总数 count、最小间距 min_distance=200.0
+#   任务： 用 spawn_in_area 的思路在圆内随机撒点，但每生成一个点都要和
+#          已生成的点比距离（Vector 相减后取 length），小于 min_distance 就重抽，
+#          单个点最多重抽 30 次，超了就放弃这个点并计数
+#   输出： 圆内 rocks 和 trees 交替分布，任意两棵树的间距 >= 200
+#   验收： count=50、radius=500、min_distance=200 → 实际生成数明显小于 50
+#          （面积放不下），函数要如实返回「请求 50，实际 16，放弃 34」
+#          （UE 5.8 实测 20 个随机种子：放置数 14~18、中位数 16；
+#            几何上限 ≈ π·500² / (√3/2·200²) ≈ 22.7，所以 16 已接近饱和）
+
+# 【练习 3】棋盘格（两种网格体交替）
+#   输入： rows=8、cols=8、spacing=200.0、两个网格体资产路径 A 和 B
+#   任务： 第 (row, col) 个格子，(row+col) 为偶数放 A、奇数放 B；
+#          位置 = (col*spacing, row*spacing, 0)；用 load_asset 加载两个网格体，
+#          加载失败就整体放弃并报错（不要只放一半）
+#   输出： 8x8 黑白相间的棋盘
+#   验收： 数一下**主对角线**（row==col）的格子 → 全是同一种网格体
+#          （实测 8x8 时 row+col 恒为偶数 → 8 格全 A）；
+#          副对角线（row+col==7）也全是同一种，但恒为奇数 → 8 格全 B。
+#          所以题目说"对角线同一种"只对**奇数尺寸**的棋盘成立两条对角线同色；
+#          8x8 这种偶数尺寸两条对角线颜色相反，别当成 bug 去改代码；
+#          把 B 的路径改成不存在的 → 函数一开始就报错，视口里一个都没生成
+#          （实测 load_asset 对不存在的路径返回 None，用它判断即可）
+
+# 【练习 4】泊松圆盘采样，让随机分布更自然
+#   输入： 半径 radius=1000.0、最小间距 r=200.0
+#   任务： 实现 Bridson 算法：随机取一个种子点放进「活跃列表」，
+#          每轮从活跃列表随机取一个点，在它周围 [r, 2r] 的环带里抽 30 个候选点，
+#          候选点若离所有已有点都 >= r 且落在圆内，就接受并加入活跃列表；
+#          30 次都失败就把这个点从活跃列表移除
+#   输出： 一大堆点，任意两点间距 >= r，且分布比纯随机均匀得多
+#   验收： radius=1000、r=200 → 点数落在 35~65 之间（Bridson 实测中位数约 54，
+#          圆面积/12√3·r² ≈ 75 只是渐近上界，达不到），且任意两点间距 >= 200

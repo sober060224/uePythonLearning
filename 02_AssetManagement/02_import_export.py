@@ -13,19 +13,32 @@
   - unreal.AssetImportTask - 导入任务配置
 
 习题可能用到的 API：
-  unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools  —— 获取 AssetTools 实例以执行导入导出
-  unreal.AssetImportTask()  —— 创建导入任务对象（配置源文件、目标路径等）
-  asset_tools.import_asset_tasks(import_tasks: Array[AssetImportTask]) -> None  —— 按导入任务列表批量导入资产
-  asset_tools.export_assets(assets_to_export: Array[str], export_path: str) -> None  —— 导出资产到指定磁盘目录
-  unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  —— 列出资产路径（用于筛选待导入/导出文件）
-  unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData  —— 获取资产元数据（用于按类型分类）
-  unreal.EditorAssetLibrary.save_asset(asset_to_save: str, only_if_is_dirty: bool = True) -> bool  —— 保存指定资产
-  asset_tools.create_asset(asset_name: str, package_path: str, asset_class: Class, factory: Factory, calling_context: Name = "None", overwrite_existing: bool = False) -> Object  —— 用工厂在指定包路径创建资产
+  ── unreal ──
+    unreal.AssetToolsHelpers.get_asset_tools() -> AssetTools
+        —— 获取 AssetTools 实例以执行导入导出
+    unreal.AssetImportTask()
+        —— 创建导入任务对象（配置源文件、目标路径等）
+    asset_tools.import_asset_tasks(import_tasks: Array[AssetImportTask]) -> None
+        —— 按导入任务列表批量导入资产
+    asset_tools.export_assets(assets_to_export: Array[str], export_path: str) -> None
+        —— 导出资产到指定磁盘目录
+    unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]
+        —— 列出资产路径（用于筛选待导入/导出文件）
+    unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData
+        —— 获取资产元数据（用于按类型分类）
+    unreal.EditorAssetLibrary.save_asset(asset_to_save: str, only_if_is_dirty: bool = True) -> bool
+        —— 保存指定资产
+    asset_tools.create_asset(asset_name: str, package_path: str, asset_class: Class, factory: Factory, calling_context: Name = "None", overwrite_existing: bool = False) -> Object
+        —— 用工厂在指定包路径创建资产
+  ── Python 标准库 ──
+    os.path.splitext / os.path.basename / os.listdir / os.makedirs
+        —— 练习1 扫描监控目录、练习2 按分辨率分目录导出时拼路径
 =============================================================
 """
 
-import unreal
 import os
+
+import unreal
 
 # ─────────────────────────────────────────────────────────
 # 1. 基本导入流程
@@ -64,8 +77,11 @@ def import_single_file(file_path, destination_path):
     # 【UE 概念】AssetTools 是 UE 的资产管理工具类，提供导入、导出、创建等功能。
     #   不能直接实例化，必须通过 AssetToolsHelpers.get_asset_tools() 获取。
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
+    # 【易错点】import_asset_tasks 要的是引擎的 Array[AssetImportTask]，不是 Python list。
+    #   用 unreal.Array.cast(AssetImportTask, [...]) 转换（UE 官方 test_type_hints.py 的写法）：
+    #   直接传 list 运行时能自动转换，但类型上不匹配、静态检查会报错。
     # 导入任务列表可以包含多个任务，一次性执行比逐个调用更高效
-    asset_tools.import_asset_tasks([task])
+    asset_tools.import_asset_tasks(unreal.Array.cast(unreal.AssetImportTask, [task]))
 
     # 【注意】imported_object_paths 只有在导入成功后才有值。
     #   如果文件格式不支持或导入失败，这个列表会为空。
@@ -125,12 +141,16 @@ def import_fbx(file_path, destination_path, import_type="static_mesh"):
 
         # 骨骼网格体选项
         options.skeletal_mesh_import_data.import_uniform_scale = 1.0
-        options.skeletal_mesh_import_data.import_morph_targets = (
-            True  # 导入变形目标（表情等）
-        )
-        options.skeletal_mesh_import_data.update_skeleton_reference_pose = (
-            False  # 不更新骨骼参考姿势
-        )
+        # 【易错点】FbxSkeletalMeshImportData 的很多字段不是 Python property
+        #   （桩里该类只有 vertex_color_import_option / vertex_override_color），
+        #   直接 `data.import_morph_targets = True` 静态检查会报错，
+        #   要用 set_editor_property("字段名", 值) 走反射赋值。
+        options.skeletal_mesh_import_data.set_editor_property(
+            "import_morph_targets", True
+        )  # 导入变形目标（表情等）
+        options.skeletal_mesh_import_data.set_editor_property(
+            "update_skeleton_reference_pose", False
+        )  # 不更新骨骼参考姿势
 
     elif import_type == "animation":
         options.import_as_skeletal = True
@@ -143,7 +163,8 @@ def import_fbx(file_path, destination_path, import_type="static_mesh"):
     task.options = options
 
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
-    asset_tools.import_asset_tasks([task])
+    # 参数要是引擎 Array，用 unreal.Array.cast 从 list 转换
+    asset_tools.import_asset_tasks(unreal.Array.cast(unreal.AssetImportTask, [task]))
 
     return task.imported_object_paths
 
@@ -194,9 +215,9 @@ def batch_import(source_folder, destination_path, file_extensions=None):
         task.save = True
         tasks.append(task)
 
-    # 批量执行
+    # 批量执行（tasks 是 Python list，先转成引擎 Array）
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
-    asset_tools.import_asset_tasks(tasks)
+    asset_tools.import_asset_tasks(unreal.Array.cast(unreal.AssetImportTask, tasks))
 
     # 汇总结果：每个 task 有自己的 imported_object_paths
     all_imported = []
@@ -242,7 +263,7 @@ def import_texture(
     # options = unreal.AutomatedAssetImportData()
 
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
-    asset_tools.import_asset_tasks([task])
+    asset_tools.import_asset_tasks(unreal.Array.cast(unreal.AssetImportTask, [task]))
 
     # 【易错点】compression_settings / lod_group 都是枚举属性，不能直接赋字符串
     #   （会报 TypeError），先把"好记的字符串"映射成枚举成员再赋值。
@@ -386,7 +407,8 @@ def export_all_assets_of_type(class_name, export_directory):
 
     os.makedirs(export_directory, exist_ok=True)
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
-    asset_tools.export_assets(matching, export_directory)
+    # export_assets 要的是 Array[str]，同样用 Array.cast 把 list 转过去
+    asset_tools.export_assets(unreal.Array.cast(str, matching), export_directory)
 
     unreal.log(f"已导出 {len(matching)} 个资产到 {export_directory}")
 
@@ -419,11 +441,28 @@ def create_material_instance(base_material_path, new_asset_name, destination_pat
     #   - asset_name: 新资产名称（不含路径）
     #   - package_path: /Game/ 下的目标目录
     #   - asset_class: 资产类（如 unreal.MaterialInstanceConstant）
+    #     注意：要写成 .static_class() —— Class 参数要的是「类对象」，
+    #     直接写 unreal.MaterialInstanceConstant 传的是 Python 类，静态检查会报错
     #   - factory: 创建资产的工厂对象
     #   返回值是创建成功的资产对象，失败返回 None。
     new_asset = asset_tools.create_asset(
-        new_asset_name, destination_path, unreal.MaterialInstanceConstant, factory
+        new_asset_name,
+        destination_path,
+        unreal.MaterialInstanceConstant.static_class(),
+        factory,
     )
+
+    # create_asset 的返回类型在桩里是 Object，先收窄成 MaterialInstanceConstant
+    # 再往下用（None 也会走进这个分支，一个判断解决两件事）
+    if not isinstance(new_asset, unreal.MaterialInstanceConstant):
+        unreal.log_error(f"创建材质实例失败: {new_asset_name}")
+        return None
+
+    # 父材质同样是 load_asset 拿到的 Object，set_material_instance_parent 要
+    # MaterialInterface，先收窄
+    if not isinstance(base_material, unreal.MaterialInterface):
+        unreal.log_error(f"父材质不是 MaterialInterface: {base_material}")
+        return new_asset
 
     if new_asset:
         # 【初学者易错点】Factory 不负责设置父材质。

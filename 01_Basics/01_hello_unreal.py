@@ -16,16 +16,29 @@
   - 在 UE Python Console 中逐段执行
   - 或执行: exec(open("path/to/01_hello_unreal.py").read())
 
-本课可能用到的 API：
-  unreal.SystemLibrary.get_engine_version() -> str  —— 获取当前引擎版本号
-  unreal.Paths.project_dir() -> str  —— 获取项目根目录路径
-  unreal.Paths.project_content_dir() -> str  —— 获取项目 Content 目录路径
-  unreal.Paths.combine(paths: Array[str]) -> str  —— 将路径数组拼接为一个路径
-  unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]  —— 列出指定目录下的资产路径
-  unreal.EditorAssetLibrary.load_asset(asset_path: str) -> Object  —— 加载资产并返回对象
-  unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool  —— 检查资产是否存在
-  unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData  —— 查找资产并返回元数据
-  obj.get_class().get_name() -> str  —— 获取对象的类名
+习题可能用到的 API：
+  ── unreal ──
+    unreal.SystemLibrary.get_engine_version() -> str
+        —— 获取当前引擎版本号
+    unreal.Paths.project_dir() -> str
+        —— 获取项目根目录路径
+    unreal.Paths.project_content_dir() -> str
+        —— 获取项目 Content 目录路径
+    unreal.Paths.combine(paths: Array[str]) -> str
+        —— 将路径数组拼接为一个路径
+    unreal.EditorAssetLibrary.list_assets(directory_path: str, recursive: bool = True, include_folder: bool = False) -> Array[str]
+        —— 列出指定目录下的资产路径
+    unreal.EditorAssetLibrary.load_asset(asset_path: str) -> Object
+        —— 加载资产并返回对象
+    unreal.EditorAssetLibrary.does_asset_exist(asset_path: str) -> bool
+        —— 检查资产是否存在
+    unreal.EditorAssetLibrary.find_asset_data(asset_path: str) -> AssetData
+        —— 查找资产并返回元数据
+    obj.get_class().get_name() -> str
+        —— 获取对象的类名
+  ── Python 标准库 ──
+    os.path.getmtime / os.path.getctime
+        —— 练习3 按创建/修改时间挑最近的资产 —— AssetData 里没有 timestamp 字段（桩已核实），只能读磁盘上 .uasset 文件的时间戳
 =============================================================
 """
 
@@ -106,7 +119,7 @@ if all_assets:
     # 尝试加载第一个资产
     first_asset = unreal.EditorAssetLibrary.load_asset(all_assets[0])
     if first_asset:
-        unreal.log(f"\n第一个资产详情:")
+        unreal.log("\n第一个资产详情:")
         unreal.log(f"  路径: {all_assets[0]}")
         unreal.log(f"  类型: {type(first_asset).__name__}")
         unreal.log(f"  类: {first_asset.get_class().get_name()}")
